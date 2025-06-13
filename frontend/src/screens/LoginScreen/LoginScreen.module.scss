@@ -1,0 +1,255 @@
+// Mobile-first responsive styles
+.container {
+  background-image: url('/assets/Background.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 355px;
+  min-height: 489px;
+  background-color: #ddda8c;
+  border-radius: 20px;
+  border: 1px solid #ddda8d;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.cardContent {
+  padding: 0;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px;
+}
+
+.title {
+  font-family: 'Cormorant Upright', Helvetica, serif;
+  font-weight: 600;
+  color: #407339;
+  font-size: clamp(40px, 8vw, 60px);
+  letter-spacing: 0;
+  line-height: 1.2;
+  -webkit-text-stroke: 1px #537d5d;
+  margin: 0;
+  text-align: center;
+}
+
+.subtitle {
+  margin-top: 16px;
+  font-family: 'Gantari', Helvetica, sans-serif;
+  font-weight: 400;
+  color: #407339;
+  font-size: clamp(12px, 3vw, 16px);
+  letter-spacing: clamp(3px, 1.5vw, 6.4px);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.inputWrapper {
+  margin-top: 24px;
+  width: 100%;
+  max-width: 297px;
+  
+  &.passwordWrapper {
+    margin-top: 20px;
+  }
+}
+
+.input {
+  height: 54px;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  font-family: 'Geist', Helvetica, sans-serif;
+  font-weight: 400;
+  color: #6a6a6a;
+  font-size: 16px;
+  padding: 0 20px;
+  width: 100%;
+  border: none;
+  outline: none;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+  &::placeholder {
+    color: #6a6a6a;
+  }
+
+  &:focus {
+    background-color: #e5e5e5;
+    box-shadow: 0 0 0 2px rgba(64, 115, 57, 0.2);
+  }
+}
+
+.loginButtonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.loginButton {
+  margin-top: 24px;
+  width: 100%;
+  max-width: 192px;
+  height: 50px;
+  background-color: #407339;
+  border-radius: 8px;
+  font-family: 'Geist', Helvetica, sans-serif;
+  font-weight: 400;
+  color: #fde8e7;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: #356030;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.divider {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+.dividerText {
+  font-family: 'Geist', Helvetica, sans-serif;
+  font-weight: 500;
+  color: #979797;
+  font-size: 16px;
+}
+
+.googleButton {
+  margin-top: 16px;
+  width: 100%;
+  max-width: 244px;
+  height: 38px;
+  background-color: #fffcfc;
+  border-radius: 8px;
+  font-family: 'Geist', Helvetica, sans-serif;
+  font-weight: 500;
+  color: #454545;
+  font-size: 14px;
+  border: 1px solid #e5e5e5;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background-color: #f5f5f5;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.googleIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .container {
+    padding: 32px;
+  }
+
+  .contentWrapper {
+    padding: 32px 24px;
+  }
+
+  .inputWrapper {
+    margin-top: 32px;
+    
+    &.passwordWrapper {
+      margin-top: 24px;
+    }
+  }
+
+  .googleButton {
+    font-size: 16px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .container {
+  //   // flex-direction: row;
+    padding: 0;
+  }
+
+  .card {
+    position: absolute;
+    width: 355px;
+    height: 489px;
+    top: 226px;
+    left: 42px;
+    max-width: none;
+  }
+
+  .contentWrapper {
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 60px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    letter-spacing: 6.4px;
+  }
+
+  .inputWrapper {
+    width: 297px;
+    margin-top: 32px;
+    
+    &.passwordWrapper {
+      margin-top: 24px;
+    }
+  }
+
+  .loginButton {
+    width: 192px;
+  }
+
+  .googleButton {
+    width: 244px;
+    font-size: 16px;
+  }
+}
+
+// Large desktop styles
+@media (min-width: 1440px) {
+  .card {
+    width: 400px;
+    height: 520px;
+    left: 50px;
+  }
+
+  .contentWrapper {
+    padding: 32px;
+  }
+}

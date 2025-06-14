@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styles from "./LoginScreen.module.scss";
 
+import supabase from "../../lib/supabase";
+
 interface LoginScreenProps {}
 
 const LoginScreen: React.FC<LoginScreenProps> = () => {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import LoginScreen from './screens/LoginScreen/LoginScreen';
 
+import supabase from './lib/supabase';
+
 const App: React.FC = () => {
   const [user, setUser] = useState(null);
 

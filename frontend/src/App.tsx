@@ -20,7 +20,8 @@ const App: React.FC = () => {
   
   return (
     <div className="app">
-      {user ? <h1>Welcome, ${user.name}</h1> : 
+      {user ? 
+      <h1>Welcome, ${user.name}</h1> : 
       <LoginScreen />
       }
     </div>

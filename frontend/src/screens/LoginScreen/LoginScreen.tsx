@@ -29,10 +29,14 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth
-    console.log("Google login clicked");
-    alert("Google login not implemented yet");
+  const handleGoogleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+  });
+
+  if (error) {
+    console.error('Google login error:', error.message);
+  }
   };
 
   return (

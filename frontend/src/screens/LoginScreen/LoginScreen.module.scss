@@ -1,6 +1,6 @@
 // Mobile-first responsive styles
 .container {
-  background-image: url('/assets/Background.jpg');
+  background-image: url("/assets/FadedOutBackground.png");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -15,10 +15,10 @@
 .card {
   width: 100%;
   max-width: 355px;
-  min-height: 489px;
-  background-color: #ddda8c;
+  min-height: 448px;
+  background-color: #e7e48b;
   border-radius: 20px;
-  border: 1px solid #ddda8d;
+  border: 1px solid #e7e48b;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 }
@@ -35,20 +35,20 @@
 }
 
 .title {
-  font-family: 'Cormorant Upright', Helvetica, serif;
+  font-family: "Cormorant Upright", Helvetica, serif;
   font-weight: 600;
   color: #407339;
-  font-size: clamp(40px, 8vw, 60px);
+  font-size: clamp(50px, 8vw, 60px);
   letter-spacing: 0;
   line-height: 1.2;
-  -webkit-text-stroke: 1px #537d5d;
+  -webkit-text-stroke: 2px #407339;
   margin: 0;
   text-align: center;
 }
 
 .subtitle {
   margin-top: 16px;
-  font-family: 'Gantari', Helvetica, sans-serif;
+  font-family: "Gantari", Helvetica, sans-serif;
   font-weight: 400;
   color: #407339;
   font-size: clamp(12px, 3vw, 16px);
@@ -61,7 +61,7 @@
   margin-top: 24px;
   width: 100%;
   max-width: 297px;
-  
+
   &.passwordWrapper {
     margin-top: 20px;
   }
@@ -69,9 +69,9 @@
 
 .input {
   height: 54px;
-  background-color: #d9d9d9;
+  background-color: #f3f0f0;
   border-radius: 10px;
-  font-family: 'Geist', Helvetica, sans-serif;
+  font-family: "Geist", Helvetica, sans-serif;
   font-weight: 400;
   color: #6a6a6a;
   font-size: 16px;
@@ -86,7 +86,7 @@
   }
 
   &:focus {
-    background-color: #e5e5e5;
+    background-color: #f3f0f0;
     box-shadow: 0 0 0 2px rgba(64, 115, 57, 0.2);
   }
 }
@@ -100,10 +100,10 @@
   margin-top: 24px;
   width: 100%;
   max-width: 192px;
-  height: 50px;
+  height: 44px;
   background-color: #407339;
   border-radius: 8px;
-  font-family: 'Geist', Helvetica, sans-serif;
+  font-family: "Geist", Helvetica, sans-serif;
   font-weight: 400;
   color: #fde8e7;
   font-size: 16px;
@@ -130,7 +130,7 @@
 }
 
 .dividerText {
-  font-family: 'Geist', Helvetica, sans-serif;
+  font-family: "Geist", Helvetica, sans-serif;
   font-weight: 500;
   color: #979797;
   font-size: 16px;
@@ -140,10 +140,10 @@
   margin-top: 16px;
   width: 100%;
   max-width: 244px;
-  height: 38px;
+  height: 44px;
   background-color: #fffcfc;
   border-radius: 8px;
-  font-family: 'Geist', Helvetica, sans-serif;
+  font-family: "Geist", Helvetica, sans-serif;
   font-weight: 500;
   color: #454545;
   font-size: 14px;
@@ -182,7 +182,7 @@
 
   .inputWrapper {
     margin-top: 32px;
-    
+
     &.passwordWrapper {
       margin-top: 24px;
     }
@@ -196,16 +196,12 @@
 // Desktop styles
 @media (min-width: 1024px) {
   .container {
-  //   // flex-direction: row;
     padding: 0;
   }
 
   .card {
-    position: absolute;
     width: 355px;
-    height: 489px;
-    top: 226px;
-    left: 42px;
+    height: 448px;
     max-width: none;
   }
 
@@ -214,7 +210,7 @@
   }
 
   .title {
-    font-size: 60px;
+    font-size: 70px;
   }
 
   .subtitle {
@@ -225,7 +221,7 @@
   .inputWrapper {
     width: 297px;
     margin-top: 32px;
-    
+
     &.passwordWrapper {
       margin-top: 24px;
     }
@@ -246,7 +242,6 @@
   .card {
     width: 400px;
     height: 520px;
-    left: 50px;
   }
 
   .contentWrapper {

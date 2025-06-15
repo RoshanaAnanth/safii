@@ -14,31 +14,32 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      // TODO: Implement actual login API call
-      console.log("Login attempt:", { email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Handle successful login
-      alert("Login successful!");
-    } catch (error) {
-      console.error("Login error:", error);
-      alert("Login failed. Please try again.");
-    } finally {
+    if (error) {
+      alert("Login failed: " + error.message);
+      return;
+    } else {
       setIsLoading(false);
+      setEmail("");
+      setPassword("");
     }
   };
 
   const handleGoogleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-  });
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:5173",
+      },
+    });
 
-  if (error) {
-    console.error('Google login error:', error.message);
-  }
+    if (error) {
+      console.error("Google login error:", error.message);
+    }
   };
 
   return (

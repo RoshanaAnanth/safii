@@ -1,0 +1,189 @@
+// Mobile-first responsive styles for Submit Report Screen
+.container {
+  min-height: 100vh;
+  background-image: url("/assets/Background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+  }
+}
+
+.header {
+  position: relative;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 16px 0;
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: "Cormorant Upright", serif;
+  font-weight: 600;
+  font-size: 32px;
+  color: #407339;
+  margin: 0;
+  -webkit-text-stroke: 1px #407339;
+}
+
+.signOutButton {
+  background: #407339;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    background: #356030;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  padding: 24px 16px;
+}
+
+.content {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px 24px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.title {
+  font-family: "Cormorant Upright", serif;
+  font-weight: 600;
+  font-size: clamp(32px, 6vw, 48px);
+  color: #407339;
+  margin: 0 0 16px 0;
+}
+
+.subtitle {
+  font-family: "Gantari", sans-serif;
+  font-size: clamp(18px, 4vw, 24px);
+  color: #537d5d;
+  margin: 0 0 20px 0;
+  font-weight: 500;
+}
+
+.description {
+  font-family: "Gantari", sans-serif;
+  font-size: clamp(14px, 3vw, 16px);
+  color: #6a6a6a;
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+}
+
+.backButton {
+  background: #407339;
+  color: #fde8e7;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-family: "Geist", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(64, 115, 57, 0.3);
+
+  &:hover {
+    background: #356030;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(64, 115, 57, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .headerContent {
+    padding: 0 24px;
+  }
+
+  .logo {
+    font-size: 36px;
+  }
+
+  .signOutButton {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+
+  .main {
+    padding: 32px 24px;
+  }
+
+  .content {
+    padding: 48px 32px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .headerContent {
+    padding: 0 32px;
+  }
+
+  .main {
+    padding: 40px 32px;
+  }
+
+  .content {
+    padding: 56px 40px;
+  }
+}
+
+// Large desktop styles
+@media (min-width: 1440px) {
+  .main {
+    padding: 48px 40px;
+  }
+
+  .content {
+    padding: 64px 48px;
+  }
+}

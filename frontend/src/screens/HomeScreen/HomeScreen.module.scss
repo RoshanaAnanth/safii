@@ -117,6 +117,45 @@
   top: 10px !important;
 }
 
+.menuPaper {
+  border-radius: 10px !important;
+}
+
+.userProfile {
+  width: auto;
+  height: 70px;
+  display: flex;
+  gap: 20px;
+  pointer-events: none;
+}
+
+.userAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.email {
+  font-family: "Geist", Helvetica, sans-serif;
+  font-size: 14px !important;
+  color: #909090 !important;
+}
+
+.signOutOption {
+  border-radius: 4px !important;
+  margin: 0 10px !important;
+
+  &:hover {
+    background-color: #ddda8d65 !important;
+  }
+}
+
 // Tablet styles
 @media (min-width: 768px) {
 }

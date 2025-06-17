@@ -6,6 +6,7 @@ import supabase from "../../lib/supabase";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 
+import authority from "../../../assets/Authority.svg";
 import background from "../../../assets/Background.jpg";
 
 import Button from "@mui/material/Button";
@@ -45,7 +46,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
     navigate("/submit-report");
   };
 
-  // Get user's first name for personalized greeting
   const getUserName = () => {
     if (user.user_metadata?.full_name) {
       return user.user_metadata.full_name.split(" ")[0];
@@ -57,6 +57,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
       return user.email.split("@")[0];
     }
     return "User";
+  };
+
+  const getUserAvatar = () => {
+    if (user.user_metadata?.avatar_url) {
+      return user.user_metadata.avatar_url;
+    }
+    if (user.user_metadata?.picture) {
+      return user.user_metadata.picture;
+    }
+    return authority;
   };
 
   return (
@@ -91,13 +101,25 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
         open={isMenuOpen}
         onClose={handleMenuClose}
         className={styles.profileMenu}
+        slotProps={{
+          paper: {
+            className: styles.menuPaper,
+          },
+        }}
       >
         <MenuItem className={styles.userProfile} onClick={handleMenuClose}>
-          <ListItemIcon></ListItemIcon>
-          <ListItemText>Welcome {getUserName()}!</ListItemText>
+          <img
+            src={getUserAvatar()}
+            alt="Avatar"
+            className={styles.userAvatar}
+          />
+          <div className={styles.userDetails}>
+            <span>Welcome {getUserName()}!</span>
+            <span className={styles.email}>{user.email}</span>
+          </div>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleSignOut}>
+        <MenuItem className={styles.signOutOption} onClick={handleSignOut}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>

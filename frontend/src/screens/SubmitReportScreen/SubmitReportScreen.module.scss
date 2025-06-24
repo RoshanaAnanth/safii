@@ -8,9 +8,17 @@
   border-bottom: none !important;
 }
 
-:global(.MuiInputBase-root.Mui-focused .MuiInputBase-input) {
-  box-shadow: none !important;
+:global(.Mui-focused .MuiOutlinedInput-notchedOutline),
+:global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline),
+:global(.MuiInputBase-root.Mui-focused .MuiInputBase-input),
+:global(.MuiSelect-select:focus) {
   outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+:global(.MuiMenuItem-root.Mui-selected) {
+  background-color: #a1dd8d65 !important; // Your desired hover/selected color
 }
 
 // Mobile-first responsive styles for Submit Report Screen
@@ -124,19 +132,21 @@
 .select {
   display: flex;
   align-items: baseline;
-  padding: 12px 16px;
-  border: 2px solid #e5e5e5;
-  border-radius: 8px;
-  font-family: "Geist", sans-serif;
-  font-size: 16px;
+  padding: 12px 16px !important;
+  // border: 2px solid #e5e5e5 !important;
+  border-radius: 8px !important;
+  font-family: "Geist", sans-serif !important;
+  font-size: 14px !important;
+  height: 50px !important;
   color: #333;
   background: white;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  // transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:focus {
-    outline: none;
-    border-color: #407339;
-    box-shadow: 0 0 0 3px rgba(64, 115, 57, 0.1);
+    outline: none !important;
+    border: none !important;
+    // border-color: #407339 !important;
+    // box-shadow: 0 0 0 3px rgba(64, 115, 57, 0.1) !important;
   }
 
   &:disabled {
@@ -159,7 +169,22 @@
 }
 
 .select {
+  padding: 0 !important;
   cursor: pointer;
+  height: 50px !important;
+}
+
+.dropdownMenu {
+  margin-top: 10px !important;
+}
+
+.menuItem {
+  margin: 2px 8px !important;
+  border-radius: 8px !important;
+
+  &:hover {
+    background-color: #ddda8d65 !important; // Your desired hover color
+  }
 }
 
 .locationSection {
@@ -187,18 +212,18 @@
 }
 
 .inputAdornment {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 .locationButton {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
 }
 
 .locationIcon {
-  width: 28px !important;
-  height: 30px !important;
+  width: 24px !important;
+  height: 24px !important;
 }
 
 .imageSection {
@@ -211,6 +236,11 @@
   justify-content: center;
 }
 
+.imagePreview {
+  height: inherit;
+  padding: 10px 0;
+}
+
 .uploadButton {
   font-size: 18px;
   font-family: "Geist", sans-serif;
@@ -220,6 +250,10 @@
   height: 50px;
   width: 150px;
   color: #ffffff;
+}
+
+.fileInput {
+  display: none;
 }
 
 .submitButton {

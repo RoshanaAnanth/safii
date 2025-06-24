@@ -1,0 +1,134 @@
+// Mobile-first responsive styles for View Reports Screen
+.container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #407339, #b9d4a4);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.backButton {
+  position: absolute !important;
+  left: 10px !important;
+  top: 10px !important;
+}
+
+.backIcon {
+  color: #333333;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  // justify-content: space-between;
+  padding: 45px 45px 10px 45px;
+  // position: relative;
+  // z-index: 10;
+}
+
+.headerText {
+  font-family: "Cormorant Upright", serif;
+  font-weight: 600;
+  font-size: clamp(40px, 6vw, 60px);
+  color: #d2d0a0;
+  -webkit-text-stroke: 2px #d2d0a0;
+  margin: 0;
+  text-align: center;
+  // flex: 1;
+}
+
+.horizontalLine {
+  border: 2px solid #d2d0a0;
+  border-radius: 8px;
+  width: 90%;
+  margin-top: 10px;
+}
+
+// .headerActions {
+//   display: flex;
+//   gap: 8px;
+// }
+
+// .filterButton,
+// .viewToggle {
+//   padding: 8px !important;
+//   color: #ffffff !important;
+// }
+
+// .filterIcon,
+// .viewIcon {
+//   color: #ffffff;
+//   font-size: 24px !important;
+// }
+
+.content {
+  // flex: 1;
+  // background: #ffffff;
+  // border-radius: 20px 20px 0 0;
+  margin-top: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-family: "Geist", sans-serif;
+  font-size: 16px;
+  color: #666;
+}
+
+.buttonGroup {
+  display: flex;
+}
+
+.listViewButton {
+  width: 150px !important;
+  border: 1px solid #000000 !important;
+  color: #000000 !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  border-top-left-radius: 20px !important;
+  border-bottom-left-radius: 20px !important;
+  text-transform: capitalize !important;
+}
+
+.mapViewButton {
+  width: 150px !important;
+  border: 1px solid #000000 !important;
+  color: #000000 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  border-top-right-radius: 20px !important;
+  border-bottom-right-radius: 20px !important;
+  text-transform: capitalize !important;
+  border-left: 0 !important;
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  // .header {
+  //   padding: 24px 32px;
+  // }
+
+  .headerText {
+    font-size: 48px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  // .header {
+  //   padding: 32px 40px;
+  // }
+
+  .headerText {
+    font-size: 60px;
+  }
+}

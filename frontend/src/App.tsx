@@ -10,6 +10,7 @@ import {
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
 import SubmitReportScreen from "./screens/SubmitReportScreen/SubmitReportScreen";
+import ViewReportsScreen from "./screens/ViewReportsScreen/ViewReportsScreen";
 
 import supabase from "./lib/supabase";
 
@@ -87,6 +88,16 @@ const App: React.FC = () => {
             element={
               user ? (
                 <SubmitReportScreen user={user} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/view-reports"
+            element={
+              user ? (
+                <ViewReportsScreen user={user} />
               ) : (
                 <Navigate to="/login" replace />
               )

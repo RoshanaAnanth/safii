@@ -38,6 +38,10 @@
   transform: rotate(-90deg) !important;
 }
 
+.viewReportsText {
+  transform: rotate(-180deg) !important;
+}
+
 .headerContainer {
   position: relative;
   display: flex;
@@ -126,14 +130,19 @@
   height: 70px;
   display: flex;
   gap: 20px;
-  pointer-events: none;
+  cursor: default !important;
+
+  &:hover {
+    background-color: transparent !important;
+  }
 }
 
 .userAvatar {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid #414141;
 }
 
 .userDetails {

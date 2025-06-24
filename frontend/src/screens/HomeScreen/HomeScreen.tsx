@@ -46,6 +46,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
     navigate("/submit-report");
   };
 
+  const handleViewReports = () => {
+    navigate("/view-reports");
+  };
+
   const getUserName = () => {
     if (user.user_metadata?.full_name) {
       return user.user_metadata.full_name.split(" ")[0];
@@ -71,7 +75,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
 
   return (
     <div className={styles.container}>
-      <Button className={styles.viewReportButton}>VIEW REPORTS</Button>
+      <Button className={styles.viewReportButton} onClick={handleViewReports}>
+        <span className={styles.viewReportsText}>VIEW REPORTS</span>
+      </Button>
       <IconButton className={styles.profileIconButton} onClick={handleMenuOpen}>
         <AccountCircleIcon className={styles.profileIcon} />
       </IconButton>
@@ -107,7 +113,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
           },
         }}
       >
-        <MenuItem className={styles.userProfile} onClick={handleMenuClose}>
+        <MenuItem className={styles.userProfile}>
           <img
             src={getUserAvatar()}
             alt="Avatar"

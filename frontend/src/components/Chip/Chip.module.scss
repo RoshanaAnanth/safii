@@ -1,0 +1,58 @@
+.chipContainer {
+  font-size: 14px;
+  font-family: "Geist", sans-serif;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: fit-content;
+  height: 30px;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.critical {
+  color: #ff0000;
+  font-weight: 580;
+  padding: 0;
+}
+
+.high {
+  color: #ffb300;
+  font-weight: 580;
+  padding: 0;
+}
+
+.medium {
+  color: #4da703;
+  font-weight: 580;
+  padding: 0;
+}
+
+.low {
+  color: #009dff;
+  font-weight: 580;
+  padding: 0;
+}
+
+.category {
+  background-color: #e0e0e0;
+  border: 1px solid #bcbdb6;
+}
+
+.pending {
+  background-color: #f7baba;
+  border: 1px solid #f7baba;
+  color: #c13030;
+}
+
+.resolved {
+  background-color: #afd596;
+  border: 1px solid #afd596;
+  color: #537d5d;
+}
+
+.round {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+}

@@ -1,0 +1,255 @@
+// Mobile-first responsive styles for Map View
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.mapContainer {
+  flex: 1;
+  position: relative;
+  min-height: 400px;
+  height: 80vh;
+}
+
+.map {
+  width: 100%;
+  height: 80vh;
+  z-index: 1;
+}
+
+// Custom marker styles
+:global(.custom-div-icon) {
+  background: transparent !important;
+  border: none !important;
+}
+
+.customMarker {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.markerIcon {
+  width: 32px;
+  height: 32px;
+  background: #ffffff;
+  border: 3px solid #407339;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #407339;
+  }
+}
+
+// Popup styles
+.popup {
+  font-family: "Geist", sans-serif;
+}
+
+.popupContent {
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.popupTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.popupMeta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.popupCategory {
+  background: #f0f0f0;
+  color: #666;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.popupStatus {
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.popupDescription {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+}
+
+.popupDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.popupDetail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popupLabel {
+  font-size: 12px;
+  color: #999;
+  font-weight: 500;
+}
+
+.popupPriority {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.popupDate,
+.popupReporter {
+  font-size: 12px;
+  color: #666;
+}
+
+.popupLocation {
+  border-top: 1px solid #f0f0f0;
+  padding-top: 8px;
+  margin-top: 8px;
+}
+
+.popupAddress {
+  font-size: 11px;
+  color: #666;
+  line-height: 1.3;
+  display: block;
+  margin-top: 2px;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-family: "Geist", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.emptyDescription {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  max-width: 300px;
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .mapStats {
+    padding: 24px 32px;
+  }
+
+  .popupContent {
+    min-width: 280px;
+    max-width: 350px;
+  }
+
+  .popupTitle {
+    font-size: 17px;
+  }
+
+  .popupDescription {
+    font-size: 14px;
+  }
+
+  .popupLabel,
+  .popupPriority,
+  .popupDate,
+  .popupReporter {
+    font-size: 13px;
+  }
+
+  .popupAddress {
+    font-size: 12px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .mapStats {
+    padding: 32px 40px;
+  }
+
+  .mapContainer {
+    min-height: 500px;
+  }
+
+  .popupContent {
+    min-width: 300px;
+    max-width: 400px;
+  }
+
+  .popupTitle {
+    font-size: 18px;
+  }
+
+  .popupDescription {
+    font-size: 15px;
+  }
+
+  .popupLabel,
+  .popupPriority,
+  .popupDate,
+  .popupReporter {
+    font-size: 14px;
+  }
+
+  .popupAddress {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,60 @@
+// App-level styles and page transition animations
+.app {
+  height: 100%;
+  overflow: hidden;
+}
+
+.app-container {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+
+// Page transition animations
+.app-container.fadeOut {
+  animation: slideUp 0.3s ease-in-out forwards;
+}
+
+.app-container.fadeIn {
+  animation: slideDown 0.3s ease-in-out forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Ensure smooth transitions between screens
+.app-container > * {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+// Override any conflicting styles from other components during transitions
+.app-container.fadeOut *,
+.app-container.fadeIn * {
+  pointer-events: none;
+}
+
+.app-container.fadeIn * {
+  pointer-events: auto;
+}

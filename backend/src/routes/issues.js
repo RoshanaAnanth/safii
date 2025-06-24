@@ -37,19 +37,12 @@ const issueValidation = [
     ])
     .withMessage("Invalid category"),
   body("priority")
-    .isIn(["low", "medium", "high", "urgent"])
+    .isIn(["low", "medium", "high", "critical"])
     .withMessage("Invalid priority"),
-  body("location").isObject().withMessage("Location must be an object"),
-  body("location.lat")
-    .isFloat({ min: -90, max: 90 })
-    .withMessage("Invalid latitude"),
-  body("location.lng")
-    .isFloat({ min: -180, max: 180 })
-    .withMessage("Invalid longitude"),
-  body("location.address")
+  body("location")
     .trim()
-    .isLength({ min: 5, max: 500 })
-    .withMessage("Address must be between 5 and 500 characters"),
+    .isLength({ min: 19, max: 50 })
+    .withMessage("Invalid location"),
 ];
 
 // Submit new issue endpoint
@@ -68,14 +61,8 @@ router.post(
         });
       }
 
-      const {
-        title,
-        description,
-        category,
-        priority,
-        location,
-        images = [],
-      } = req.body;
+      const { title, description, category, priority, location, imageUrl } =
+        req.body;
 
       // Create new issue
       const newIssue = {
@@ -86,12 +73,14 @@ router.post(
         status: "pending",
         priority,
         location,
-        images,
+        imageUrl,
         reporter_id: 1, // Mock user ID - replace with actual user from JWT token
         admin_notes: null,
         resolved_at: null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        reporter_name: "Test User", // Mock reporter name
+        reporter_email: "test@example.com", // Mock reporter email
       };
 
       // Store in mock database
@@ -106,6 +95,7 @@ router.post(
           category: newIssue.category,
           status: newIssue.status,
           priority: newIssue.priority,
+          imageUrl: newIssue.imageUrl,
           created_at: newIssue.created_at,
         },
       });

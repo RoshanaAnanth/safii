@@ -2,22 +2,19 @@ import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 import { User } from "@supabase/supabase-js";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiRequest } from "../../lib/utils";
+import { apiRequest, uploadImage } from "../../lib/utils";
 import styles from "./SubmitReportScreen.module.scss";
 
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import LocationPinIcon from "@mui/icons-material/LocationPin";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Chip from "../../components/Chip/Chip";
 
 interface SubmitReportScreenProps {
   user: User;
-}
-
-interface LocationData {
-  lat: number;
-  lng: number;
-  address: string;
 }
 
 interface FormData {
@@ -31,22 +28,24 @@ interface FormData {
     | "street_light"
     | "broken_sign"
     | "other";
-  priority: "low" | "medium" | "high" | "urgent";
-  location: LocationData;
-  images: string[];
+  priority: "low" | "medium" | "high" | "critical";
+  location: string;
+  imageUrl: string;
 }
 
 const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<File>();
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
     category: "pothole",
     priority: "medium",
-    location: { lat: 0, lng: 0, address: "" },
-    images: [],
+    location: "",
+    imageUrl: "",
   });
 
   // Get user's current location
@@ -66,12 +65,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
         const { latitude, longitude } = position.coords;
         setFormData((prev) => ({
           ...prev,
-          location: {
-            ...prev.location,
-            lat: latitude,
-            lng: longitude,
-            address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-          },
+          location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
         }));
         setLocationLoading(false);
       },
@@ -87,6 +81,26 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
     );
   };
 
+  const handleImageUpload = async (uploadedImage: File) => {
+    try {
+      const imageUrl = await uploadImage(
+        uploadedImage,
+        user.id,
+        formData.title
+      );
+      console.log("Uploaded image URL:", imageUrl);
+
+      setUploadedImage(uploadedImage);
+      setFormData((prev) => ({
+        ...prev,
+        imageUrl: imageUrl ?? "",
+      }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Failed to upload image. Please try again.");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -96,13 +110,12 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
       return;
     }
 
-    if (!formData.location.address) {
+    if (!formData.location) {
       alert("Please allow location access or enter an address manually");
       return;
     }
 
     setLoading(true);
-
     try {
       const response = await apiRequest("/api/issues/submit", {
         method: "POST",
@@ -128,25 +141,18 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
   const handleInputChange = (
     e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      HTMLInputElement | HTMLTextAreaElement | SelectChangeEvent
     >
   ) => {
-    const { name, value } = e.target;
+    const target = e.target as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | HTMLSelectElement;
+    const { name, value } = target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      location: {
-        ...prev.location,
-        [name]:
-          name === "lat" || name === "lng" ? parseFloat(value) || 0 : value,
-      },
     }));
   };
 
@@ -161,7 +167,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
         </IconButton>
         <h1 className={styles.headerText}>Safii</h1>
         <hr className={styles.horizontalLine} />
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form className={styles.form}>
           <div className={styles.formGroup}>
             <label htmlFor="title" className={styles.label}>
               Title <span className={styles.asterisk}>*</span>
@@ -184,7 +190,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
               <label htmlFor="category" className={styles.label}>
                 Category <span className={styles.asterisk}>*</span>
               </label>
-              <select
+              <Select
                 id="category"
                 name="category"
                 value={formData.category}
@@ -192,22 +198,39 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                 required
                 className={styles.select}
                 disabled={loading}
+                MenuProps={{
+                  className: styles.dropdownMenu,
+                }}
               >
-                <option value="pothole">Pothole</option>
-                <option value="drainage">Drainage</option>
-                <option value="garbage">Garbage</option>
-                <option value="landslide">Landslide</option>
-                <option value="street_light">Street Light</option>
-                <option value="broken_sign">Broken Sign</option>
-                <option value="other">Other</option>
-              </select>
+                <MenuItem value="pothole" className={styles.menuItem}>
+                  <Chip type="category" label="Pothole" icon="🕳️" />
+                </MenuItem>
+                <MenuItem value="drainage" className={styles.menuItem}>
+                  <Chip type="category" label="Drainage" icon="🌊" />
+                </MenuItem>
+                <MenuItem value="garbage" className={styles.menuItem}>
+                  <Chip type="category" label="Garbage" icon="🗑️" />
+                </MenuItem>
+                <MenuItem value="landslide" className={styles.menuItem}>
+                  <Chip type="category" label="Landslide" icon="⛰️" />
+                </MenuItem>
+                <MenuItem value="street_light" className={styles.menuItem}>
+                  <Chip type="category" label="Street Light" icon="💡" />
+                </MenuItem>
+                <MenuItem value="broken_sign" className={styles.menuItem}>
+                  <Chip type="category" label="Broken Sign" icon="🚧" />
+                </MenuItem>
+                <MenuItem value="other" className={styles.menuItem}>
+                  <Chip type="category" label="Other" icon="❓" />
+                </MenuItem>
+              </Select>
             </div>
 
             <div className={styles.formGroup}>
               <label htmlFor="priority" className={styles.label}>
                 Priority <span className={styles.asterisk}>*</span>
               </label>
-              <select
+              <Select
                 id="priority"
                 name="priority"
                 value={formData.priority}
@@ -215,12 +238,23 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                 required
                 className={styles.select}
                 disabled={loading}
+                MenuProps={{
+                  className: styles.dropdownMenu,
+                }}
               >
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-                <option value="urgent">Urgent</option>
-              </select>
+                <MenuItem value="critical" className={styles.menuItem}>
+                  <Chip type="priority" priority="critical" label="Critical" />
+                </MenuItem>
+                <MenuItem value="high" className={styles.menuItem}>
+                  <Chip type="priority" priority="high" label="High" />
+                </MenuItem>
+                <MenuItem value="medium" className={styles.menuItem}>
+                  <Chip type="priority" priority="medium" label="Medium" />
+                </MenuItem>
+                <MenuItem value="low" className={styles.menuItem}>
+                  <Chip type="priority" priority="low" label="Low" />
+                </MenuItem>
+              </Select>
             </div>
           </div>
 
@@ -229,10 +263,11 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
               Location <span className={styles.asterisk}>*</span>
             </label>
             <Input
-              id="address"
+              id="location"
+              name="location"
               type="text"
-              value={formData.location.address}
-              onChange={handleLocationChange}
+              value={formData.location || ""}
+              onChange={handleInputChange}
               required
               className={styles.input}
               startAdornment={
@@ -270,13 +305,39 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           </div>
 
           <div className={styles.imageSection}>
-            <button className={styles.uploadButton}>Upload Image</button>
+            {uploadedImage ? (
+              <img
+                src={URL.createObjectURL(uploadedImage)}
+                alt="Preview"
+                className={styles.imagePreview}
+              />
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className={styles.uploadButton}
+                  onClick={() => inputRef.current?.click()}
+                >
+                  Upload Image
+                </button>
+                <input
+                  type="file"
+                  name="image"
+                  ref={inputRef}
+                  className={styles.fileInput}
+                  onChange={(event) => {
+                    handleImageUpload(event.target.files[0]);
+                  }}
+                />
+              </>
+            )}
           </div>
 
           <button
             type="submit"
             disabled={loading || locationLoading}
             className={styles.submitButton}
+            onClick={handleSubmit}
           >
             {loading ? "Submitting..." : "Submit Report"}
           </button>

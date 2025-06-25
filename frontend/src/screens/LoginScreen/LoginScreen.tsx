@@ -14,31 +14,51 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      alert("Login failed: " + error.message);
-      return;
-    } else {
+      if (error) {
+        alert("Login failed: " + error.message);
+        return;
+      }
+
+      if (data.user) {
+        // Check if user exists in users table, if not create them
+        const { data: adminUser, error: fetchError } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", data.user.email)
+          .eq("is_admin", true)
+          .single();
+
+        if (fetchError || !adminUser) {
+          alert("You are not authorized to login as admin.");
+          await supabase.auth.signOut();
+          return;
+        }
+
+        setEmail("");
+        setPassword("");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An unexpected error occurred during login");
+    } finally {
       setIsLoading(false);
-      setEmail("");
-      setPassword("");
     }
   };
 
   const handleGoogleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "http://localhost:5173",
-      },
-    });
-
-    if (error) {
-      console.error("Google login error:", error.message);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+    } catch (error) {
+      console.error("Google login error:", error);
+      alert("An unexpected error occurred during Google login");
     }
   };
 

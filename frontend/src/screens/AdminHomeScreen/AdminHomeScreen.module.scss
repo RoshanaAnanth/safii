@@ -1,0 +1,400 @@
+// Mobile-first responsive styles for Admin Home Screen
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a365d 0%, #2d5a87 50%, #4a90b8 100%);
+  padding: 20px;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 0 4px;
+}
+
+.logo {
+  font-family: "Cormorant Upright", serif;
+  font-weight: 600;
+  font-size: clamp(32px, 6vw, 48px);
+  color: #ffffff;
+  -webkit-text-stroke: 1px #ffffff;
+}
+
+.profileSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profileButton {
+  padding: 0 !important;
+  color: #ffffff !important;
+}
+
+.profileIcon {
+  width: 32px !important;
+  height: 32px !important;
+  color: #ffffff;
+}
+
+.welcomeText {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.statsCard {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.cardTitle {
+  font-family: "Geist", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a365d;
+  margin: 0;
+}
+
+.cardIcon {
+  width: 32px !important;
+  height: 32px !important;
+  color: #4a90b8;
+}
+
+.statNumber {
+  font-family: "Geist", sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a365d;
+  margin: 0 0 8px 0;
+}
+
+.statLabel {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+.recentIssues {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sectionTitle {
+  font-family: "Geist", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a365d;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sectionIcon {
+  width: 24px !important;
+  height: 24px !important;
+  color: #4a90b8;
+}
+
+.issuesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.issueItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(74, 144, 184, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(74, 144, 184, 0.1);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(74, 144, 184, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+.issueIcon {
+  width: 24px;
+  height: 24px;
+  background: #4a90b8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.issueDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.issueTitle {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a365d;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.issueLocation {
+  font-family: "Geist", sans-serif;
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.issueStatus {
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-family: "Geist", sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.statusPending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.statusInProgress {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.statusResolved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.statusRejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.quickActions {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 20px;
+}
+
+.actionsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.actionButton {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px !important;
+  background: #4a90b8 !important;
+  color: #ffffff !important;
+  border-radius: 12px !important;
+  font-family: "Geist", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  transition: all 0.2s ease !important;
+  justify-content: flex-start !important;
+
+  &:hover {
+    background: #3a7ca8 !important;
+    transform: translateY(-1px);
+  }
+}
+
+.actionIcon {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.profileMenu {
+  top: 10px !important;
+}
+
+.menuPaper {
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.userProfile {
+  width: auto;
+  height: 70px;
+  display: flex;
+  gap: 20px;
+  cursor: default !important;
+
+  &:hover {
+    background-color: transparent !important;
+  }
+}
+
+.userAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #414141;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.email {
+  font-family: "Geist", Helvetica, sans-serif;
+  font-size: 14px !important;
+  color: #909090 !important;
+}
+
+.signOutOption {
+  border-radius: 4px !important;
+  margin: 0 10px !important;
+
+  &:hover {
+    background-color: rgba(74, 144, 184, 0.1) !important;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-family: "Geist", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a365d;
+  margin: 0 0 8px 0;
+}
+
+.emptyDescription {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .container {
+    padding: 32px;
+  }
+
+  .dashboardGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .actionsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .issueItem {
+    padding: 20px;
+  }
+
+  .issueTitle {
+    font-size: 15px;
+  }
+
+  .issueLocation {
+    font-size: 13px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .container {
+    padding: 40px;
+  }
+
+  .dashboardGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+
+  .actionsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .logo {
+    font-size: 48px;
+  }
+
+  .welcomeText {
+    font-size: 16px;
+  }
+
+  .profileIcon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+}
+
+// Large desktop styles
+@media (min-width: 1440px) {
+  .container {
+    padding: 48px;
+  }
+}

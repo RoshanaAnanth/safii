@@ -40,6 +40,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+    // navigate("/login");
   };
 
   const handleReportIssue = () => {

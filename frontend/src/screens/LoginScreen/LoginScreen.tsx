@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import styles from "./LoginScreen.module.scss";
 
 import supabase from "../../lib/supabase";
+
+import loginScreenBackground from "../../../assets/LoginScreenBackground.mp4";
+
+import styles from "./LoginScreen.module.scss";
 
 interface LoginScreenProps {}
 
@@ -64,6 +67,9 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
 
   return (
     <div className={styles.container}>
+      <video autoPlay muted loop playsInline className={styles.video}>
+        <source src={loginScreenBackground} type="video/mp4" />
+      </video>
       <div className={styles.card}>
         <div className={styles.cardContent}>
           <div className={styles.contentWrapper}>
@@ -72,9 +78,12 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
 
             <form onSubmit={handleLogin}>
               <div className={styles.inputWrapper}>
+                <label htmlFor="email" className={styles.label}>
+                  EMAIL ADDRESS
+                </label>
                 <input
+                  id="email"
                   type="email"
-                  placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={styles.input}
@@ -86,9 +95,13 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
               <div
                 className={`${styles.inputWrapper} ${styles.passwordWrapper}`}
               >
+                <label htmlFor="password" className={styles.label}>
+                  PASSWORD
+                </label>
                 <input
+                  id="password"
                   type="password"
-                  placeholder="Enter your password"
+                  // placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={styles.input}

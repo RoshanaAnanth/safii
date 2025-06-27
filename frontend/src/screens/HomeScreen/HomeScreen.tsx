@@ -1,15 +1,19 @@
 import { User } from "@supabase/supabase-js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../../lib/supabase";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
-
+import MenuIcon from "@mui/icons-material/Menu";
 import authority from "../../../assets/Authority.svg";
-import background from "../../../assets/Background.jpg";
+// import background from "../../../assets/HomeScreenBackground.png";
+import grid1 from "../../../assets/HomeScreenGrid1.png";
+import grid2 from "../../../assets/HomeScreenGrid2.png";
+import grid3 from "../../../assets/HomeScreenGrid3.png";
+import grid4 from "../../../assets/HomeScreenGrid4.png";
+import reportIssueArt from "../../../assets/ReportIssueArt.png";
+import viewReportsArt from "../../../assets/ViewReportsArt.png";
 
-import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -28,6 +32,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  const [positions, setPositions] = useState([0, 1, 2, 3]);
+  const [shrinking, setShrinking] = useState(false);
+  const images = [grid1, grid2, grid4, grid3];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShrinking(true); // Start shrinking
+
+      setTimeout(() => {
+        setPositions((prev) => {
+          const newPos = [...prev];
+          newPos.push(newPos.shift()!); // Rotate while shrunk
+          return newPos;
+        });
+        // Wait for the transition to complete before growing back
+        setTimeout(() => {
+          setShrinking(false); // Grow back after moving
+        }, 1000); // This should match your CSS transition duration
+      }, 1000); // Shrink duration before moving (optional, can be 0)
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
     setIsMenuOpen(true);
@@ -39,8 +67,23 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    // navigate("/login");
+    try {
+      console.log("Signing out");
+      const { error } = await supabase.auth.signOut();
+      console.log("Sign out response:", error);
+      if (error) {
+        console.error("Error signing out:", error);
+        alert("Error signing out. Please try again.");
+      } else {
+        // Close menu first
+        handleMenuClose();
+        // Navigation will be handled automatically by the auth state change in App.tsx
+        console.log("Successfully signed out");
+      }
+    } catch (error) {
+      console.error("Unexpected error during sign out:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
   };
 
   const handleReportIssue = () => {
@@ -76,32 +119,75 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
 
   return (
     <div className={styles.container}>
-      <Button className={styles.viewReportButton} onClick={handleViewReports}>
-        <span className={styles.viewReportsText}>VIEW REPORTS</span>
-      </Button>
-      <IconButton className={styles.profileIconButton} onClick={handleMenuOpen}>
-        <AccountCircleIcon className={styles.profileIcon} />
+      <IconButton className={styles.menuIconButton} onClick={handleMenuOpen}>
+        <MenuIcon className={styles.menuIcon} />
       </IconButton>
-      <div className={styles.headerContainer}>
-        <img src={background} alt="Background" className={styles.background} />
-        <div className={styles.headerText}>
+      <div className={styles.actionContainer}>
+        {/* <img src={background} alt="Background" className={styles.background} /> */}
+        <div className={styles.headerSection}>
           <h1 className={styles.header}>Safii</h1>
           <span className={styles.tagline}>
-            Let's make our streets cleaner, together.
+            WHEN CITIZENS CARE, CITIES CHANGE.
           </span>
         </div>
+        <div className={styles.ctaContainer}>
+          <div className={styles.ctaBubble}>
+            <img
+              src={reportIssueArt}
+              alt="Report an issue"
+              className={styles.reportIssueArt}
+            />
+            <div className={styles.ctaDataSection} onClick={handleReportIssue}>
+              <h1 className={styles.ctaTitle}>REPORT AN ISSUE</h1>
+              <span className={styles.ctaDescription}>
+                Report garbage dumps, potholes and pollution in your
+                neighborhood in just a few taps.
+              </span>
+              <div className={styles.arrow}></div>
+            </div>
+          </div>
+          <div className={styles.ctaBubble}>
+            <img
+              src={viewReportsArt}
+              alt="View Reports"
+              className={styles.viewReportsArt}
+            />
+            <div className={styles.ctaDataSection} onClick={handleViewReports}>
+              <h1 className={styles.ctaTitle}>VIEW REPORTS</h1>
+              <span className={styles.ctaDescription}>
+                View and check the status of the issues reported in your
+                neighborhood.
+              </span>
+              <div className={styles.arrow}></div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className={styles.contentContainer}>
-        <span className={styles.description}>
-          Report garbage dumps, potholes and pollution in your neighbourhood in
-          just a few taps.
-        </span>
-        <span className={styles.contentTagline}>
-          Be the change your city needs
-        </span>
-        <button onClick={handleReportIssue} className={styles.reportButton}>
-          Report an issue
-        </button>
+      {/* Desktop grid animation (hidden on mobile) */}
+      <div className={styles.imageContainerDesktop}>
+        {images.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            className={`${styles.gridImage} ${styles[`pos${positions[i]}`]} ${
+              shrinking ? styles.shrinking : ""
+            }`}
+            alt={`Grid${i + 1}`}
+          />
+        ))}
+      </div>
+      {/* Mobile carousel animation (hidden on desktop) */}
+      <div className={styles.imageContainerMobile}>
+        <div className={styles.carouselTrack}>
+          {[...images, ...images].map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              className={styles.carouselImage}
+              alt={`Grid${(i % images.length) + 1}`}
+            />
+          ))}
+        </div>
       </div>
       <Menu
         anchorEl={anchorEl}

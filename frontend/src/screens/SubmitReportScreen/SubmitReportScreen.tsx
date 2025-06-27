@@ -4,7 +4,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { User } from "@supabase/supabase-js";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiRequest, uploadImage } from "../../lib/utils";
+import supabase from "../../lib/supabase";
+import { uploadImage } from "../../lib/utils";
 import styles from "./SubmitReportScreen.module.scss";
 
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
@@ -12,6 +13,11 @@ import LocationPinIcon from "@mui/icons-material/LocationPin";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "../../components/Chip/Chip";
+
+import submitReportIllustration1 from "../../../assets/SubmitReportIllustration1.png";
+import submitReportIllustration2 from "../../../assets/SubmitReportIllustration2.png";
+import submitReportIllustration3 from "../../../assets/SubmitReportIllustration3.png";
+import submitReportIllustration4 from "../../../assets/SubmitReportIllustration4.png";
 
 interface SubmitReportScreenProps {
   user: User;
@@ -39,6 +45,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<File>();
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -48,10 +55,30 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
     imageUrl: "",
   });
 
-  // Get user's current location
+  // Get user profile and current location
   useEffect(() => {
     getCurrentLocation();
+    fetchUserProfile();
   }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data: profile, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching user profile:", error);
+        return;
+      }
+
+      setUserProfile(profile);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
 
   const getCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -117,12 +144,53 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
     setLoading(true);
     try {
-      const response = await apiRequest("/api/issues/submit", {
-        method: "POST",
-        body: JSON.stringify(formData),
-      });
+      // Parse location data
+      let locationData;
+      if (
+        formData.location.includes(",") &&
+        !isNaN(parseFloat(formData.location.split(",")[0]))
+      ) {
+        // It's coordinates (lat, lng)
+        const [lat, lng] = formData.location
+          .split(",")
+          .map((coord) => parseFloat(coord.trim()));
+        locationData = {
+          type: "coordinates",
+          lat: lat,
+          lng: lng,
+          address: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+        };
+      } else {
+        // It's an address string
+        locationData = {
+          type: "address",
+          address: formData.location,
+        };
+      }
 
-      console.log("Issue submitted successfully:", response);
+      // Submit directly to Supabase
+      const { data: newIssue, error } = await supabase
+        .from("issues")
+        .insert({
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          priority: formData.priority,
+          location: locationData,
+          imageUrl: formData.imageUrl || null,
+          reporter_id: user.id,
+          status: "pending",
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error submitting issue:", error);
+        alert("Failed to submit report. Please try again.");
+        return;
+      }
+
+      console.log("Issue submitted successfully:", newIssue);
 
       // Show success message
       alert(
@@ -158,19 +226,48 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.content}>
-        <IconButton
-          onClick={() => navigate("/home")}
-          className={styles.backButton}
-        >
-          <ArrowBackIosRoundedIcon className={styles.backIcon} />
-        </IconButton>
+      {/* <div className={styles.content}> */}
+      <IconButton
+        onClick={() => navigate("/home")}
+        className={styles.backButton}
+      >
+        <ArrowBackIosRoundedIcon className={styles.backIcon} />
+      </IconButton>
+      <div className={styles.imageContainer}>
+        <div className={styles.illustrationGrid}>
+          <img
+            src={submitReportIllustration1}
+            alt="Illustration 1"
+            className={styles.illustration}
+          />
+          <div />
+          <div />
+          <img
+            src={submitReportIllustration2}
+            alt="Illustration 2"
+            className={styles.illustration}
+          />
+          <img
+            src={submitReportIllustration3}
+            alt="Illustration 3"
+            className={styles.illustration}
+          />
+          <div />
+          <div />
+          <img
+            src={submitReportIllustration4}
+            alt="Illustration 4"
+            className={styles.illustration}
+          />
+        </div>
+      </div>
+      <div className={styles.formContainer}>
         <h1 className={styles.headerText}>Safii</h1>
-        <hr className={styles.horizontalLine} />
         <form className={styles.form}>
+          <h3 className={styles.formTitle}>REPORT AN ISSUE</h3>
           <div className={styles.formGroup}>
             <label htmlFor="title" className={styles.label}>
-              Title <span className={styles.asterisk}>*</span>
+              TITLE <span className={styles.asterisk}>*</span>
             </label>
             <input
               type="text"
@@ -188,7 +285,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label htmlFor="category" className={styles.label}>
-                Category <span className={styles.asterisk}>*</span>
+                CATEGORY <span className={styles.asterisk}>*</span>
               </label>
               <Select
                 id="category"
@@ -228,7 +325,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
             <div className={styles.formGroup}>
               <label htmlFor="priority" className={styles.label}>
-                Priority <span className={styles.asterisk}>*</span>
+                PRIORITY <span className={styles.asterisk}>*</span>
               </label>
               <Select
                 id="priority"
@@ -260,7 +357,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
           <div className={styles.formGroup}>
             <label htmlFor="address" className={styles.label}>
-              Location <span className={styles.asterisk}>*</span>
+              LOCATION <span className={styles.asterisk}>*</span>
             </label>
             <Input
               id="location"
@@ -289,7 +386,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
           <div className={styles.formGroup}>
             <label htmlFor="description" className={styles.label}>
-              Description
+              DESCRIPTION
             </label>
             <textarea
               id="description"
@@ -318,7 +415,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                   className={styles.uploadButton}
                   onClick={() => inputRef.current?.click()}
                 >
-                  Upload Image
+                  UPLOAD AN IMAGE
                 </button>
                 <input
                   type="file"
@@ -343,6 +440,8 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           </button>
         </form>
       </div>
+      {/* <hr className={styles.horizontalLine} /> */}
+      {/* </div> */}
     </div>
   );
 };

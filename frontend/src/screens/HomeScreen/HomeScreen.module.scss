@@ -6,48 +6,28 @@
   position: relative;
 }
 
-.profileIconButton {
+.menuIconButton {
   position: absolute !important;
   z-index: 2 !important;
-  top: 20px !important;
-  right: 20px !important;
+  top: 14px !important;
+  left: 14px !important;
   padding: 0 !important;
 }
 
-.profileIcon {
-  width: 30px !important;
-  height: 30px !important;
-  color: #1e4517;
+.menuIcon {
+  width: 24px !important;
+  height: 24px !important;
+  color: #65968e;
 }
 
-.viewReportButton {
-  position: absolute !important;
-  z-index: 2 !important;
-  top: 160px !important;
-  right: -65px !important;
-  height: 40px !important;
-  width: 170px !important;
-  font-family: "Gantari", Helvetica, sans-serif !important;
-  font-weight: 600 !important;
-  letter-spacing: 2px !important;
-  color: #407339 !important;
-  border: 2px solid #407339 !important;
-  border-bottom: none !important;
-  border-radius: 20px 20px 0 0 !important;
-  background-color: hsla(0, 0%, 85%, 0.611) !important;
-  transform: rotate(-90deg) !important;
-}
-
-.viewReportsText {
-  transform: rotate(-180deg) !important;
-}
-
-.headerContainer {
+.actionContainer {
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  gap: 20px;
+  background-color: #f1f8e8;
   height: 70vh;
+  padding: 50px 30px 20px 30px;
 }
 
 .background {
@@ -55,40 +35,196 @@
   height: inherit;
   object-fit: cover;
   width: 100%;
-  opacity: 80%;
 }
 
-.headerText {
-  padding: 20px;
-  z-index: 2;
+.headerSection {
+  // padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  // z-index: 2;
 }
 
 .header {
   font-family: "Cormorant Upright", Helvetica, serif;
   font-weight: 600;
-  font-size: clamp(100px, 10vw, 150px);
+  font-size: clamp(30px, 10vw, 70px);
   letter-spacing: 0;
   line-height: 1.2;
-  color: #ffffff;
-  -webkit-text-stroke: 2px #ffffff;
-  padding-bottom: 8px;
+  color: #65968e;
+  -webkit-text-stroke: 2px #65968e;
+  // padding-bottom: 8px;
 }
 
 .tagline {
-  font-family: "Geist", Helvetica, sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  color: #ffffff;
+  font-family: "Gantari", Helvetica, sans-serif;
+  letter-spacing: 2px;
+  font-weight: 550;
+  font-size: 14px;
+  color: #81b3aa;
 }
 
-.contentContainer {
+.ctaContainer {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  background-color: #b9d4a4;
-  height: 30vh;
-  padding: 20px;
   justify-content: center;
+  gap: 30px;
+}
+
+.ctaBubble {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  width: inherit;
+  height: 180px;
+  border-radius: 16px;
+  padding: 10px;
+  background-color: #8ed2c7;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: #96ddd1;
+    transform: scale(1.01);
+  }
+}
+
+.ctaDataSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  width: 60%;
+}
+
+.ctaTitle {
+  color: #4e8d9b;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 5vw, 30px);
+}
+
+.ctaDescription {
+  font-family: "Poppins", sans-serif;
+  color: #f1fef8;
+  font-weight: 400;
+  font-size: clamp(12px, 3vw, 20px);
+}
+
+.arrow {
+  width: 50px;
+  height: 2px;
+  background-color: #f1f8e8; /* Light green like your image */
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.arrow::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  top: -5px;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 8px solid #f1f8e8;
+}
+
+.reportIssueArt {
+  height: inherit;
+  width: 40%;
+  object-fit: scale-down;
+}
+
+.viewReportsArt {
+  height: inherit;
+  width: 39%;
+  object-fit: scale-down;
+}
+
+// Mobile carousel (hidden on desktop)
+.imageContainerMobile {
+  display: none;
+  @media (max-width: 768px) {
+    display: block;
+    width: 100vw;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: #f1f8e8;
+    z-index: 10;
+    height: 30vh; // adjust as needed
+  }
+}
+
+.carouselTrack {
+  display: flex;
+  width: calc(8 * 60vw); // 2x images (8 images if 4 originals)
+  height: 90%;
+  animation: marquee 16s linear infinite;
+}
+
+.carouselImage {
+  width: 60vw;
+  // height: 200px;
+  // height: 120px; // adjust as needed
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+// .imageContainer {
+//   display: flex;
+//   overflow-y: hidden;
+//   height: 30vh;
+// }
+
+// .gridImage {
+//   object-fit: fill;
+//   height: 100%;
+//   transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+// }
+
+// Desktop grid (hidden on mobile)
+.imageContainerDesktop {
+  height: 100vh;
+  width: 45vw;
+  position: relative;
+  background-color: #f1f8e8;
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.gridImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shrinking {
+  transform: scale(0.85) !important;
+}
+
+.pos0 {
+  top: 0;
+  left: 0;
+}
+.pos1 {
+  top: 0;
+  left: 50%;
+}
+.pos2 {
+  top: 50%;
+  left: 50%;
+}
+.pos3 {
+  top: 50%;
+  left: 0;
 }
 
 .description {
@@ -167,15 +303,23 @@
 
 // Tablet styles
 @media (min-width: 768px) {
+  .tagline {
+    font-size: 16px;
+  }
+
+  .ctaBubble {
+    height: 220px;
+  }
 }
 
 // Desktop styles
-@media (min-width: 1024px) {
+@media (min-width: 1200px) {
   .container {
     display: flex;
     flex-direction: row;
     height: 100vh;
     width: 100vw;
+    // overflow-y: hidden;
   }
 
   .profileIcon {
@@ -183,10 +327,10 @@
     height: 36px !important;
   }
 
-  .headerContainer {
-    justify-content: center;
-    align-items: center;
-    width: 70vw;
+  .actionContainer {
+    // justify-content: center;
+    // align-items: center;
+    width: 55vw;
     height: 100%;
   }
 
@@ -195,14 +339,38 @@
     width: inherit;
   }
 
-  .contentContainer {
-    gap: 40px;
+  .ctaBubble {
+    height: 250px;
+  }
+
+  .imageContainer {
     height: 100vh;
-    width: 30vw;
-    padding: 40px;
+    width: 45vw;
+    position: relative;
+    // display: grid;
+    // grid-template-columns: 1fr 1fr; /* 2 columns */
+    // grid-template-rows: 1fr 1fr; /* 2 rows */
+    background-color: #f1f8e8;
+  }
+
+  .gridImage {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    // object-fit: cover;
+    transition: all 1s ease-in-out;
   }
 }
 
 // Large desktop styles
 @media (min-width: 1440px) {
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-240vw); // 4 images * 100vw
+  }
 }

@@ -1,8 +1,5 @@
 // Mobile-first responsive styles
 .container {
-  background-image: url("/assets/FadedOutBackground.png");
-  background-size: cover;
-  background-position: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,15 +7,24 @@
   width: 100%;
   min-height: 100vh;
   padding: 16px;
+  position: relative;
+}
+
+.video {
+  height: 100vh;
+  width: 100vw;
+  object-fit: none;
+  position: absolute;
 }
 
 .card {
   width: 100%;
   max-width: 355px;
   min-height: 448px;
-  background-color: #e7e48b;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(15px);
   border-radius: 20px;
-  border: 1px solid #e7e48b;
+  // border: 1px solid #e7e48b;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
 }
@@ -37,11 +43,11 @@
 .title {
   font-family: "Cormorant Upright", Helvetica, serif;
   font-weight: 600;
-  color: #407339;
+  color: #65968e;
   font-size: clamp(50px, 8vw, 60px);
   letter-spacing: 0;
   line-height: 1.2;
-  -webkit-text-stroke: 2px #407339;
+  -webkit-text-stroke: 2px #65968e;
   margin: 0;
   text-align: center;
 }
@@ -50,7 +56,7 @@
   margin-top: 16px;
   font-family: "Gantari", Helvetica, sans-serif;
   font-weight: 400;
-  color: #407339;
+  color: #65968e;
   font-size: clamp(12px, 3vw, 16px);
   letter-spacing: clamp(3px, 1.5vw, 6.4px);
   line-height: 1.2;
@@ -60,18 +66,29 @@
 .inputWrapper {
   margin-top: 24px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   max-width: 297px;
 
   &.passwordWrapper {
-    margin-top: 20px;
+    margin-top: 10px;
   }
 }
 
+.label {
+  font-family: "Poppins", sans-serif;
+  color: #55ad9b;
+  font-size: 12px;
+  font-weight: 550;
+  margin-left: 12px;
+}
+
 .input {
-  height: 54px;
-  background-color: #f3f0f0;
-  border-radius: 10px;
-  font-family: "Geist", Helvetica, sans-serif;
+  height: 45px;
+  background-color: #f1f8e8;
+  border-radius: 24px;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   color: #6a6a6a;
   font-size: 16px;
@@ -86,8 +103,8 @@
   }
 
   &:focus {
-    background-color: #f3f0f0;
-    box-shadow: 0 0 0 2px rgba(64, 115, 57, 0.2);
+    background-color: #f2f7ed;
+    box-shadow: 0 0 0 2px rgba(57, 115, 98, 0.2);
   }
 }
 
@@ -97,28 +114,29 @@
 }
 
 .loginButton {
-  margin-top: 24px;
+  margin-top: 30px;
   width: 100%;
   max-width: 192px;
   height: 44px;
-  background-color: #407339;
-  border-radius: 8px;
-  font-family: "Geist", Helvetica, sans-serif;
-  font-weight: 400;
+  background-color: #65968e;
+  border-radius: 24px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
   color: #fde8e7;
-  font-size: 16px;
+  font-size: 14px;
   border: none;
   cursor: pointer;
+  text-transform: uppercase;
   transition: background-color 0.2s ease, transform 0.1s ease;
 
   &:hover {
-    background-color: #356030;
+    background-color: #55817a;
     transform: translateY(-1px);
   }
 
-  &:active {
-    transform: translateY(0);
-  }
+  // &:active {
+  //   transform: translateY(0);
+  // }
 }
 
 .divider {
@@ -130,7 +148,7 @@
 }
 
 .dividerText {
-  font-family: "Geist", Helvetica, sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   color: #979797;
   font-size: 16px;
@@ -143,10 +161,10 @@
   height: 44px;
   background-color: #fffcfc;
   border-radius: 8px;
-  font-family: "Geist", Helvetica, sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   color: #454545;
-  font-size: 14px;
+  font-size: 14px !important;
   border: 1px solid #e5e5e5;
   cursor: pointer;
   display: flex;
@@ -167,7 +185,7 @@
 .googleIcon {
   width: 20px;
   height: 20px;
-  margin-right: 8px;
+  margin-right: 10px;
 }
 
 // Tablet styles
@@ -201,7 +219,7 @@
 
   .card {
     width: 355px;
-    height: 448px;
+    // height: 448px;
     max-width: none;
   }
 
@@ -241,7 +259,7 @@
 @media (min-width: 1440px) {
   .card {
     width: 400px;
-    height: 520px;
+    // height: 520px;
   }
 
   .contentWrapper {

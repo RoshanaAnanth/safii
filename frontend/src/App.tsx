@@ -91,21 +91,23 @@ const App: React.FC = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session);
       if (event === "SIGNED_IN" && session?.user) {
         setUser(session.user);
+        setLoading(false);
 
         const provider = session.user.app_metadata?.provider;
         let profile = null;
 
         if (provider === "google") {
-          const { data: existingUser } = await supabase
+          const { data: existingUser } = supabase
             .from("users")
             .select("*")
             .eq("email", session.user.email)
             .maybeSingle();
 
           if (!existingUser) {
-            await supabase.from("users").insert({
+            supabase.from("users").insert({
               id: session.user.id,
               email: session.user.email,
               name: session.user.user_metadata?.full_name || session.user.email,
@@ -115,7 +117,7 @@ const App: React.FC = () => {
               is_guest: false,
               is_admin: false,
             });
-            const { data: newUser } = await supabase
+            const { data: newUser } = supabase
               .from("users")
               .select("*")
               .eq("email", session.user.email)
@@ -125,7 +127,7 @@ const App: React.FC = () => {
             profile = existingUser;
           }
         } else {
-          const { data: adminProfile } = await supabase
+          const { data: adminProfile } = supabase
             .from("users")
             .select("*")
             .eq("email", session.user.email)
@@ -144,23 +146,24 @@ const App: React.FC = () => {
   }, []);
 
   if (loading) {
-    if (!user) {
-      return (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            fontFamily: "Geist, sans-serif",
-          }}
-        >
-          Loading...
-        </div>
-      );
-    }
+    // if (!user) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          fontFamily: "Geist, sans-serif",
+        }}
+      >
+        Loading...
+      </div>
+    );
+    // }
   }
 
+  console.log("User: ", user);
   const isAdmin = userProfile?.is_admin === true;
 
   return (

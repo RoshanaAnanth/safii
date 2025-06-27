@@ -1,7 +1,7 @@
 // Mobile-first responsive styles for View Reports Screen
 .container {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #407339, #b9d4a4);
+  background-color: #f1f8e8;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -21,51 +21,27 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  // justify-content: space-between;
   padding: 45px 45px 10px 45px;
-  // position: relative;
-  // z-index: 10;
 }
 
 .headerText {
   font-family: "Cormorant Upright", serif;
   font-weight: 600;
   font-size: clamp(40px, 6vw, 60px);
-  color: #d2d0a0;
-  -webkit-text-stroke: 2px #d2d0a0;
+  color: #65968e;
+  -webkit-text-stroke: 2px #65968e;
   margin: 0;
   text-align: center;
-  // flex: 1;
 }
 
 .horizontalLine {
-  border: 2px solid #d2d0a0;
-  border-radius: 8px;
+  border: 2px solid #65968e;
+  border-radius: 12px;
   width: 90%;
   margin-top: 10px;
 }
 
-// .headerActions {
-//   display: flex;
-//   gap: 8px;
-// }
-
-// .filterButton,
-// .viewToggle {
-//   padding: 8px !important;
-//   color: #ffffff !important;
-// }
-
-// .filterIcon,
-// .viewIcon {
-//   color: #ffffff;
-//   font-size: 24px !important;
-// }
-
 .content {
-  // flex: 1;
-  // background: #ffffff;
-  // border-radius: 20px 20px 0 0;
   margin-top: 10px;
   overflow: hidden;
   display: flex;
@@ -84,51 +60,80 @@
   color: #666;
 }
 
-.buttonGroup {
+.toggleButtonGroup {
   display: flex;
+  // background: rgba(255, 255, 255, 0.1);
+  // backdrop-filter: blur(10px);
+  // border-radius: 25px;
+  // padding: 4px;
+  // border: 1px solid rgba(255, 255, 255, 0.2);
+  // box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
-.listViewButton {
+.toggleListViewButton {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px !important;
+  font-weight: 600 !important;
   width: 150px !important;
-  border: 1px solid #000000 !important;
-  color: #000000 !important;
-  background-color: transparent !important;
+  height: 45px !important;
   border-radius: 0 !important;
   border-top-left-radius: 20px !important;
   border-bottom-left-radius: 20px !important;
-  text-transform: capitalize !important;
+  background-color: #f1f8e8 !important;
+  border: 1px solid #65968e !important;
+  color: #65968e !important;
+  box-shadow: none !important;
 }
 
-.mapViewButton {
+.toggleMapViewButton {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px !important;
+  font-weight: 600 !important;
   width: 150px !important;
-  border: 1px solid #000000 !important;
-  color: #000000 !important;
+  height: 45px !important;
   border-radius: 0 !important;
-  background-color: transparent !important;
   border-top-right-radius: 20px !important;
   border-bottom-right-radius: 20px !important;
-  text-transform: capitalize !important;
-  border-left: 0 !important;
+  background-color: #f1f8e8 !important;
+  border: 1px solid #65968e !important;
+  color: #65968e !important;
+  box-shadow: none !important;
+}
+
+.selected {
+  background-color: #8ed2c7 !important;
+  color: #f1f8e8 !important;
+}
+
+// Tick mark styles
+.tickIcon {
+  width: 16px !important;
+  height: 16px !important;
+  color: #407339 !important;
 }
 
 // Tablet styles
 @media (min-width: 768px) {
-  // .header {
-  //   padding: 24px 32px;
-  // }
-
   .headerText {
     font-size: 48px;
+  }
+
+  .toggleListViewButton,
+  .toggleMapViewButton {
+    width: 160px !important;
+    font-size: 15px !important;
   }
 }
 
 // Desktop styles
 @media (min-width: 1024px) {
-  // .header {
-  //   padding: 32px 40px;
-  // }
-
   .headerText {
     font-size: 60px;
+  }
+
+  .toggleListViewButton,
+  .toggleMapViewButton {
+    width: 170px !important;
+    font-size: 16px !important;
   }
 }

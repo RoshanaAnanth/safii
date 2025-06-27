@@ -132,8 +132,21 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    // navigate("/login");
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error);
+        alert("Error signing out. Please try again.");
+      } else {
+        // Close menu first
+        handleMenuClose();
+        // Navigation will be handled automatically by the auth state change in App.tsx
+        console.log("Successfully signed out");
+      }
+    } catch (error) {
+      console.error("Unexpected error during sign out:", error);
+      alert("An unexpected error occurred. Please try again.");
+    }
   };
 
   const getUserName = () => {

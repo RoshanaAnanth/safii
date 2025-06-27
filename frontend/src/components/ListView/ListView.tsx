@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import IssueDetailsModal from "../IssueDetailsModal/IssueDetailsModal";
 import styles from "./ListView.module.scss";
 
 interface Issue {
@@ -31,6 +32,9 @@ interface ListViewProps {
 }
 
 const ListView: React.FC<ListViewProps> = ({ issues }) => {
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
@@ -88,6 +92,16 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
     });
   };
 
+  const handleRowClick = (issue: Issue) => {
+    setSelectedIssue(issue);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedIssue(null);
+    setIsModalOpen(false);
+  };
+
   if (issues.length === 0) {
     return (
       <div className={styles.emptyState}>
@@ -110,20 +124,25 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
             <th className={styles.headerCell}>Status</th>
             <th className={styles.headerCell}>Priority</th>
             <th className={styles.headerCell}>Date</th>
-            <th className={styles.headerCell}>Location</th>
+            {/* <th className={styles.headerCell}>Location</th> */}
           </tr>
         </thead>
         <tbody className={styles.tableBody}>
           {issues.map((issue) => (
-            <tr key={issue.id} className={styles.tableRow}>
+            <tr
+              key={issue.id}
+              className={styles.tableRow}
+              onClick={() => handleRowClick(issue)}
+              style={{ cursor: "pointer" }}
+            >
               <td className={styles.cell}>
                 <div className={styles.issueInfo}>
                   <h4 className={styles.issueTitle}>{issue.title}</h4>
-                  <p className={styles.issueDescription}>
+                  {/* <p className={styles.issueDescription}>
                     {issue.description.length > 60
                       ? `${issue.description.substring(0, 60)}...`
                       : issue.description}
-                  </p>
+                  </p> */}
                   {issue.reporter_name && (
                     <span className={styles.reporter}>
                       By {issue.reporter_name}
@@ -162,13 +181,17 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
                   {formatDate(issue.created_at)}
                 </span>
               </td>
-              <td className={styles.cell}>
+              {/* <td className={styles.cell}>
                 <span className={styles.location}>{issue.location}</span>
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>
       </table>
+
+      {isModalOpen && selectedIssue && (
+        <IssueDetailsModal issue={selectedIssue} onClose={handleCloseModal} />
+      )}
     </div>
   );
 };

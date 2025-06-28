@@ -7,6 +7,7 @@ import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import IconButton from "@mui/material/IconButton";
 
 import Button from "@mui/material/Button";
+import FilterControls, { FilterState } from "../../components/FilterControls/FilterControls";
 import ListView from "../../components/ListView/ListView";
 import MapView from "../../components/MapView/MapView";
 import supabase from "../../lib/supabase";
@@ -27,7 +28,7 @@ export interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "resolved";
+  status: "pending" | "in_progress" | "resolved" | "rejected";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;
@@ -45,7 +46,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
   const [currentView, setCurrentView] = useState<"list" | "map">("list");
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterState>({
     status: "all",
     category: "all",
     priority: "all",
@@ -122,6 +123,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
     }
   };
 
+  // Filter issues based on current filter state
   const filteredIssues = issues.filter((issue) => {
     if (filters.status !== "all" && issue.status !== filters.status)
       return false;
@@ -131,6 +133,10 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
       return false;
     return true;
   });
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
+  };
 
   const handleBack = () => {
     navigate("/home");
@@ -174,6 +180,13 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
             MAP VIEW
           </Button>
         </div>
+
+        <FilterControls
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          resultsCount={filteredIssues.length}
+        />
+
         {loading ? (
           <div className={styles.loading}>Loading reports...</div>
         ) : currentView === "list" ? (

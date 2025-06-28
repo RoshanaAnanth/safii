@@ -14,7 +14,7 @@ interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "resolved";
+  status: "pending" | "in_progress" | "resolved" | "rejected";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;
@@ -108,7 +108,7 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
         <div className={styles.emptyIcon}>📋</div>
         <h3 className={styles.emptyTitle}>No Reports Found</h3>
         <p className={styles.emptyDescription}>
-          There are no reports matching your current filters.
+          There are no reports matching your current filters. Try adjusting your filter criteria.
         </p>
       </div>
     );
@@ -124,7 +124,6 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
             <th className={styles.headerCell}>Status</th>
             <th className={styles.headerCell}>Priority</th>
             <th className={styles.headerCell}>Date</th>
-            {/* <th className={styles.headerCell}>Location</th> */}
           </tr>
         </thead>
         <tbody className={styles.tableBody}>
@@ -138,11 +137,6 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
               <td className={styles.cell}>
                 <div className={styles.issueInfo}>
                   <h4 className={styles.issueTitle}>{issue.title}</h4>
-                  {/* <p className={styles.issueDescription}>
-                    {issue.description.length > 60
-                      ? `${issue.description.substring(0, 60)}...`
-                      : issue.description}
-                  </p> */}
                   {issue.reporter_name && (
                     <span className={styles.reporter}>
                       By {issue.reporter_name}
@@ -181,9 +175,6 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
                   {formatDate(issue.created_at)}
                 </span>
               </td>
-              {/* <td className={styles.cell}>
-                <span className={styles.location}>{issue.location}</span>
-              </td> */}
             </tr>
           ))}
         </tbody>

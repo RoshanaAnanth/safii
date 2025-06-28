@@ -19,7 +19,7 @@ export interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "resolved";
+  status: "pending" | "in_progress" | "resolved" | "rejected";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;
@@ -136,7 +136,7 @@ const MapView: React.FC<MapViewProps> = ({ issues }) => {
         <div className={styles.emptyIcon}>🗺️</div>
         <h3 className={styles.emptyTitle}>No Reports to Display</h3>
         <p className={styles.emptyDescription}>
-          There are no reports with location data to show on the map.
+          There are no reports matching your current filters to show on the map. Try adjusting your filter criteria.
         </p>
       </div>
     );
@@ -144,12 +144,6 @@ const MapView: React.FC<MapViewProps> = ({ issues }) => {
 
   return (
     <div className={styles.container}>
-      {/* <div className={styles.mapStats}>
-        <span className={styles.totalCount}>
-          {issues.length} Reports on Map
-        </span>
-      </div> */}
-
       <div className={styles.mapContainer}>
         <MapContainer
           center={mapCenter}

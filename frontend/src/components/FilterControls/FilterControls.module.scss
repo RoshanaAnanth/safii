@@ -1,0 +1,175 @@
+// Mobile-first responsive styles for Filter Controls
+.filterContainer {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  margin: 0 20px 20px 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(101, 150, 142, 0.2);
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.filterTitle {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4e8d9b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterIcon {
+  width: 20px !important;
+  height: 20px !important;
+  color: #4e8d9b;
+}
+
+.clearButton {
+  background: transparent !important;
+  color: #65968e !important;
+  border: 1px solid #65968e !important;
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  min-width: auto !important;
+  height: 32px !important;
+
+  &:hover {
+    background: rgba(101, 150, 142, 0.1) !important;
+  }
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filterLabel {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #55ad9b;
+  margin: 0;
+}
+
+.filterSelect {
+  background: #f1f8e8 !important;
+  border: none !important;
+  border-radius: 24px !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+  height: 45px !important;
+  color: #333 !important;
+  padding: 0 16px !important;
+
+  &:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(101, 150, 142, 0.2) !important;
+  }
+
+  .MuiSelect-select {
+    padding: 0 !important;
+  }
+}
+
+.menuItem {
+  margin: 2px 8px !important;
+  border-radius: 8px !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px !important;
+
+  &:hover {
+    background-color: rgba(101, 150, 142, 0.1) !important;
+  }
+
+  &.Mui-selected {
+    background-color: rgba(101, 150, 142, 0.2) !important;
+  }
+}
+
+.resultsCount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(101, 150, 142, 0.2);
+}
+
+.resultsText {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.resultsNumber {
+  font-weight: 600;
+  color: #4e8d9b;
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .filterContainer {
+    margin: 0 45px 20px 45px;
+    padding: 24px;
+  }
+
+  .filterGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .filterTitle {
+    font-size: 18px;
+  }
+
+  .clearButton {
+    font-size: 13px !important;
+    padding: 6px 16px !important;
+    height: 36px !important;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .filterContainer {
+    padding: 28px;
+  }
+
+  .filterGrid {
+    gap: 24px;
+  }
+
+  .filterTitle {
+    font-size: 20px;
+  }
+
+  .filterLabel {
+    font-size: 15px;
+  }
+
+  .filterSelect {
+    font-size: 15px !important;
+    height: 48px !important;
+  }
+}

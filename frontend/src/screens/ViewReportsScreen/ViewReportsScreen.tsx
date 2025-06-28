@@ -160,32 +160,34 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
       </div>
 
       <div className={styles.content}>
-        <div className={styles.toggleButtonGroup}>
-          <Button
-            variant="contained"
-            className={`${styles.toggleListViewButton} ${
-              currentView === "list" ? styles.selected : ""
-            }`}
-            onClick={() => setCurrentView("list")}
-          >
-            LIST VIEW
-          </Button>
-          <Button
-            variant="contained"
-            className={`${styles.toggleMapViewButton} ${
-              currentView === "map" ? styles.selected : ""
-            }`}
-            onClick={() => setCurrentView("map")}
-          >
-            MAP VIEW
-          </Button>
-        </div>
+        <div className={styles.controlsRow}>
+          <div className={styles.toggleButtonGroup}>
+            <Button
+              variant="contained"
+              className={`${styles.toggleListViewButton} ${
+                currentView === "list" ? styles.selected : ""
+              }`}
+              onClick={() => setCurrentView("list")}
+            >
+              LIST VIEW
+            </Button>
+            <Button
+              variant="contained"
+              className={`${styles.toggleMapViewButton} ${
+                currentView === "map" ? styles.selected : ""
+              }`}
+              onClick={() => setCurrentView("map")}
+            >
+              MAP VIEW
+            </Button>
+          </div>
 
-        <FilterControls
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          resultsCount={filteredIssues.length}
-        />
+          <FilterControls
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            resultsCount={filteredIssues.length}
+          />
+        </div>
 
         {loading ? (
           <div className={styles.loading}>Loading reports...</div>

@@ -60,14 +60,17 @@
   color: #666;
 }
 
+.controlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  padding: 0 20px;
+}
+
 .toggleButtonGroup {
   display: flex;
-  // background: rgba(255, 255, 255, 0.1);
-  // backdrop-filter: blur(10px);
-  // border-radius: 25px;
-  // padding: 4px;
-  // border: 1px solid rgba(255, 255, 255, 0.2);
-  // box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .toggleListViewButton {
@@ -105,17 +108,14 @@
   color: #f1f8e8 !important;
 }
 
-// Tick mark styles
-.tickIcon {
-  width: 16px !important;
-  height: 16px !important;
-  color: #407339 !important;
-}
-
 // Tablet styles
 @media (min-width: 768px) {
   .headerText {
     font-size: 48px;
+  }
+
+  .controlsRow {
+    padding: 0 45px;
   }
 
   .toggleListViewButton,

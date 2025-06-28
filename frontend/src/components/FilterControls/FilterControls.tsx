@@ -3,15 +3,15 @@ import styles from "./FilterControls.module.scss";
 
 import FilterListIcon from "@mui/icons-material/FilterList";
 import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 export interface FilterState {
-  status: string;
-  category: string;
-  priority: string;
+  status: string[];
+  category: string[];
+  priority: string[];
 }
 
 interface FilterControlsProps {
@@ -28,21 +28,56 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const handleFilterChange = (filterType: keyof FilterState) => (
-    event: SelectChangeEvent<string>
+  const statusOptions = [
+    { value: "pending", label: "🟡 Pending" },
+    { value: "in_progress", label: "🔵 In Progress" },
+    { value: "resolved", label: "🟢 Resolved" },
+    { value: "rejected", label: "🔴 Rejected" },
+  ];
+
+  const categoryOptions = [
+    { value: "pothole", label: "🕳️ Pothole" },
+    { value: "drainage", label: "🌊 Drainage" },
+    { value: "garbage", label: "🗑️ Garbage" },
+    { value: "landslide", label: "⛰️ Landslide" },
+    { value: "street_light", label: "💡 Street Light" },
+    { value: "broken_sign", label: "🚧 Broken Sign" },
+    { value: "other", label: "❓ Other" },
+  ];
+
+  const priorityOptions = [
+    { value: "critical", label: "🔴 Critical" },
+    { value: "high", label: "🟠 High" },
+    { value: "medium", label: "🟡 Medium" },
+    { value: "low", label: "🟢 Low" },
+  ];
+
+  const handleFilterChange = (
+    filterType: keyof FilterState,
+    value: string,
+    checked: boolean
   ) => {
+    const currentValues = filters[filterType] as string[];
+    let newValues: string[];
+
+    if (checked) {
+      newValues = [...currentValues, value];
+    } else {
+      newValues = currentValues.filter((v) => v !== value);
+    }
+
     const newFilters = {
       ...filters,
-      [filterType]: event.target.value,
+      [filterType]: newValues,
     };
     onFilterChange(newFilters);
   };
 
   const handleClearFilters = () => {
     onFilterChange({
-      status: "all",
-      category: "all",
-      priority: "all",
+      status: [],
+      category: [],
+      priority: [],
     });
   };
 
@@ -55,9 +90,38 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   };
 
   const hasActiveFilters = 
-    filters.status !== "all" || 
-    filters.category !== "all" || 
-    filters.priority !== "all";
+    filters.status.length > 0 || 
+    filters.category.length > 0 || 
+    filters.priority.length > 0;
+
+  const renderCheckboxGroup = (
+    title: string,
+    filterType: keyof FilterState,
+    options: { value: string; label: string }[]
+  ) => (
+    <div className={styles.filterGroup}>
+      <label className={styles.filterLabel}>{title}</label>
+      <div className={styles.checkboxGroup}>
+        {options.map((option) => (
+          <FormControlLabel
+            key={option.value}
+            control={
+              <Checkbox
+                checked={filters[filterType].includes(option.value)}
+                onChange={(e) =>
+                  handleFilterChange(filterType, option.value, e.target.checked)
+                }
+                className={styles.checkbox}
+                size="small"
+              />
+            }
+            label={option.label}
+            className={styles.checkboxLabel}
+          />
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -96,113 +160,9 @@ const FilterControls: React.FC<FilterControlsProps> = ({
         </div>
 
         <div className={styles.menuContent}>
-          <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Status</label>
-            <Select
-              value={filters.status}
-              onChange={handleFilterChange("status")}
-              className={styles.filterSelect}
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    borderRadius: "12px",
-                    marginTop: "4px",
-                  },
-                },
-              }}
-            >
-              <MenuItem value="all" className={styles.selectMenuItem}>
-                All Status
-              </MenuItem>
-              <MenuItem value="pending" className={styles.selectMenuItem}>
-                🟡 Pending
-              </MenuItem>
-              <MenuItem value="in_progress" className={styles.selectMenuItem}>
-                🔵 In Progress
-              </MenuItem>
-              <MenuItem value="resolved" className={styles.selectMenuItem}>
-                🟢 Resolved
-              </MenuItem>
-              <MenuItem value="rejected" className={styles.selectMenuItem}>
-                🔴 Rejected
-              </MenuItem>
-            </Select>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Category</label>
-            <Select
-              value={filters.category}
-              onChange={handleFilterChange("category")}
-              className={styles.filterSelect}
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    borderRadius: "12px",
-                    marginTop: "4px",
-                  },
-                },
-              }}
-            >
-              <MenuItem value="all" className={styles.selectMenuItem}>
-                All Categories
-              </MenuItem>
-              <MenuItem value="pothole" className={styles.selectMenuItem}>
-                🕳️ Pothole
-              </MenuItem>
-              <MenuItem value="drainage" className={styles.selectMenuItem}>
-                🌊 Drainage
-              </MenuItem>
-              <MenuItem value="garbage" className={styles.selectMenuItem}>
-                🗑️ Garbage
-              </MenuItem>
-              <MenuItem value="landslide" className={styles.selectMenuItem}>
-                ⛰️ Landslide
-              </MenuItem>
-              <MenuItem value="street_light" className={styles.selectMenuItem}>
-                💡 Street Light
-              </MenuItem>
-              <MenuItem value="broken_sign" className={styles.selectMenuItem}>
-                🚧 Broken Sign
-              </MenuItem>
-              <MenuItem value="other" className={styles.selectMenuItem}>
-                ❓ Other
-              </MenuItem>
-            </Select>
-          </div>
-
-          <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Priority</label>
-            <Select
-              value={filters.priority}
-              onChange={handleFilterChange("priority")}
-              className={styles.filterSelect}
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    borderRadius: "12px",
-                    marginTop: "4px",
-                  },
-                },
-              }}
-            >
-              <MenuItem value="all" className={styles.selectMenuItem}>
-                All Priorities
-              </MenuItem>
-              <MenuItem value="critical" className={styles.selectMenuItem}>
-                🔴 Critical
-              </MenuItem>
-              <MenuItem value="high" className={styles.selectMenuItem}>
-                🟠 High
-              </MenuItem>
-              <MenuItem value="medium" className={styles.selectMenuItem}>
-                🟡 Medium
-              </MenuItem>
-              <MenuItem value="low" className={styles.selectMenuItem}>
-                🟢 Low
-              </MenuItem>
-            </Select>
-          </div>
+          {renderCheckboxGroup("Status", "status", statusOptions)}
+          {renderCheckboxGroup("Category", "category", categoryOptions)}
+          {renderCheckboxGroup("Priority", "priority", priorityOptions)}
         </div>
 
         <div className={styles.resultsFooter}>

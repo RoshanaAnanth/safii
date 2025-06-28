@@ -47,9 +47,9 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterState>({
-    status: "all",
-    category: "all",
-    priority: "all",
+    status: [],
+    category: [],
+    priority: [],
   });
 
   useEffect(() => {
@@ -125,11 +125,12 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
 
   // Filter issues based on current filter state
   const filteredIssues = issues.filter((issue) => {
-    if (filters.status !== "all" && issue.status !== filters.status)
+    // If no filters are selected for a category, show all items for that category
+    if (filters.status.length > 0 && !filters.status.includes(issue.status))
       return false;
-    if (filters.category !== "all" && issue.category !== filters.category)
+    if (filters.category.length > 0 && !filters.category.includes(issue.category))
       return false;
-    if (filters.priority !== "all" && issue.priority !== filters.priority)
+    if (filters.priority.length > 0 && !filters.priority.includes(issue.priority))
       return false;
     return true;
   });

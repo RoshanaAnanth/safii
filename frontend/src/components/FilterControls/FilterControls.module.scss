@@ -40,12 +40,17 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
   min-width: 280px !important;
   max-width: 320px !important;
+  max-height: 80vh !important;
+  overflow-y: auto !important;
 }
 
 .menuHeader {
   padding: 16px 20px 12px !important;
   border-bottom: 1px solid rgba(101, 150, 142, 0.1) !important;
   background: rgba(101, 150, 142, 0.05) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1 !important;
 }
 
 .menuTitle {
@@ -82,7 +87,7 @@
 }
 
 .filterGroup {
-  margin-bottom: 20px !important;
+  margin-bottom: 24px !important;
 
   &:last-child {
     margin-bottom: 0 !important;
@@ -94,53 +99,40 @@
   font-size: 13px !important;
   font-weight: 600 !important;
   color: #55ad9b !important;
-  margin: 0 0 8px 0 !important;
+  margin: 0 0 12px 0 !important;
   display: block !important;
 }
 
-.filterSelect {
-  width: 100% !important;
-  background: #f1f8e8 !important;
-  border: none !important;
-  border-radius: 20px !important;
+.checkboxGroup {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+.checkboxLabel {
+  margin: 0 !important;
   font-family: "Poppins", sans-serif !important;
   font-size: 13px !important;
-  height: 40px !important;
   color: #333 !important;
-
-  .MuiSelect-select {
-    padding: 0 16px !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-
-  .MuiOutlinedInput-notchedOutline {
-    border: none !important;
-  }
-
-  &:hover .MuiOutlinedInput-notchedOutline {
-    border: none !important;
-  }
-
-  &.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border: none !important;
-    box-shadow: 0 0 0 2px rgba(101, 150, 142, 0.2) !important;
+  
+  .MuiFormControlLabel-label {
+    font-family: "Poppins", sans-serif !important;
+    font-size: 13px !important;
+    color: #333 !important;
   }
 }
 
-.selectMenuItem {
-  margin: 2px 8px !important;
-  border-radius: 8px !important;
-  font-family: "Poppins", sans-serif !important;
-  font-size: 13px !important;
-  padding: 8px 12px !important;
+.checkbox {
+  color: #65968e !important;
+  padding: 4px 8px 4px 4px !important;
 
-  &:hover {
-    background-color: rgba(101, 150, 142, 0.1) !important;
+  &.Mui-checked {
+    color: #65968e !important;
   }
 
-  &.Mui-selected {
-    background-color: rgba(101, 150, 142, 0.2) !important;
+  .MuiSvgIcon-root {
+    width: 18px !important;
+    height: 18px !important;
   }
 }
 
@@ -149,6 +141,8 @@
   border-top: 1px solid rgba(101, 150, 142, 0.1) !important;
   background: rgba(101, 150, 142, 0.05) !important;
   text-align: center !important;
+  position: sticky !important;
+  bottom: 0 !important;
 }
 
 .resultsText {
@@ -189,13 +183,10 @@
     font-size: 14px !important;
   }
 
-  .filterSelect {
-    font-size: 14px !important;
-    height: 42px !important;
-  }
-
-  .selectMenuItem {
-    font-size: 14px !important;
+  .checkboxLabel {
+    .MuiFormControlLabel-label {
+      font-size: 14px !important;
+    }
   }
 
   .clearButton {
@@ -234,12 +225,9 @@
     font-size: 15px !important;
   }
 
-  .filterSelect {
-    font-size: 15px !important;
-    height: 44px !important;
-  }
-
-  .selectMenuItem {
-    font-size: 15px !important;
+  .checkboxLabel {
+    .MuiFormControlLabel-label {
+      font-size: 15px !important;
+    }
   }
 }

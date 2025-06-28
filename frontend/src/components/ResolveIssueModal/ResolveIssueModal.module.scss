@@ -1,0 +1,274 @@
+// Mobile-first responsive styles for Resolve Issue Modal
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-family: "Geist", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a365d;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.closeButton {
+  padding: 8px !important;
+  color: #666 !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 50% !important;
+  min-width: auto !important;
+  width: 40px !important;
+  height: 40px !important;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+    color: #333 !important;
+  }
+}
+
+.closeIcon {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.content {
+  padding: 0 24px 24px;
+}
+
+.statusSection {
+  margin-bottom: 24px;
+}
+
+.statusLabel {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a90b8;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusTag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #4CAF50;
+  text-transform: capitalize;
+}
+
+.uploadSection {
+  margin-bottom: 24px;
+}
+
+.uploadArea {
+  border: 2px dashed #4a90b8;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  background: rgba(74, 144, 184, 0.05);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border-color: #3a7ca8;
+    background: rgba(74, 144, 184, 0.1);
+  }
+
+  &.hasImage {
+    padding: 16px;
+    min-height: auto;
+  }
+}
+
+.uploadIcon {
+  font-size: 48px;
+  color: #4a90b8;
+  margin-bottom: 16px;
+}
+
+.uploadText {
+  font-family: "Geist", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4a90b8;
+  margin: 0 0 8px 0;
+}
+
+.uploadSubtext {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.fileInput {
+  display: none;
+}
+
+.imagePreview {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.removeImageButton {
+  margin-top: 12px;
+  padding: 8px 16px !important;
+  background: rgba(244, 67, 54, 0.1) !important;
+  color: #f44336 !important;
+  border: 1px solid rgba(244, 67, 54, 0.3) !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  text-transform: none !important;
+
+  &:hover {
+    background: rgba(244, 67, 54, 0.2) !important;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  padding: 12px 24px !important;
+  background: transparent !important;
+  color: #666 !important;
+  border: 1px solid #ddd !important;
+  border-radius: 8px !important;
+  font-family: "Geist", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+  }
+}
+
+.resolveButton {
+  padding: 12px 24px !important;
+  background: #4CAF50 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-family: "Geist", sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+
+  &:hover:not(:disabled) {
+    background: #45a049 !important;
+  }
+
+  &:disabled {
+    background: #ccc !important;
+    cursor: not-allowed !important;
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .modal {
+    max-width: 600px;
+  }
+
+  .header {
+    padding: 32px 32px 20px;
+  }
+
+  .content {
+    padding: 0 32px 32px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .uploadArea {
+    padding: 60px 40px;
+  }
+
+  .uploadText {
+    font-size: 18px;
+  }
+
+  .uploadSubtext {
+    font-size: 15px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .overlay {
+    padding: 40px;
+  }
+}

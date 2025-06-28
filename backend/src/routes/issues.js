@@ -185,6 +185,7 @@ router.get("/", async (req, res) => {
         priority,
         location,
         imageUrl,
+        resolvedImageUrl,
         reporter_id,
         admin_notes,
         resolved_at,
@@ -233,6 +234,7 @@ router.get("/", async (req, res) => {
           ? `${issue.location.lat}, ${issue.location.lng}`
           : "Unknown location"),
       imageUrl: issue.imageUrl,
+      resolvedImageUrl: issue.resolvedImageUrl,
       reporter_id: issue.reporter_id,
       admin_notes: issue.admin_notes,
       resolved_at: issue.resolved_at,
@@ -273,6 +275,7 @@ router.get("/:id", async (req, res) => {
         priority,
         location,
         imageUrl,
+        resolvedImageUrl,
         reporter_id,
         admin_notes,
         resolved_at,
@@ -316,6 +319,7 @@ router.get("/:id", async (req, res) => {
           ? `${issue.location.lat}, ${issue.location.lng}`
           : "Unknown location"),
       imageUrl: issue.imageUrl,
+      resolvedImageUrl: issue.resolvedImageUrl,
       reporter_id: issue.reporter_id,
       admin_notes: issue.admin_notes,
       resolved_at: issue.resolved_at,
@@ -334,6 +338,124 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({
       error: "Internal server error",
       message: "Something went wrong while retrieving the issue",
+    });
+  }
+});
+
+// Update issue endpoint (for admin status updates)
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, resolvedImageUrl, admin_notes } = req.body;
+
+    // Validate status
+    const validStatuses = ["pending", "in_progress", "resolved", "rejected"];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({
+        error: "Invalid status",
+        message: "Status must be one of: " + validStatuses.join(", "),
+      });
+    }
+
+    // Build update object
+    const updateData = {
+      updated_at: new Date().toISOString(),
+    };
+
+    if (status) {
+      updateData.status = status;
+      
+      // If resolving, add resolved timestamp
+      if (status === "resolved") {
+        updateData.resolved_at = new Date().toISOString();
+      }
+    }
+
+    if (resolvedImageUrl) {
+      updateData.resolvedImageUrl = resolvedImageUrl;
+    }
+
+    if (admin_notes !== undefined) {
+      updateData.admin_notes = admin_notes;
+    }
+
+    // Update issue in Supabase
+    const { data: updatedIssue, error: updateError } = await supabase
+      .from("issues")
+      .update(updateData)
+      .eq("id", id)
+      .select(
+        `
+        id,
+        title,
+        description,
+        category,
+        status,
+        priority,
+        location,
+        imageUrl,
+        resolvedImageUrl,
+        reporter_id,
+        admin_notes,
+        resolved_at,
+        created_at,
+        updated_at,
+        users!reporter_id (
+          name,
+          email
+        )
+      `
+      )
+      .single();
+
+    if (updateError) {
+      if (updateError.code === "PGRST116") {
+        return res.status(404).json({
+          error: "Issue not found",
+          message: "The requested issue does not exist",
+        });
+      }
+
+      console.error("Error updating issue:", updateError);
+      return res.status(500).json({
+        error: "Database error",
+        message: "Failed to update issue in database",
+      });
+    }
+
+    // Format updated issue for frontend
+    const formattedIssue = {
+      id: updatedIssue.id,
+      title: updatedIssue.title,
+      description: updatedIssue.description,
+      category: updatedIssue.category,
+      status: updatedIssue.status,
+      priority: updatedIssue.priority,
+      location:
+        updatedIssue.location?.address ||
+        (updatedIssue.location?.lat && updatedIssue.location?.lng
+          ? `${updatedIssue.location.lat}, ${updatedIssue.location.lng}`
+          : "Unknown location"),
+      imageUrl: updatedIssue.imageUrl,
+      resolvedImageUrl: updatedIssue.resolvedImageUrl,
+      reporter_id: updatedIssue.reporter_id,
+      admin_notes: updatedIssue.admin_notes,
+      resolved_at: updatedIssue.resolved_at,
+      created_at: updatedIssue.created_at,
+      updated_at: updatedIssue.updated_at,
+      reporter_name: updatedIssue.users?.name || "Anonymous User",
+      reporter_email: updatedIssue.users?.email || "unknown@example.com",
+    };
+
+    res.status(200).json({
+      message: "Issue updated successfully",
+      issue: formattedIssue,
+    });
+  } catch (error) {
+    console.error("Update issue error:", error);
+    res.status(500).json({
+      error: "Internal server error",
+      message: "Something went wrong while updating the issue",
     });
   }
 });

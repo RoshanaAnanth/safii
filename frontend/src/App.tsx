@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import AdminHomeScreen from "./screens/AdminHomeScreen/AdminHomeScreen";
+import AdminIssueDetailsScreen from "./screens/AdminIssueDetailsScreen/AdminIssueDetailsScreen";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
 import SubmitReportScreen from "./screens/SubmitReportScreen/SubmitReportScreen";
@@ -204,6 +205,22 @@ const App: React.FC = () => {
               user ? (
                 isAdmin ? (
                   <AdminHomeScreen user={user} />
+                ) : (
+                  <Navigate to="/home" replace />
+                )
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          {/* Admin Issue Details Route */}
+          <Route
+            path="/admin/issue/:id"
+            element={
+              user ? (
+                isAdmin ? (
+                  <AdminIssueDetailsScreen />
                 ) : (
                   <Navigate to="/home" replace />
                 )

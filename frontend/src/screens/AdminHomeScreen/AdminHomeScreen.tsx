@@ -149,6 +149,10 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     }
   };
 
+  const handleIssueClick = (issueId: string) => {
+    navigate(`/admin/issue/${issueId}`);
+  };
+
   const getUserName = () => {
     if (user.user_metadata?.full_name) {
       return user.user_metadata.full_name.split(" ")[0];
@@ -201,11 +205,28 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   };
 
   const formatLocation = (location: string) => {
-    if (location.includes(",")) {
-      const [lat, lng] = location.split(",");
-      return `${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}`;
+    if (typeof location === "string") {
+      if (location.includes(",")) {
+        const [lat, lng] = location.split(",");
+        return `${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}`;
+      }
+      return location.length > 30 ? `${location.substring(0, 30)}...` : location;
     }
-    return location.length > 30 ? `${location.substring(0, 30)}...` : location;
+    
+    // Handle location object
+    if (location && typeof location === "object") {
+      const locationObj = location as any;
+      if (locationObj.address) {
+        return locationObj.address.length > 30 
+          ? `${locationObj.address.substring(0, 30)}...` 
+          : locationObj.address;
+      }
+      if (locationObj.lat && locationObj.lng) {
+        return `${locationObj.lat.toFixed(4)}, ${locationObj.lng.toFixed(4)}`;
+      }
+    }
+    
+    return "Unknown location";
   };
 
   return (
@@ -279,7 +300,12 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         ) : (
           <div className={styles.issuesList}>
             {recentIssues.map((issue) => (
-              <div key={issue.id} className={styles.issueItem}>
+              <div 
+                key={issue.id} 
+                className={styles.issueItem}
+                onClick={() => handleIssueClick(issue.id)}
+                style={{ cursor: "pointer" }}
+              >
                 <div className={styles.issueIcon}>
                   {getCategoryIcon(issue.category)}
                 </div>

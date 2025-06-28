@@ -35,8 +35,9 @@
 }
 
 .category {
-  background-color: #e0e0e0;
-  border: 1px solid #bcbdb6;
+  background-color: #d8efd3;
+  border: 1px solid #55ad9b;
+  color: #55ad9b;
 }
 
 .pending {
@@ -55,4 +56,10 @@
   height: 14px;
   width: 14px;
   border-radius: 50%;
+}
+
+.label {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: inherit;
 }

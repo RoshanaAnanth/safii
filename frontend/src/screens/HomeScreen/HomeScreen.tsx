@@ -6,7 +6,7 @@ import supabase from "../../lib/supabase";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import authority from "../../../assets/Authority.svg";
-// import background from "../../../assets/HomeScreenBackground.png";
+import background from "../../../assets/HomeScreenBackground.png";
 import grid1 from "../../../assets/HomeScreenGrid1.png";
 import grid2 from "../../../assets/HomeScreenGrid2.png";
 import grid3 from "../../../assets/HomeScreenGrid3.png";
@@ -51,7 +51,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
           setShrinking(false); // Grow back after moving
         }, 1000); // This should match your CSS transition duration
       }, 1000); // Shrink duration before moving (optional, can be 0)
-    }, 4000);
+    }, 6000);
 
     return () => clearInterval(interval);
   }, []);
@@ -119,11 +119,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
 
   return (
     <div className={styles.container}>
+      <img src={background} alt="Background" className={styles.background} />
       <IconButton className={styles.menuIconButton} onClick={handleMenuOpen}>
         <MenuIcon className={styles.menuIcon} />
       </IconButton>
       <div className={styles.actionContainer}>
-        {/* <img src={background} alt="Background" className={styles.background} /> */}
         <div className={styles.headerSection}>
           <h1 className={styles.header}>Safii</h1>
           <span className={styles.tagline}>
@@ -131,13 +131,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
           </span>
         </div>
         <div className={styles.ctaContainer}>
-          <div className={styles.ctaBubble}>
+          <div className={styles.ctaBubble} onClick={handleReportIssue}>
             <img
               src={reportIssueArt}
               alt="Report an issue"
               className={styles.reportIssueArt}
             />
-            <div className={styles.ctaDataSection} onClick={handleReportIssue}>
+            <div className={styles.ctaDataSection}>
               <h1 className={styles.ctaTitle}>REPORT AN ISSUE</h1>
               <span className={styles.ctaDescription}>
                 Report garbage dumps, potholes and pollution in your
@@ -146,13 +146,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
               <div className={styles.arrow}></div>
             </div>
           </div>
-          <div className={styles.ctaBubble}>
+          <div className={styles.ctaBubble} onClick={handleViewReports}>
             <img
               src={viewReportsArt}
               alt="View Reports"
               className={styles.viewReportsArt}
             />
-            <div className={styles.ctaDataSection} onClick={handleViewReports}>
+            <div className={styles.ctaDataSection}>
               <h1 className={styles.ctaTitle}>VIEW REPORTS</h1>
               <span className={styles.ctaDescription}>
                 View and check the status of the issues reported in your

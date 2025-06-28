@@ -80,10 +80,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   };
 
   const formatLocation = (location: string) => {
-    if (location.includes(",")) {
-      const [lat, lng] = location.split(",");
-      return `${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}`;
-    }
+    // The location is already formatted by formatLocationForDisplay in ViewReportsScreen
     return location;
   };
 

@@ -11,6 +11,7 @@ import FilterControls, { FilterState } from "../../components/FilterControls/Fil
 import ListView from "../../components/ListView/ListView";
 import MapView from "../../components/MapView/MapView";
 import supabase from "../../lib/supabase";
+import { formatLocationForDisplay } from "../../lib/utils";
 
 interface ViewReportsScreenProps {
   user: User;
@@ -100,11 +101,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
         category: issue.category,
         status: issue.status,
         priority: issue.priority,
-        location:
-          issue.location?.address ||
-          (issue.location?.lat && issue.location?.lng
-            ? `${issue.location.lat}, ${issue.location.lng}`
-            : "Unknown location"),
+        location: formatLocationForDisplay(issue.location),
         imageUrl: issue.imageUrl || "",
         reporter_id: issue.reporter_id,
         admin_notes: issue.admin_notes,

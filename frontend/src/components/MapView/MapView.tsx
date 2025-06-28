@@ -112,25 +112,56 @@ const MapView: React.FC<MapViewProps> = ({ issues }) => {
     });
   };
 
+  // Extract coordinates from location string
+  const extractCoordinates = (location: string): [number, number] | null => {
+    // Check if location contains coordinates in parentheses
+    if (location.includes("(") && location.includes(")")) {
+      const coordsPart = location.split("(")[1].split(")")[0];
+      const [lat, lng] = coordsPart
+        .split(",")
+        .map((coord) => parseFloat(coord.trim()));
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return [lat, lng];
+      }
+    }
+
+    // Check if location is just coordinates
+    if (location.includes(",")) {
+      const [lat, lng] = location
+        .split(",")
+        .map((coord) => parseFloat(coord.trim()));
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return [lat, lng];
+      }
+    }
+
+    return null;
+  };
+
+  // Filter issues that have valid coordinates
+  const issuesWithCoordinates = issues.filter(
+    (issue) => extractCoordinates(issue.location) !== null
+  );
+
   // Default center (you can adjust this based on your needs)
   const defaultCenter: [number, number] = [40.7128, -74.006]; // New York City
 
   // Calculate center from issues if available
   const mapCenter: [number, number] =
-    issues.length > 0
+    issuesWithCoordinates.length > 0
       ? [
-          issues.reduce(
-            (sum, issue) => sum + parseFloat(issue.location.split(",")[0]),
-            0
-          ) / issues.length,
-          issues.reduce(
-            (sum, issue) => sum + parseFloat(issue.location.split(",")[1]),
-            0
-          ) / issues.length,
+          issuesWithCoordinates.reduce((sum, issue) => {
+            const coords = extractCoordinates(issue.location);
+            return sum + (coords ? coords[0] : 0);
+          }, 0) / issuesWithCoordinates.length,
+          issuesWithCoordinates.reduce((sum, issue) => {
+            const coords = extractCoordinates(issue.location);
+            return sum + (coords ? coords[1] : 0);
+          }, 0) / issuesWithCoordinates.length,
         ]
       : defaultCenter;
 
-  if (issues.length === 0) {
+  if (issuesWithCoordinates.length === 0) {
     return (
       <div className={styles.emptyState}>
         <div className={styles.emptyIcon}>🗺️</div>
@@ -156,8 +187,11 @@ const MapView: React.FC<MapViewProps> = ({ issues }) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {issues.map((issue) => {
-            const [lat, lng] = issue.location.split(",").map(Number);
+          {issuesWithCoordinates.map((issue) => {
+            const coords = extractCoordinates(issue.location);
+            if (!coords) return null;
+
+            const [lat, lng] = coords;
             return (
               <Marker
                 key={issue.id}

@@ -8,7 +8,7 @@
 
 .menuIconButton {
   position: absolute !important;
-  z-index: 2 !important;
+  z-index: 3 !important;
   top: 14px !important;
   left: 14px !important;
   padding: 0 !important;
@@ -25,24 +25,23 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  background-color: #f1f8e8;
+  z-index: 2;
   height: 70vh;
   padding: 50px 30px 20px 30px;
 }
 
 .background {
   position: absolute;
-  height: inherit;
+  height: 100%;
   object-fit: cover;
   width: 100%;
+  z-index: 1;
 }
 
 .headerSection {
-  // padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  // z-index: 2;
 }
 
 .header {
@@ -53,7 +52,6 @@
   line-height: 1.2;
   color: #65968e;
   -webkit-text-stroke: 2px #65968e;
-  // padding-bottom: 8px;
 }
 
 .tagline {
@@ -134,13 +132,13 @@
 }
 
 .reportIssueArt {
-  height: inherit;
+  height: 100%;
   width: 40%;
   object-fit: scale-down;
 }
 
 .viewReportsArt {
-  height: inherit;
+  height: 100%;
   width: 39%;
   object-fit: scale-down;
 }
@@ -155,7 +153,6 @@
     position: fixed;
     bottom: 0;
     left: 0;
-    background: #f1f8e8;
     z-index: 10;
     height: 30vh; // adjust as needed
   }
@@ -170,30 +167,16 @@
 
 .carouselImage {
   width: 60vw;
-  // height: 200px;
-  // height: 120px; // adjust as needed
   object-fit: cover;
   flex-shrink: 0;
 }
-
-// .imageContainer {
-//   display: flex;
-//   overflow-y: hidden;
-//   height: 30vh;
-// }
-
-// .gridImage {
-//   object-fit: fill;
-//   height: 100%;
-//   transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-// }
 
 // Desktop grid (hidden on mobile)
 .imageContainerDesktop {
   height: 100vh;
   width: 45vw;
   position: relative;
-  background-color: #f1f8e8;
+  z-index: 2;
   @media (max-width: 768px) {
     display: none;
   }
@@ -336,7 +319,7 @@
 
   .background {
     height: 100%;
-    width: inherit;
+    width: 100%;
   }
 
   .ctaBubble {
@@ -347,9 +330,6 @@
     height: 100vh;
     width: 45vw;
     position: relative;
-    // display: grid;
-    // grid-template-columns: 1fr 1fr; /* 2 columns */
-    // grid-template-rows: 1fr 1fr; /* 2 rows */
     background-color: #f1f8e8;
   }
 
@@ -357,7 +337,6 @@
     position: absolute;
     width: 50%;
     height: 50%;
-    // object-fit: cover;
     transition: all 1s ease-in-out;
   }
 }

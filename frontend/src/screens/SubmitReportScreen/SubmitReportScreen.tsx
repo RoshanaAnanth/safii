@@ -5,7 +5,7 @@ import { User } from "@supabase/supabase-js";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../../lib/supabase";
-import { uploadImage } from "../../lib/utils";
+import { reverseGeocode, uploadImage } from "../../lib/utils";
 import styles from "./SubmitReportScreen.module.scss";
 
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "../../components/Chip/Chip";
 
+import background from "../../../assets/HomeScreenBackground.png";
 import submitReportIllustration1 from "../../../assets/SubmitReportIllustration1.png";
 import submitReportIllustration2 from "../../../assets/SubmitReportIllustration2.png";
 import submitReportIllustration3 from "../../../assets/SubmitReportIllustration3.png";
@@ -54,12 +55,36 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
     location: "",
     imageUrl: "",
   });
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [direction, setDirection] = useState<"forward" | "backward">("forward");
 
   // Get user profile and current location
   useEffect(() => {
     getCurrentLocation();
     fetchUserProfile();
   }, []);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (direction === "forward") {
+        if (activeIndex < 3) {
+          setActiveIndex(activeIndex + 1);
+        } else {
+          setDirection("backward");
+          setActiveIndex(activeIndex - 1);
+        }
+      } else {
+        if (activeIndex > -1) {
+          setActiveIndex(activeIndex - 1);
+        } else {
+          setDirection("forward");
+          setActiveIndex(activeIndex + 1);
+        }
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [activeIndex, direction]);
 
   const fetchUserProfile = async () => {
     try {
@@ -88,12 +113,29 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
     setLocationLoading(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords;
-        setFormData((prev) => ({
-          ...prev,
-          location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-        }));
+
+        try {
+          // Get area name using reverse geocoding
+          const areaName = await reverseGeocode(latitude, longitude);
+          const locationString = `${areaName} (${latitude.toFixed(
+            6
+          )}, ${longitude.toFixed(6)})`;
+
+          setFormData((prev) => ({
+            ...prev,
+            location: locationString,
+          }));
+        } catch (error) {
+          console.error("Error getting area name:", error);
+          // Fallback to just coordinates
+          setFormData((prev) => ({
+            ...prev,
+            location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+          }));
+        }
+
         setLocationLoading(false);
       },
       (error) => {
@@ -144,13 +186,29 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
     setLoading(true);
     try {
-      // Parse location data
+      // Parse location data - handle both formats
       let locationData;
-      if (
+
+      if (formData.location.includes("(") && formData.location.includes(")")) {
+        // Format: "Area Name (lat, lng)"
+        const parts = formData.location.split("(");
+        const areaName = parts[0].trim();
+        const coordsPart = parts[1].replace(")", "").trim();
+        const [lat, lng] = coordsPart
+          .split(",")
+          .map((coord) => parseFloat(coord.trim()));
+
+        locationData = {
+          type: "coordinates",
+          lat: lat,
+          lng: lng,
+          address: areaName,
+        };
+      } else if (
         formData.location.includes(",") &&
         !isNaN(parseFloat(formData.location.split(",")[0]))
       ) {
-        // It's coordinates (lat, lng)
+        // It's just coordinates (lat, lng)
         const [lat, lng] = formData.location
           .split(",")
           .map((coord) => parseFloat(coord.trim()));
@@ -226,7 +284,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
   return (
     <div className={styles.container}>
-      {/* <div className={styles.content}> */}
+      <img src={background} alt="Background" className={styles.background} />
       <IconButton
         onClick={() => navigate("/home")}
         className={styles.backButton}
@@ -238,26 +296,34 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           <img
             src={submitReportIllustration1}
             alt="Illustration 1"
-            className={styles.illustration}
+            className={`${styles.illustration} ${
+              activeIndex >= 0 ? styles.visible : styles.hidden
+            }`}
           />
           <div />
           <div />
           <img
             src={submitReportIllustration2}
             alt="Illustration 2"
-            className={styles.illustration}
+            className={`${styles.illustration} ${
+              activeIndex >= 1 ? styles.visible : styles.hidden
+            }`}
           />
           <img
             src={submitReportIllustration3}
             alt="Illustration 3"
-            className={styles.illustration}
+            className={`${styles.illustration} ${
+              activeIndex >= 2 ? styles.visible : styles.hidden
+            }`}
           />
           <div />
           <div />
           <img
             src={submitReportIllustration4}
             alt="Illustration 4"
-            className={styles.illustration}
+            className={`${styles.illustration} ${
+              activeIndex >= 3 ? styles.visible : styles.hidden
+            }`}
           />
         </div>
       </div>
@@ -367,6 +433,12 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
               onChange={handleInputChange}
               required
               className={styles.input}
+              placeholder={
+                locationLoading
+                  ? "Getting location..."
+                  : "Enter address or use GPS"
+              }
+              disabled={locationLoading}
               startAdornment={
                 <InputAdornment
                   position="start"
@@ -376,6 +448,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                     aria-label="Fetch location"
                     onClick={getCurrentLocation}
                     className={styles.locationButton}
+                    disabled={locationLoading}
                   >
                     <LocationPinIcon className={styles.locationIcon} />
                   </IconButton>
@@ -436,12 +509,10 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
             className={styles.submitButton}
             onClick={handleSubmit}
           >
-            {loading ? "Submitting..." : "Submit Report"}
+            {loading ? "Submitting..." : "Submit"}
           </button>
         </form>
       </div>
-      {/* <hr className={styles.horizontalLine} /> */}
-      {/* </div> */}
     </div>
   );
 };

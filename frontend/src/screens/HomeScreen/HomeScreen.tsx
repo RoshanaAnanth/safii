@@ -51,7 +51,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
           setShrinking(false); // Grow back after moving
         }, 1000); // This should match your CSS transition duration
       }, 1000); // Shrink duration before moving (optional, can be 0)
-    }, 6000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);

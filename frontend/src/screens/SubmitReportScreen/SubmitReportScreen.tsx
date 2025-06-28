@@ -366,25 +366,37 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                 }}
               >
                 <MenuItem value="pothole" className={styles.menuItem}>
-                  <Chip type="category" label="Pothole" icon="🕳️" />
+                  <Chip type="category" label="Pothole" category="pothole" />
                 </MenuItem>
                 <MenuItem value="drainage" className={styles.menuItem}>
-                  <Chip type="category" label="Drainage" icon="🌊" />
+                  <Chip type="category" label="Drainage" category="drainage" />
                 </MenuItem>
                 <MenuItem value="garbage" className={styles.menuItem}>
-                  <Chip type="category" label="Garbage" icon="🗑️" />
+                  <Chip type="category" label="Garbage" category="garbage" />
                 </MenuItem>
                 <MenuItem value="landslide" className={styles.menuItem}>
-                  <Chip type="category" label="Landslide" icon="⛰️" />
+                  <Chip
+                    type="category"
+                    label="Landslide"
+                    category="landslide"
+                  />
                 </MenuItem>
                 <MenuItem value="street_light" className={styles.menuItem}>
-                  <Chip type="category" label="Street Light" icon="💡" />
+                  <Chip
+                    type="category"
+                    label="Street Light"
+                    category="street_light"
+                  />
                 </MenuItem>
                 <MenuItem value="broken_sign" className={styles.menuItem}>
-                  <Chip type="category" label="Broken Sign" icon="🚧" />
+                  <Chip
+                    type="category"
+                    label="Broken Sign"
+                    category="broken_sign"
+                  />
                 </MenuItem>
                 <MenuItem value="other" className={styles.menuItem}>
-                  <Chip type="category" label="Other" icon="❓" />
+                  <Chip type="category" label="Other" category="other" />
                 </MenuItem>
               </Select>
             </div>

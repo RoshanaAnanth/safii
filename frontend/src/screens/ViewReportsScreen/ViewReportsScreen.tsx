@@ -190,9 +190,9 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
         {loading ? (
           <div className={styles.loading}>Loading reports...</div>
         ) : currentView === "list" ? (
-          <ListView issues={filteredIssues} />
+          <ListView issues={filteredIssues} currentUserId={user.id} />
         ) : (
-          <MapView issues={filteredIssues} />
+          <MapView issues={filteredIssues} currentUserId={user.id} />
         )}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import L from "leaflet";
 import React, { useEffect } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import UpvoteButton from "../UpvoteButton/UpvoteButton";
 
 import styles from "./MapView.module.scss";
 
@@ -34,9 +35,10 @@ export interface Issue {
 
 interface MapViewProps {
   issues: Issue[];
+  currentUserId: string;
 }
 
-const MapView: React.FC<MapViewProps> = ({ issues }) => {
+const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
   useEffect(() => {
     // Fix for default markers in react-leaflet
     delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -248,6 +250,14 @@ const MapView: React.FC<MapViewProps> = ({ issues }) => {
                           </span>
                         </div>
                       )}
+                    </div>
+
+                    <div className={styles.popupUpvote}>
+                      <UpvoteButton
+                        issueId={issue.id}
+                        userId={currentUserId}
+                        size="normal"
+                      />
                     </div>
 
                     <div className={styles.popupLocation}>

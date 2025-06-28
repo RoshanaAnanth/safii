@@ -12,9 +12,9 @@
   width: 100%;
   border-collapse: collapse;
   font-family: "Poppins", sans-serif;
-  min-width: 800px; // Ensure horizontal scroll on mobile
+  min-width: 900px; // Increased to accommodate upvote column
   background: #ffffff;
-  border-radius: 0;
+  border-radius: 20px;
   overflow: hidden;
   box-shadow: none;
   border: none;
@@ -25,6 +25,7 @@
   position: sticky;
   top: 0;
   z-index: 3;
+  // border-radius: 10px;
 }
 
 .headerCell {
@@ -32,12 +33,17 @@
   text-align: left;
   font-weight: 600;
   font-size: 14px;
-  color: #2e7d32; // Darker green text for contrast
+  color: #4e8d9b;
   border: none;
   white-space: nowrap;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
+// .upvoteHeader {
+//   text-align: center;
+//   width: 80px;
+// }
 
 .tableBody {
   background: #ffffff;
@@ -49,7 +55,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #e5f2d6; // Light gray hover
+    background-color: #e5f2d6;
   }
 
   &:last-child {
@@ -62,6 +68,14 @@
   vertical-align: top;
   border: none;
   background: transparent;
+}
+
+.upvoteCell {
+  align-self: center;
+  text-align: center;
+  vertical-align: middle;
+  width: 50px;
+  padding: 0px 10px;
 }
 
 .issueInfo {
@@ -200,6 +214,10 @@
   .cell {
     padding: 18px 24px;
   }
+
+  .upvoteCell {
+    padding: 0px 12px;
+  }
 }
 
 // Desktop styles
@@ -209,12 +227,17 @@
   }
 
   .headerCell {
-    font-size: 15px;
+    font-size: 16px;
+    color: #4e8d9b;
     padding: 20px 28px;
   }
 
   .cell {
     padding: 20px 28px;
+  }
+
+  .upvoteCell {
+    padding: 0px 14px;
   }
 
   .issueTitle {

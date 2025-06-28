@@ -1,0 +1,116 @@
+// Mobile-first responsive styles for Upvote Button
+.upvoteButton {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  color: #666;
+  min-width: 60px;
+  justify-content: center;
+
+  &:hover {
+    color: #65968e;
+    transform: translateY(-1px);
+
+    .upvoteIcon {
+      color: #65968e;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+  }
+}
+
+.upvoted {
+  border-color: #65968e;
+  color: #65968e;
+
+  .upvoteIcon {
+    color: #65968e;
+  }
+}
+
+.upvoteIcon {
+  width: 22px !important;
+  height: 22px !important;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.upvoteCount {
+  font-weight: 500;
+  min-width: 16px;
+  text-align: center;
+}
+
+// Compact version for table cells
+.compact {
+  padding: 4px 8px;
+  font-size: 11px;
+  min-width: 50px;
+
+  .upvoteIcon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+// Large version for modals
+.large {
+  padding: 8px 12px;
+  font-size: 14px;
+  min-width: 70px;
+  gap: 8px;
+
+  .upvoteIcon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .upvoteButton {
+    font-size: 13px;
+    padding: 7px 11px;
+  }
+
+  .compact {
+    font-size: 12px;
+    padding: 5px 9px;
+  }
+
+  .large {
+    font-size: 15px;
+    padding: 9px 13px;
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .upvoteButton {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .compact {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .large {
+    font-size: 16px;
+    padding: 10px 14px;
+  }
+}

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import Chip from "../Chip/Chip";
 import IssueDetailsModal from "../IssueDetailsModal/IssueDetailsModal";
+import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./ListView.module.scss";
 
 interface Issue {
@@ -29,9 +31,10 @@ interface Issue {
 
 interface ListViewProps {
   issues: Issue[];
+  currentUserId: string;
 }
 
-const ListView: React.FC<ListViewProps> = ({ issues }) => {
+const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -65,25 +68,6 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "pothole":
-        return "🕳️";
-      case "drainage":
-        return "🌊";
-      case "garbage":
-        return "🗑️";
-      case "landslide":
-        return "⛰️";
-      case "street_light":
-        return "💡";
-      case "broken_sign":
-        return "🚧";
-      default:
-        return "❓";
-    }
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -92,7 +76,12 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
     });
   };
 
-  const handleRowClick = (issue: Issue) => {
+  const handleRowClick = (issue: Issue, e: React.MouseEvent) => {
+    // Don't open modal if clicking on upvote button
+    if ((e.target as HTMLElement).closest("button")) {
+      return;
+    }
+
     setSelectedIssue(issue);
     setIsModalOpen(true);
   };
@@ -108,7 +97,8 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
         <div className={styles.emptyIcon}>📋</div>
         <h3 className={styles.emptyTitle}>No Reports Found</h3>
         <p className={styles.emptyDescription}>
-          There are no reports matching your current filters. Try adjusting your filter criteria.
+          There are no reports matching your current filters. Try adjusting your
+          filter criteria.
         </p>
       </div>
     );
@@ -124,6 +114,7 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
             <th className={styles.headerCell}>Status</th>
             <th className={styles.headerCell}>Priority</th>
             <th className={styles.headerCell}>Date</th>
+            <th className={`${styles.headerCell} ${styles.upvoteHeader}`}></th>
           </tr>
         </thead>
         <tbody className={styles.tableBody}>
@@ -131,7 +122,7 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
             <tr
               key={issue.id}
               className={styles.tableRow}
-              onClick={() => handleRowClick(issue)}
+              onClick={(e) => handleRowClick(issue, e)}
               style={{ cursor: "pointer" }}
             >
               <td className={styles.cell}>
@@ -145,35 +136,49 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
                 </div>
               </td>
               <td className={styles.cell}>
-                <div className={styles.category}>
-                  <span className={styles.categoryIcon}>
-                    {getCategoryIcon(issue.category)}
-                  </span>
-                  <span className={styles.categoryText}>
-                    {issue.category.replace("_", " ")}
-                  </span>
-                </div>
+                <Chip
+                  type="category"
+                  label={issue.category.replace("_", " ")}
+                  category={issue.category}
+                />
               </td>
               <td className={styles.cell}>
-                <span
+                <Chip
+                  type="status"
+                  label={issue.status.replace("_", " ")}
+                  status={issue.status}
+                />
+                {/* <span
                   className={styles.status}
                   style={{ backgroundColor: getStatusColor(issue.status) }}
                 >
                   {issue.status.replace("_", " ")}
-                </span>
+                </span> */}
               </td>
               <td className={styles.cell}>
-                <span
+                <Chip
+                  type="priority"
+                  priority={issue.priority}
+                  label={issue.priority}
+                />
+                {/* <span
                   className={styles.priority}
                   style={{ color: getPriorityColor(issue.priority) }}
                 >
                   {issue.priority}
-                </span>
+                </span> */}
               </td>
               <td className={styles.cell}>
                 <span className={styles.date}>
                   {formatDate(issue.created_at)}
                 </span>
+              </td>
+              <td className={styles.upvoteCell}>
+                <UpvoteButton
+                  issueId={issue.id}
+                  userId={currentUserId}
+                  size="compact"
+                />
               </td>
             </tr>
           ))}
@@ -181,7 +186,11 @@ const ListView: React.FC<ListViewProps> = ({ issues }) => {
       </table>
 
       {isModalOpen && selectedIssue && (
-        <IssueDetailsModal issue={selectedIssue} onClose={handleCloseModal} />
+        <IssueDetailsModal
+          issue={selectedIssue}
+          onClose={handleCloseModal}
+          currentUserId={currentUserId}
+        />
       )}
     </div>
   );

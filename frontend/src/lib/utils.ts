@@ -150,3 +150,103 @@ export function formatLocationForDisplay(location: any): string {
 
   return "Unknown location";
 }
+
+// Upvote functionality
+export async function toggleUpvote(
+  issueId: string,
+  userId: string
+): Promise<{ isUpvoted: boolean; upvoteCount: number }> {
+  try {
+    // Check if user has already upvoted this issue
+    const { data: existingUpvote, error: checkError } = await supabase
+      .from("issue_upvotes")
+      .select("id")
+      .eq("issue_id", issueId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (checkError) {
+      throw new Error("Error checking upvote status: " + checkError.message);
+    }
+
+    if (existingUpvote) {
+      // Remove upvote
+      const { error: deleteError } = await supabase
+        .from("issue_upvotes")
+        .delete()
+        .eq("issue_id", issueId)
+        .eq("user_id", userId);
+
+      if (deleteError) {
+        throw new Error("Error removing upvote: " + deleteError.message);
+      }
+    } else {
+      // Add upvote
+      const { error: insertError } = await supabase
+        .from("issue_upvotes")
+        .insert({
+          issue_id: issueId,
+          user_id: userId,
+        });
+
+      if (insertError) {
+        throw new Error("Error adding upvote: " + insertError.message);
+      }
+    }
+
+    // Get updated upvote count
+    const { data: upvotes, error: countError } = await supabase
+      .from("issue_upvotes")
+      .select("id")
+      .eq("issue_id", issueId);
+
+    if (countError) {
+      throw new Error("Error getting upvote count: " + countError.message);
+    }
+
+    return {
+      isUpvoted: !existingUpvote,
+      upvoteCount: upvotes?.length || 0,
+    };
+  } catch (error) {
+    console.error("Error toggling upvote:", error);
+    throw error;
+  }
+}
+
+export async function getUpvoteStatus(
+  issueId: string,
+  userId: string
+): Promise<{ isUpvoted: boolean; upvoteCount: number }> {
+  try {
+    // Get upvote count
+    const { data: upvotes, error: countError } = await supabase
+      .from("issue_upvotes")
+      .select("id")
+      .eq("issue_id", issueId);
+
+    if (countError) {
+      throw new Error("Error getting upvote count: " + countError.message);
+    }
+
+    // Check if current user has upvoted
+    const { data: userUpvote, error: userError } = await supabase
+      .from("issue_upvotes")
+      .select("id")
+      .eq("issue_id", issueId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (userError) {
+      throw new Error("Error checking user upvote: " + userError.message);
+    }
+
+    return {
+      isUpvoted: !!userUpvote,
+      upvoteCount: upvotes?.length || 0,
+    };
+  } catch (error) {
+    console.error("Error getting upvote status:", error);
+    return { isUpvoted: false, upvoteCount: 0 };
+  }
+}

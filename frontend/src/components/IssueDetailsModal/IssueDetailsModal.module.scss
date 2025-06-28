@@ -141,6 +141,23 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+.upvoteSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(74, 144, 184, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(74, 144, 184, 0.1);
+}
+
+.upvoteText {
+  font-family: "Geist", sans-serif;
+  font-size: 14px;
+  color: #4a90b8;
+  font-weight: 500;
+}
+
 .detailsGrid {
   display: grid;
   grid-template-columns: 1fr;
@@ -319,6 +336,14 @@
   .description {
     font-size: 15px;
     padding: 20px;
+  }
+
+  .upvoteSection {
+    padding: 20px;
+  }
+
+  .upvoteText {
+    font-size: 15px;
   }
 }
 

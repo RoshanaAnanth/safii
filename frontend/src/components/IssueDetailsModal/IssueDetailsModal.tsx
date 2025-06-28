@@ -1,4 +1,5 @@
 import React from "react";
+import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./IssueDetailsModal.module.scss";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -32,11 +33,13 @@ interface Issue {
 interface IssueDetailsModalProps {
   issue: Issue;
   onClose: () => void;
+  currentUserId: string;
 }
 
 const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   issue,
   onClose,
+  currentUserId,
 }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -133,6 +136,20 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Description</h3>
             <p className={styles.description}>{issue.description}</p>
+          </div>
+
+          <div className={styles.section}>
+            <h3 className={styles.sectionTitle}>Community Support</h3>
+            <div className={styles.upvoteSection}>
+              <UpvoteButton
+                issueId={issue.id}
+                userId={currentUserId}
+                size="large"
+              />
+              <span className={styles.upvoteText}>
+                Show your support for this issue
+              </span>
+            </div>
           </div>
 
           <div className={styles.section}>

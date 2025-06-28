@@ -169,7 +169,8 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
         <div className={styles.emptyIcon}>🗺️</div>
         <h3 className={styles.emptyTitle}>No Reports to Display</h3>
         <p className={styles.emptyDescription}>
-          There are no reports matching your current filters to show on the map. Try adjusting your filter criteria.
+          There are no reports matching your current filters to show on the map.
+          Try adjusting your filter criteria.
         </p>
       </div>
     );

@@ -38,9 +38,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 
   const statusOptions = [
     { value: "pending", label: "🟡 Pending" },
-    { value: "in_progress", label: "🔵 In Progress" },
     { value: "resolved", label: "🟢 Resolved" },
-    { value: "rejected", label: "🔴 Rejected" },
   ];
 
   const categoryOptions = [
@@ -98,15 +96,15 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   };
 
   const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
-  const hasActiveFilters = 
-    filters.status.length > 0 || 
-    filters.category.length > 0 || 
+  const hasActiveFilters =
+    filters.status.length > 0 ||
+    filters.category.length > 0 ||
     filters.priority.length > 0;
 
   const getActiveCount = (filterType: keyof FilterState) => {
@@ -123,7 +121,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 
     return (
       <div className={styles.filterGroup}>
-        <div 
+        <div
           className={styles.sectionHeader}
           onClick={() => toggleSection(filterType)}
         >
@@ -137,7 +135,6 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </div>
-        
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           <div className={styles.checkboxGroup}>
             {options.map((option) => (
@@ -147,7 +144,11 @@ const FilterControls: React.FC<FilterControlsProps> = ({
                   <Checkbox
                     checked={filters[filterType].includes(option.value)}
                     onChange={(e) =>
-                      handleFilterChange(filterType, option.value, e.target.checked)
+                      handleFilterChange(
+                        filterType,
+                        option.value,
+                        e.target.checked
+                      )
                     }
                     className={styles.checkbox}
                     size="small"
@@ -167,7 +168,9 @@ const FilterControls: React.FC<FilterControlsProps> = ({
     <>
       <IconButton
         onClick={handleMenuOpen}
-        className={`${styles.filterButton} ${hasActiveFilters ? styles.active : ""}`}
+        className={`${styles.filterButton} ${
+          hasActiveFilters ? styles.active : ""
+        }`}
       >
         <FilterListIcon className={styles.filterIcon} />
       </IconButton>
@@ -182,8 +185,8 @@ const FilterControls: React.FC<FilterControlsProps> = ({
             className: styles.menuPaper,
           },
         }}
-        transformOrigin={{ horizontal: 'center', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "center", vertical: "top" }}
+        anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
       >
         <div className={styles.menuHeader}>
           <div className={styles.menuTitle}>
@@ -207,7 +210,8 @@ const FilterControls: React.FC<FilterControlsProps> = ({
 
         <div className={styles.resultsFooter}>
           <p className={styles.resultsText}>
-            Showing <span className={styles.resultsNumber}>{resultsCount}</span> result{resultsCount !== 1 ? 's' : ''}
+            Showing <span className={styles.resultsNumber}>{resultsCount}</span>{" "}
+            result{resultsCount !== 1 ? "s" : ""}
           </p>
         </div>
       </Menu>

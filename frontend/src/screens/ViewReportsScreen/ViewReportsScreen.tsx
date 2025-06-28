@@ -7,7 +7,9 @@ import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import IconButton from "@mui/material/IconButton";
 
 import Button from "@mui/material/Button";
-import FilterControls, { FilterState } from "../../components/FilterControls/FilterControls";
+import FilterControls, {
+  FilterState,
+} from "../../components/FilterControls/FilterControls";
 import ListView from "../../components/ListView/ListView";
 import MapView from "../../components/MapView/MapView";
 import supabase from "../../lib/supabase";
@@ -125,23 +127,21 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
     // If no filters are selected for a category, show all items for that category
     if (filters.status.length > 0 && !filters.status.includes(issue.status))
       return false;
-    if (filters.category.length > 0 && !filters.category.includes(issue.category))
+    if (
+      filters.category.length > 0 &&
+      !filters.category.includes(issue.category)
+    )
       return false;
-    if (filters.priority.length > 0 && !filters.priority.includes(issue.priority))
+    if (
+      filters.priority.length > 0 &&
+      !filters.priority.includes(issue.priority)
+    )
       return false;
     return true;
   });
 
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
-  };
-
-  const handleBack = () => {
-    navigate("/home");
-  };
-
-  const toggleView = () => {
-    setCurrentView(currentView === "list" ? "map" : "list");
   };
 
   return (

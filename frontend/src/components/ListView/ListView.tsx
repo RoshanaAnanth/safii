@@ -148,12 +148,6 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
                   label={issue.status.replace("_", " ")}
                   status={issue.status}
                 />
-                {/* <span
-                  className={styles.status}
-                  style={{ backgroundColor: getStatusColor(issue.status) }}
-                >
-                  {issue.status.replace("_", " ")}
-                </span> */}
               </td>
               <td className={styles.cell}>
                 <Chip
@@ -161,12 +155,6 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
                   priority={issue.priority}
                   label={issue.priority}
                 />
-                {/* <span
-                  className={styles.priority}
-                  style={{ color: getPriorityColor(issue.priority) }}
-                >
-                  {issue.priority}
-                </span> */}
               </td>
               <td className={styles.cell}>
                 <span className={styles.date}>

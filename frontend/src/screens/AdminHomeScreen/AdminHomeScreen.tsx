@@ -7,13 +7,11 @@ import styles from "./AdminHomeScreen.module.scss";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import ListAltIcon from "@mui/icons-material/ListAlt";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import LogoutIcon from "@mui/icons-material/Logout";
-import MapIcon from "@mui/icons-material/Map";
-import PendingActionsIcon from "@mui/icons-material/PendingActions";
-import ReportIcon from "@mui/icons-material/Report";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import SearchIcon from "@mui/icons-material/Search";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -154,6 +152,10 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     navigate(`/admin/issue/${issueId}`);
   };
 
+  const handleViewAllIssues = () => {
+    navigate("/view-reports");
+  };
+
   const getUserName = () => {
     if (user.user_metadata?.full_name) {
       return user.user_metadata.full_name.split(" ")[0];
@@ -220,12 +222,23 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.logo}>Safii Admin</h1>
+        <div>
+          <h1 className={styles.logo}>Safii</h1>
+          <p className={styles.adminSubtitle}>— ADMIN —</p>
+        </div>
         <div className={styles.profileSection}>
-          <span className={styles.welcomeText}>Welcome, {getUserName()}!</span>
           <IconButton className={styles.profileButton} onClick={handleMenuOpen}>
             <AccountCircleIcon className={styles.profileIcon} />
           </IconButton>
+        </div>
+      </div>
+
+      <div className={styles.welcomeSection}>
+        <div className={styles.welcomeContent}>
+          <h2 className={styles.welcomeText}>Welcome back!</h2>
+        </div>
+        <div className={styles.welcomeIllustrationPlaceholder}>
+          Illustration
         </div>
       </div>
 
@@ -233,7 +246,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Total Issues</h3>
-            <ReportIcon className={styles.cardIcon} />
+            <SearchIcon className={styles.cardIcon} />
           </div>
           <p className={styles.statNumber}>{stats.totalIssues}</p>
           <p className={styles.statLabel}>All time</p>
@@ -242,7 +255,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Pending</h3>
-            <PendingActionsIcon className={styles.cardIcon} />
+            <HourglassEmptyIcon className={styles.cardIcon} />
           </div>
           <p className={styles.statNumber}>{stats.pendingIssues}</p>
           <p className={styles.statLabel}>Awaiting action</p>
@@ -251,7 +264,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Resolved</h3>
-            <TrendingUpIcon className={styles.cardIcon} />
+            <SettingsIcon className={styles.cardIcon} />
           </div>
           <p className={styles.statNumber}>{stats.resolvedIssues}</p>
           <p className={styles.statLabel}>Completed</p>
@@ -260,89 +273,74 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Today</h3>
-            <DashboardIcon className={styles.cardIcon} />
+            <CalendarTodayIcon className={styles.cardIcon} />
           </div>
           <p className={styles.statNumber}>{stats.todayIssues}</p>
           <p className={styles.statLabel}>New reports</p>
         </div>
       </div>
 
-      <div className={styles.recentIssues}>
-        <h2 className={styles.sectionTitle}>
-          <AssignmentIcon className={styles.sectionIcon} />
-          Recent Issues
-        </h2>
+      <div className={styles.contentGrid}>
+        <div className={styles.recentIssuesSection}>
+          <div className={styles.recentIssuesHeader}>
+            <h2 className={styles.sectionTitle}>
+              <AssignmentIcon className={styles.sectionIcon} />
+              Recent Issues
+            </h2>
+            <Button
+              className={styles.viewAllIssuesButton}
+              onClick={handleViewAllIssues}
+            >
+              View All Issues
+            </Button>
+          </div>
 
-        {loading ? (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyTitle}>Loading...</div>
-          </div>
-        ) : recentIssues.length === 0 ? (
-          <div className={styles.emptyState}>
-            <div className={styles.emptyIcon}>📋</div>
-            <h3 className={styles.emptyTitle}>No Recent Issues</h3>
-            <p className={styles.emptyDescription}>
-              No issues have been reported recently.
-            </p>
-          </div>
-        ) : (
-          <div className={styles.issuesList}>
-            {recentIssues.map((issue) => (
-              <div 
-                key={issue.id} 
-                className={styles.issueItem}
-                onClick={() => handleIssueClick(issue.id)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className={styles.issueIcon}>
-                  {getCategoryIcon(issue.category)}
+          <div className={styles.recentIssuesContent}>
+            <div className={styles.issuesList}>
+              {loading ? (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyTitle}>Loading...</div>
                 </div>
-                <div className={styles.issueDetails}>
-                  <h4 className={styles.issueTitle}>{issue.title}</h4>
-                  <p className={styles.issueLocation}>
-                    {formatLocation(issue.location)}
+              ) : recentIssues.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyIcon}>📋</div>
+                  <h3 className={styles.emptyTitle}>No Recent Issues</h3>
+                  <p className={styles.emptyDescription}>
+                    No issues have been reported recently.
                   </p>
                 </div>
-                <span
-                  className={`${styles.issueStatus} ${getStatusClass(
-                    issue.status
-                  )}`}
-                >
-                  {issue.status.replace("_", " ")}
-                </span>
-              </div>
-            ))}
+              ) : (
+                recentIssues.map((issue) => (
+                  <div 
+                    key={issue.id} 
+                    className={styles.issueItem}
+                    onClick={() => handleIssueClick(issue.id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className={styles.issueIcon}>
+                      {getCategoryIcon(issue.category)}
+                    </div>
+                    <div className={styles.issueDetails}>
+                      <h4 className={styles.issueTitle}>{issue.title}</h4>
+                      <p className={styles.issueLocation}>
+                        {formatLocation(issue.location)}
+                      </p>
+                    </div>
+                    <span
+                      className={`${styles.issueStatus} ${getStatusClass(
+                        issue.status
+                      )}`}
+                    >
+                      {issue.status.replace("_", " ")}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className={styles.recentIssuesIllustrationPlaceholder}>
+              Illustration
+            </div>
           </div>
-        )}
-      </div>
-
-      <div className={styles.quickActions}>
-        <h2 className={styles.sectionTitle}>
-          <DashboardIcon className={styles.sectionIcon} />
-          Quick Actions
-        </h2>
-        <div className={styles.actionsGrid}>
-          <Button
-            className={styles.actionButton}
-            onClick={() => navigate("/view-reports")}
-          >
-            <ListAltIcon className={styles.actionIcon} />
-            View All Issues
-          </Button>
-          <Button
-            className={styles.actionButton}
-            onClick={() => navigate("/view-reports")}
-          >
-            <MapIcon className={styles.actionIcon} />
-            Map View
-          </Button>
-          <Button
-            className={styles.actionButton}
-            onClick={() => navigate("/submit-report")}
-          >
-            <ReportIcon className={styles.actionIcon} />
-            Report Issue
-          </Button>
         </div>
       </div>
 

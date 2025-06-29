@@ -119,9 +119,15 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
         try {
           // Get area name using reverse geocoding
           const areaName = await reverseGeocode(latitude, longitude);
-          const locationString = `${areaName} (${latitude.toFixed(
-            6
-          )}, ${longitude.toFixed(6)})`;
+          
+          let locationString;
+          if (areaName) {
+            // If we got a meaningful area name, format as "Area (lat, lng)"
+            locationString = `${areaName} (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`;
+          } else {
+            // If no area name found, just use coordinates
+            locationString = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+          }
 
           setFormData((prev) => ({
             ...prev,
@@ -132,7 +138,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           // Fallback to just coordinates
           setFormData((prev) => ({
             ...prev,
-            location: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+            location: `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`,
           }));
         }
 
@@ -208,7 +214,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
         formData.location.includes(",") &&
         !isNaN(parseFloat(formData.location.split(",")[0]))
       ) {
-        // It's just coordinates (lat, lng)
+        // It's just coordinates (lat, lng) - no area name found
         const [lat, lng] = formData.location
           .split(",")
           .map((coord) => parseFloat(coord.trim()));
@@ -216,7 +222,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           type: "coordinates",
           lat: lat,
           lng: lng,
-          address: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          address: null, // Set to null when no area name is available
         };
       } else {
         // It's an address string

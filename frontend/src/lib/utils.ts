@@ -102,15 +102,19 @@ export async function reverseGeocode(
       }
       if (address.state) parts.push(address.state);
 
-      return parts.length > 0
-        ? parts.join(", ")
-        : `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      // If we have meaningful address parts, return them
+      if (parts.length > 0) {
+        return parts.join(", ");
+      }
     }
 
-    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    // If no meaningful address found, return empty string
+    // This prevents coordinate strings from being stored as addresses
+    return "";
   } catch (error) {
     console.error("Reverse geocoding failed:", error);
-    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    // Return empty string on error to prevent coordinate fallback
+    return "";
   }
 }
 
@@ -134,16 +138,22 @@ export function formatLocationForDisplay(location: any): string {
   }
 
   if (location && typeof location === "object") {
-    if (location.address && location.lat && location.lng) {
-      // If we have both address and coordinates, show "Area (lat, lng)" format
+    // Check if address is actually a coordinate string (e.g., "11.4327, 76.8738")
+    const isCoordinateString = location.address && 
+      location.address.includes(",") && 
+      !isNaN(parseFloat(location.address.split(",")[0])) &&
+      !isNaN(parseFloat(location.address.split(",")[1]));
+
+    if (location.address && !isCoordinateString && location.lat && location.lng) {
+      // If we have a real area name and coordinates, show "Area (lat, lng)" format
       return `${location.address} (${location.lat?.toFixed(
         4
       )}, ${location.lng?.toFixed(4)})`;
-    } else if (location.address && location.address !== `${location.lat}, ${location.lng}`) {
-      // If we have a readable address but no coordinates, just show the address
+    } else if (location.address && !isCoordinateString) {
+      // If we have a real area name but no coordinates, just show the address
       return location.address;
     } else if (location.lat && location.lng) {
-      // Just coordinates
+      // Just coordinates (no meaningful address found)
       return `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;
     }
   }

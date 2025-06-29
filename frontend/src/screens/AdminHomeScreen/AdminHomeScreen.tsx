@@ -1,6 +1,7 @@
 import { User } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import IssueDetailsModal from "../../components/IssueDetailsModal/IssueDetailsModal";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay } from "../../lib/utils";
 import styles from "./AdminHomeScreen.module.scss";
@@ -35,10 +36,19 @@ interface DashboardStats {
 interface Issue {
   id: string;
   title: string;
+  description: string;
   category: string;
   status: "pending" | "resolved";
+  priority: "low" | "medium" | "high" | "critical";
   location: any;
+  imageUrl?: string;
+  reporter_id: string;
+  admin_notes?: string;
+  resolved_at?: string;
   created_at: string;
+  updated_at: string;
+  reporter_name?: string;
+  reporter_email?: string;
 }
 
 const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
@@ -53,6 +63,8 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   });
   const [recentIssues, setRecentIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     fetchDashboardData();
@@ -91,17 +103,28 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         todayIssues,
       });
 
-      // Fetch recent issues
+      // Fetch recent issues with full details for modal
       const { data: recentIssuesData, error: recentError } = await supabase
         .from("issues")
         .select(
           `
           id,
           title,
+          description,
           category,
           status,
+          priority,
           location,
-          created_at
+          imageUrl,
+          reporter_id,
+          admin_notes,
+          resolved_at,
+          created_at,
+          updated_at,
+          users!reporter_id (
+            name,
+            email
+          )
         `
         )
         .order("created_at", { ascending: false })
@@ -112,7 +135,26 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         return;
       }
 
-      setRecentIssues(recentIssuesData || []);
+      // Format issues for display
+      const formattedIssues: Issue[] = (recentIssuesData || []).map((issue: any) => ({
+        id: issue.id,
+        title: issue.title,
+        description: issue.description,
+        category: issue.category,
+        status: issue.status,
+        priority: issue.priority,
+        location: issue.location,
+        imageUrl: issue.imageUrl,
+        reporter_id: issue.reporter_id,
+        admin_notes: issue.admin_notes,
+        resolved_at: issue.resolved_at,
+        created_at: issue.created_at,
+        updated_at: issue.updated_at,
+        reporter_name: issue.users?.name || "Anonymous User",
+        reporter_email: issue.users?.email || "unknown@example.com",
+      }));
+
+      setRecentIssues(formattedIssues);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -148,8 +190,14 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     }
   };
 
-  const handleIssueClick = (issueId: string) => {
-    navigate(`/admin/issue/${issueId}`);
+  const handleIssueClick = (issue: Issue) => {
+    setSelectedIssue(issue);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedIssue(null);
+    setIsModalOpen(false);
   };
 
   const handleViewAllIssues = () => {
@@ -314,7 +362,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                   <div
                     key={issue.id}
                     className={styles.issueItem}
-                    onClick={() => handleIssueClick(issue.id)}
+                    onClick={() => handleIssueClick(issue)}
                     style={{ cursor: "pointer" }}
                   >
                     <div className={styles.issueIcon}>
@@ -378,6 +426,17 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
           <ListItemText>Sign Out</ListItemText>
         </MenuItem>
       </Menu>
+
+      {isModalOpen && selectedIssue && (
+        <IssueDetailsModal
+          issue={{
+            ...selectedIssue,
+            location: formatLocationForDisplay(selectedIssue.location),
+          }}
+          onClose={handleCloseModal}
+          currentUserId={user.id}
+        />
+      )}
     </div>
   );
 };

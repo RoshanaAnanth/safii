@@ -2,6 +2,7 @@ import { User } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../../lib/supabase";
+import { formatLocationForDisplay } from "../../lib/utils";
 import styles from "./AdminHomeScreen.module.scss";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -38,7 +39,7 @@ interface Issue {
   title: string;
   category: string;
   status: "pending" | "in_progress" | "resolved" | "rejected";
-  location: string;
+  location: any;
   created_at: string;
 }
 
@@ -204,37 +205,16 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     }
   };
 
-  const formatLocation = (location: string | any) => {
-    if (typeof location === "string") {
-      // If location already contains parentheses, extract the area name
-      if (location.includes("(") && location.includes(")")) {
-        const areaName = location.split("(")[0].trim();
-        return areaName.length > 30 ? `${areaName.substring(0, 30)}...` : areaName;
-      }
-      
-      // If it's just coordinates
-      if (location.includes(",")) {
-        const [lat, lng] = location.split(",");
-        return `${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}`;
-      }
-      
-      return location.length > 30 ? `${location.substring(0, 30)}...` : location;
+  const formatLocation = (location: any) => {
+    // Use the utility function to format location consistently
+    const formattedLocation = formatLocationForDisplay(location);
+    
+    // Truncate if too long for display
+    if (formattedLocation.length > 30) {
+      return `${formattedLocation.substring(0, 30)}...`;
     }
     
-    // Handle location object
-    if (location && typeof location === "object") {
-      const locationObj = location as any;
-      if (locationObj.address) {
-        return locationObj.address.length > 30 
-          ? `${locationObj.address.substring(0, 30)}...` 
-          : locationObj.address;
-      }
-      if (locationObj.lat && locationObj.lng) {
-        return `${locationObj.lat.toFixed(4)}, ${locationObj.lng.toFixed(4)}`;
-      }
-    }
-    
-    return "Unknown location";
+    return formattedLocation;
   };
 
   return (

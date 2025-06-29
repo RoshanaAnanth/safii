@@ -21,15 +21,54 @@ const App: React.FC = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // Initial user fetch on app load
   useEffect(() => {
     const fetchUser = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (data?.user) {
         setUser(data.user);
+        console.log("Initial user loaded:", data.user);
+      } else {
+        setUser(null);
+        console.log("No user found on initial load");
+      }
+      setLoading(false);
+    };
 
+    fetchUser();
+
+    // Listen for auth changes (simplified - no database calls here)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state changed:", event, session);
+      
+      if (event === "SIGNED_IN" && session?.user) {
+        setUser(session.user);
+        console.log("User signed in:", session.user);
+      } else if (event === "SIGNED_OUT") {
+        setUser(null);
+        setUserProfile(null);
+        console.log("User signed out");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Separate useEffect to fetch userProfile when user changes
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) {
+        setUserProfile(null);
+        return;
+      }
+
+      try {
+        console.log("Fetching user profile for:", user.email);
+        
         // Determine provider
-        const provider = data.user.app_metadata?.provider;
-
+        const provider = user.app_metadata?.provider;
         let profile = null;
 
         if (provider === "google") {
@@ -37,117 +76,76 @@ const App: React.FC = () => {
           const { data: existingUser, error: fetchError } = await supabase
             .from("users")
             .select("*")
-            .eq("email", data.user.email)
+            .eq("email", user.email)
             .maybeSingle();
+
+          if (fetchError) {
+            console.error("Error fetching Google user:", fetchError);
+            return;
+          }
 
           if (!existingUser) {
             // Insert Google user if not exists
             const { error: insertError } = await supabase.from("users").insert({
-              id: data.user.id,
-              email: data.user.email,
-              name: data.user.user_metadata?.full_name || data.user.email,
+              id: user.id,
+              email: user.email,
+              name: user.user_metadata?.full_name || user.email,
               avatar_url:
-                data.user.user_metadata?.avatar_url ||
-                data.user.user_metadata?.picture,
+                user.user_metadata?.avatar_url ||
+                user.user_metadata?.picture,
               is_guest: false,
               is_admin: false,
             });
+            
             if (insertError) {
               console.error("Error inserting Google user:", insertError);
+              return;
             }
+            
             // Fetch the newly inserted user
-            const { data: newUser } = await supabase
+            const { data: newUser, error: newUserError } = await supabase
               .from("users")
               .select("*")
-              .eq("email", data.user.email)
+              .eq("email", user.email)
               .maybeSingle();
+              
+            if (newUserError) {
+              console.error("Error fetching newly inserted user:", newUserError);
+              return;
+            }
+            
             profile = newUser;
           } else {
             profile = existingUser;
           }
         } else {
-          // For admin (email/password), fetch by id
+          // For admin (email/password), fetch by email
           const { data: adminProfile, error: adminProfileError } =
             await supabase
               .from("users")
               .select("*")
-              .eq("email", data.user.email)
+              .eq("email", user.email)
               .maybeSingle();
+              
+          if (adminProfileError) {
+            console.error("Error fetching admin profile:", adminProfileError);
+            return;
+          }
+          
           profile = adminProfile;
         }
 
-        setUserProfile(profile || null);
-        console.log("Logged in user:", data.user);
-      } else {
-        setUser(null);
-        setUserProfile(null);
-        console.log("No user found");
+        setUserProfile(profile);
+        console.log("User profile set:", profile);
+      } catch (error) {
+        console.error("Error in fetchUserProfile:", error);
       }
-      setLoading(false);
     };
 
-    fetchUser();
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event, session);
-      if (event === "SIGNED_IN" && session?.user) {
-        setUser(session.user);
-        setLoading(false);
-
-        const provider = session.user.app_metadata?.provider;
-        let profile = null;
-
-        if (provider === "google") {
-          const { data: existingUser } = supabase
-            .from("users")
-            .select("*")
-            .eq("email", session.user.email)
-            .maybeSingle();
-
-          if (!existingUser) {
-            supabase.from("users").insert({
-              id: session.user.id,
-              email: session.user.email,
-              name: session.user.user_metadata?.full_name || session.user.email,
-              avatar_url:
-                session.user.user_metadata?.avatar_url ||
-                session.user.user_metadata?.picture,
-              is_guest: false,
-              is_admin: false,
-            });
-            const { data: newUser } = supabase
-              .from("users")
-              .select("*")
-              .eq("email", session.user.email)
-              .maybeSingle();
-            profile = newUser;
-          } else {
-            profile = existingUser;
-          }
-        } else {
-          const { data: adminProfile } = supabase
-            .from("users")
-            .select("*")
-            .eq("email", session.user.email)
-            .maybeSingle();
-          profile = adminProfile;
-        }
-
-        setUserProfile(profile || null);
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
-        setUserProfile(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+    fetchUserProfile();
+  }, [user]); // This effect runs whenever the user state changes
 
   if (loading) {
-    // if (!user) {
     return (
       <div
         style={{
@@ -161,10 +159,10 @@ const App: React.FC = () => {
         Loading...
       </div>
     );
-    // }
   }
 
-  console.log("User: ", user);
+  console.log("Current user:", user);
+  console.log("Current userProfile:", userProfile);
   const isAdmin = userProfile?.is_admin === true;
 
   return (

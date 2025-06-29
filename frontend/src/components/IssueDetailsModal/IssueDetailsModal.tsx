@@ -189,6 +189,121 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
     fileInputRef.current?.click();
   };
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.target as HTMLImageElement;
+    target.style.display = "none";
+    const container = target.parentElement;
+    if (container) {
+      container.innerHTML = `
+        <div class="${styles.noImage}">
+          <span class="${styles.noImageIcon}">🖼️</span>
+          <span>Image could not be loaded</span>
+        </div>
+      `;
+    }
+  };
+
+  const renderImageSection = () => {
+    const isResolved = issue.status === "resolved";
+    const hasOriginalImage = issue.imageUrl;
+    const hasResolvedImage = issue.resolvedImageUrl;
+
+    if (isResolved && hasOriginalImage && hasResolvedImage) {
+      // Show before & after images side by side
+      return (
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Before & After Images</h3>
+          <div className={styles.imageComparisonGrid}>
+            <div className={styles.imageContainer}>
+              <div className={styles.imageLabel}>Before (Reported)</div>
+              <img
+                src={issue.imageUrl}
+                alt="Original Issue"
+                className={styles.issueImage}
+                onError={handleImageError}
+              />
+            </div>
+            <div className={styles.imageContainer}>
+              <div className={styles.imageLabel}>After (Resolved)</div>
+              <img
+                src={issue.resolvedImageUrl}
+                alt="Resolved Issue"
+                className={styles.issueImage}
+                onError={handleImageError}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    } else if (isResolved && hasResolvedImage && !hasOriginalImage) {
+      // Show only resolved image
+      return (
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Resolved Image</h3>
+          <div className={styles.imageSection}>
+            <div className={styles.imageContainer}>
+              <img
+                src={issue.resolvedImageUrl}
+                alt="Resolved Issue"
+                className={styles.issueImage}
+                onError={handleImageError}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    } else if (isResolved && hasOriginalImage && !hasResolvedImage) {
+      // Show only original image for resolved issue without proof
+      return (
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Issue Image</h3>
+          <div className={styles.imageSection}>
+            <div className={styles.imageContainer}>
+              <img
+                src={issue.imageUrl}
+                alt="Issue"
+                className={styles.issueImage}
+                onError={handleImageError}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    } else if (hasOriginalImage) {
+      // Show original image for non-resolved issues
+      return (
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Issue Image</h3>
+          <div className={styles.imageSection}>
+            <div className={styles.imageContainer}>
+              <img
+                src={issue.imageUrl}
+                alt="Issue"
+                className={styles.issueImage}
+                onError={handleImageError}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      // No image provided
+      return (
+        <div className={styles.section}>
+          <h3 className={styles.sectionTitle}>Issue Image</h3>
+          <div className={styles.imageSection}>
+            <div className={styles.imageContainer}>
+              <div className={styles.noImage}>
+                <span className={styles.noImageIcon}>📷</span>
+                <span>No image provided</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
@@ -231,7 +346,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
             </div>
             <div className={styles.tagSection}>
               <span className={styles.sectionText}>Status:</span>
-              {isAdmin ? (
+              {isAdmin && issue.status !== "resolved" ? (
                 <FormControl size="small" className={styles.statusSelect}>
                   <Select
                     value={selectedStatus}
@@ -291,49 +406,11 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
 
           <hr className={styles.horizontalLine} />
 
-          {/* Original Issue Image */}
-          {issue.imageUrl && (
-            <div className={styles.section}>
-              <div className={styles.imageSection}>
-                <div className={styles.imageContainer}>
-                  <img
-                    src={issue.imageUrl}
-                    alt="Issue"
-                    className={styles.issueImage}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                      const container = target.parentElement;
-                      if (container) {
-                        container.innerHTML = `
-                          <div class="${styles.noImage}">
-                            <span class="${styles.noImageIcon}">🖼️</span>
-                            <span>Image could not be loaded</span>
-                          </div>
-                        `;
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+          {/* Render images based on issue status */}
+          {renderImageSection()}
 
-          {!issue.imageUrl && (
-            <div className={styles.section}>
-              <div className={styles.imageSection}>
-                <div className={styles.imageContainer}>
-                  <div className={styles.noImage}>
-                    <span className={styles.noImageIcon}>📷</span>
-                    <span>No image provided</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Resolved Image Upload Section - Only visible for admins when status is "resolved" */}
-          {isAdmin && selectedStatus === "resolved" && (
+          {/* Resolved Image Upload Section - Only visible for admins when changing to "resolved" and issue is not already resolved */}
+          {isAdmin && selectedStatus === "resolved" && issue.status !== "resolved" && (
             <div className={styles.section} ref={imageUploadRef}>
               <hr className={styles.horizontalLine} />
               <h3 className={styles.sectionTitle}>Upload Resolved Image</h3>
@@ -392,36 +469,6 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                 >
                   {isUpdatingStatus || isUploading ? "Resolving..." : "Resolve Issue"}
                 </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Show resolved image if it exists */}
-          {issue.resolvedImageUrl && (
-            <div className={styles.section}>
-              <hr className={styles.horizontalLine} />
-              <h3 className={styles.sectionTitle}>Resolved Image</h3>
-              <div className={styles.imageSection}>
-                <div className={styles.imageContainer}>
-                  <img
-                    src={issue.resolvedImageUrl}
-                    alt="Resolved Issue"
-                    className={styles.issueImage}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                      const container = target.parentElement;
-                      if (container) {
-                        container.innerHTML = `
-                          <div class="${styles.noImage}">
-                            <span class="${styles.noImageIcon}">🖼️</span>
-                            <span>Resolved image could not be loaded</span>
-                          </div>
-                        `;
-                      }
-                    }}
-                  />
-                </div>
               </div>
             </div>
           )}

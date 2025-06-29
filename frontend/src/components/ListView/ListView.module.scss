@@ -4,8 +4,16 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  overflow: auto;
+  // overflow: auto;
   padding: 0 45px 45px;
+  position: relative;
+}
+
+.illustration {
+  width: 100px;
+  position: absolute;
+  bottom: 0;
+  left: 0px;
 }
 
 .table {
@@ -15,7 +23,7 @@
   min-width: 1000px; // Increased to accommodate location column
   background: #ffffff;
   border-radius: 20px;
-  overflow: hidden;
+  overflow: auto;
   box-shadow: none;
   border: none;
 }
@@ -159,9 +167,7 @@
   height: 400px;
   text-align: center;
   padding: 40px 20px;
-  background: #ffffff;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
   margin: 20px;
 }
 

@@ -19,6 +19,7 @@ import submitReportIllustration1 from "../../../assets/SubmitReportIllustration1
 import submitReportIllustration2 from "../../../assets/SubmitReportIllustration2.png";
 import submitReportIllustration3 from "../../../assets/SubmitReportIllustration3.png";
 import submitReportIllustration4 from "../../../assets/SubmitReportIllustration4.png";
+import submitReportIllustration5 from "../../../assets/SubmitReportIllustration5.png";
 
 interface SubmitReportScreenProps {
   user: User;
@@ -56,7 +57,6 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
     imageUrl: "",
   });
   const [activeIndex, setActiveIndex] = useState(-1);
-  const [direction, setDirection] = useState<"forward" | "backward">("forward");
 
   // Get user profile and current location
   useEffect(() => {
@@ -65,26 +65,13 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (direction === "forward") {
-        if (activeIndex < 3) {
-          setActiveIndex(activeIndex + 1);
-        } else {
-          setDirection("backward");
-          setActiveIndex(activeIndex - 1);
-        }
-      } else {
-        if (activeIndex > -1) {
-          setActiveIndex(activeIndex - 1);
-        } else {
-          setDirection("forward");
-          setActiveIndex(activeIndex + 1);
-        }
-      }
-    }, 1000);
-
-    return () => clearTimeout(timeout);
-  }, [activeIndex, direction]);
+    if (activeIndex < 3) {
+      const timeout = setTimeout(() => {
+        setActiveIndex((prev) => prev + 1);
+      }, 800); // Adjust timing as needed
+      return () => clearTimeout(timeout);
+    }
+  }, [activeIndex]);
 
   const fetchUserProfile = async () => {
     try {
@@ -119,11 +106,13 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
         try {
           // Get area name using reverse geocoding
           const areaName = await reverseGeocode(latitude, longitude);
-          
+
           let locationString;
           if (areaName) {
             // If we got a meaningful area name, format as "Area (lat, lng)"
-            locationString = `${areaName} (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`;
+            locationString = `${areaName} (${latitude.toFixed(
+              4
+            )}, ${longitude.toFixed(4)})`;
           } else {
             // If no area name found, just use coordinates
             locationString = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
@@ -336,6 +325,11 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
       <div className={styles.formContainer}>
         <h1 className={styles.headerText}>Safii</h1>
         <form className={styles.form}>
+          <img
+            src={submitReportIllustration5}
+            alt="Illustration 5"
+            className={styles.formIllustration}
+          />
           <h3 className={styles.formTitle}>REPORT AN ISSUE</h3>
           <div className={styles.formGroup}>
             <label htmlFor="title" className={styles.label}>
@@ -369,6 +363,13 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                 disabled={loading}
                 MenuProps={{
                   className: styles.dropdownMenu,
+                  slotProps: {
+                    paper: {
+                      sx: {
+                        backgroundColor: "#f1f8e8", // Your desired color
+                      },
+                    },
+                  },
                 }}
               >
                 <MenuItem value="pothole" className={styles.menuItem}>
@@ -421,6 +422,13 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                 disabled={loading}
                 MenuProps={{
                   className: styles.dropdownMenu,
+                  slotProps: {
+                    paper: {
+                      sx: {
+                        backgroundColor: "#f1f8e8", // Your desired color
+                      },
+                    },
+                  },
                 }}
               >
                 <MenuItem value="critical" className={styles.menuItem}>

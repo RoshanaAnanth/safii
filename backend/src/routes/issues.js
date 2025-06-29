@@ -349,7 +349,7 @@ router.put("/:id", async (req, res) => {
     const { status, resolvedImageUrl, admin_notes } = req.body;
 
     // Validate status
-    const validStatuses = ["pending", "in_progress", "resolved", "rejected"];
+    const validStatuses = ["pending", "resolved"];
     if (status && !validStatuses.includes(status)) {
       return res.status(400).json({
         error: "Invalid status",
@@ -364,7 +364,7 @@ router.put("/:id", async (req, res) => {
 
     if (status) {
       updateData.status = status;
-      
+
       // If resolving, add resolved timestamp
       if (status === "resolved") {
         updateData.resolved_at = new Date().toISOString();

@@ -10,6 +10,7 @@ import Collapse from "@mui/material/Collapse";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
+import Chip from "../Chip/Chip";
 
 export interface FilterState {
   status: string[];
@@ -37,25 +38,68 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   const isMenuOpen = Boolean(anchorEl);
 
   const statusOptions = [
-    { value: "pending", label: "🟡 Pending" },
-    { value: "resolved", label: "🟢 Resolved" },
+    {
+      value: "pending",
+      label: <Chip type="status" label="Pending" status="pending" />,
+    },
+    {
+      value: "resolved",
+      label: <Chip type="status" label="Resolved" status="resolved" />,
+    },
   ];
 
   const categoryOptions = [
-    { value: "pothole", label: "🕳️ Pothole" },
-    { value: "drainage", label: "🌊 Drainage" },
-    { value: "garbage", label: "🗑️ Garbage" },
-    { value: "landslide", label: "⛰️ Landslide" },
-    { value: "street_light", label: "💡 Street Light" },
-    { value: "broken_sign", label: "🚧 Broken Sign" },
-    { value: "other", label: "❓ Other" },
+    {
+      value: "pothole",
+      label: <Chip type="category" label="Pothole" category="pothole" />,
+    },
+    {
+      value: "drainage",
+      label: <Chip type="category" label="Drainage" category="drainage" />,
+    },
+    {
+      value: "garbage",
+      label: <Chip type="category" label="Garbage" category="garbage" />,
+    },
+    {
+      value: "landslide",
+      label: <Chip type="category" label="Landslide" category="landslide" />,
+    },
+    {
+      value: "street_light",
+      label: (
+        <Chip type="category" label="Street Light" category="street_light" />
+      ),
+    },
+    {
+      value: "broken_sign",
+      label: (
+        <Chip type="category" label="Broken Sign" category="broken_sign" />
+      ),
+    },
+    {
+      value: "other",
+      label: <Chip type="category" label="Other" category="other" />,
+    },
   ];
 
   const priorityOptions = [
-    { value: "critical", label: "🔴 Critical" },
-    { value: "high", label: "🟠 High" },
-    { value: "medium", label: "🟡 Medium" },
-    { value: "low", label: "🟢 Low" },
+    {
+      value: "critical",
+      label: <Chip type="priority" priority="critical" label="Critical" />,
+    },
+    {
+      value: "high",
+      label: <Chip type="priority" priority="high" label="High" />,
+    },
+    {
+      value: "medium",
+      label: <Chip type="priority" priority="medium" label="Medium" />,
+    },
+    {
+      value: "low",
+      label: <Chip type="priority" priority="low" label="Low" />,
+    },
   ];
 
   const handleFilterChange = (
@@ -114,7 +158,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({
   const renderCollapsibleSection = (
     title: string,
     filterType: keyof FilterState,
-    options: { value: string; label: string }[]
+    options: { value: string; label: JSX.Element }[]
   ) => {
     const isExpanded = expandedSections[filterType];
     const activeCount = getActiveCount(filterType);

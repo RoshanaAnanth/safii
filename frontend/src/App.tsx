@@ -45,7 +45,7 @@ const App: React.FC = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event, session);
-      
+
       if (event === "SIGNED_IN" && session?.user) {
         setUser(session.user);
         setLoading(true); // Set loading back to true when user signs in
@@ -71,10 +71,10 @@ const App: React.FC = () => {
       }
 
       setProfileLoading(true);
-      
+
       try {
         console.log("Fetching user profile for:", user.email);
-        
+
         // Determine provider
         const provider = user.app_metadata?.provider;
         let profile = null;
@@ -101,33 +101,35 @@ const App: React.FC = () => {
               email: user.email,
               name: user.user_metadata?.full_name || user.email,
               avatar_url:
-                user.user_metadata?.avatar_url ||
-                user.user_metadata?.picture,
+                user.user_metadata?.avatar_url || user.user_metadata?.picture,
               is_guest: false,
               is_admin: false,
             });
-            
+
             if (insertError) {
               console.error("Error inserting Google user:", insertError);
               setLoading(false);
               setProfileLoading(false);
               return;
             }
-            
+
             // Fetch the newly inserted user
             const { data: newUser, error: newUserError } = await supabase
               .from("users")
               .select("*")
               .eq("email", user.email)
               .maybeSingle();
-              
+
             if (newUserError) {
-              console.error("Error fetching newly inserted user:", newUserError);
+              console.error(
+                "Error fetching newly inserted user:",
+                newUserError
+              );
               setLoading(false);
               setProfileLoading(false);
               return;
             }
-            
+
             profile = newUser;
           } else {
             profile = existingUser;
@@ -140,14 +142,14 @@ const App: React.FC = () => {
               .select("*")
               .eq("email", user.email)
               .maybeSingle();
-              
+
           if (adminProfileError) {
             console.error("Error fetching admin profile:", adminProfileError);
             setLoading(false);
             setProfileLoading(false);
             return;
           }
-          
+
           profile = adminProfile;
         }
 
@@ -174,7 +176,7 @@ const App: React.FC = () => {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
-          fontFamily: "Geist, sans-serif",
+          fontFamily: "Poppins, sans-serif",
         }}
       >
         Loading...

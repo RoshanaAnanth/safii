@@ -210,34 +210,9 @@
   left: 0;
 }
 
-.description {
-  font-family: "Geist", Helvetica, sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  color: #407339;
-}
-
-.contentTagline {
-  font-family: "Geist", Helvetica, sans-serif;
-  font-weight: 600;
-  font-size: 18px;
-  color: #407339;
-}
-
-.reportButton {
-  background-color: #407339;
-  border: 1px solid #407339;
-  border-radius: 8px;
-  color: #ffffff;
-  font-family: "Geist", Helvetica, sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  width: 240px;
-  height: 55px;
-}
-
 .profileMenu {
   top: 10px !important;
+  font-family: "Poppins", sans-serif;
 }
 
 .menuPaper {
@@ -261,7 +236,7 @@
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #414141;
+  border: 1px solid #acacac;
 }
 
 .userDetails {
@@ -269,8 +244,13 @@
   flex-direction: column;
 }
 
+.name {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px !important;
+}
+
 .email {
-  font-family: "Geist", Helvetica, sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 14px !important;
   color: #909090 !important;
 }
@@ -280,8 +260,13 @@
   margin: 0 10px !important;
 
   &:hover {
-    background-color: #ddda8d65 !important;
+    background-color: #f1f8e8 !important;
   }
+}
+
+.option {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px;
 }
 
 // Tablet styles

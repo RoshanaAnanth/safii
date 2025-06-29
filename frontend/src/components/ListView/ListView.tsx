@@ -4,6 +4,8 @@ import IssueDetailsModal from "../IssueDetailsModal/IssueDetailsModal";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./ListView.module.scss";
 
+import listViewIllustration from "../../../assets/ListViewIllustration.png";
+
 interface Issue {
   id: string;
   title: string;
@@ -16,7 +18,7 @@ interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "in_progress" | "resolved" | "rejected";
+  status: "pending" | "resolved";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;
@@ -81,15 +83,19 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
     if (location.includes("(") && location.includes(")")) {
       return location;
     }
-    
+
     // If it's just coordinates, return as is
     if (location.includes(",")) {
       const parts = location.split(",");
-      if (parts.length === 2 && !isNaN(parseFloat(parts[0])) && !isNaN(parseFloat(parts[1]))) {
+      if (
+        parts.length === 2 &&
+        !isNaN(parseFloat(parts[0])) &&
+        !isNaN(parseFloat(parts[1]))
+      ) {
         return location;
       }
     }
-    
+
     // For other cases, return as is
     return location;
   };
@@ -124,6 +130,11 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
 
   return (
     <div className={styles.container}>
+      <img
+        src={listViewIllustration}
+        alt="Illustration"
+        className={styles.illustration}
+      />
       <table className={styles.table}>
         <thead className={styles.tableHeader}>
           <tr>

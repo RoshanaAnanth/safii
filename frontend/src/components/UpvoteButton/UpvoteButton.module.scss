@@ -14,7 +14,7 @@
 
   &:hover {
     color: #65968e;
-    transform: translateY(-1px);
+    // transform: translateY(-1px);
 
     .upvoteIcon {
       color: #65968e;
@@ -68,10 +68,10 @@
 
 // Large version for modals
 .large {
-  padding: 8px 12px;
-  font-size: 14px;
+  padding: 10px 12px;
+  font-size: 12px;
   min-width: 70px;
-  gap: 8px;
+  // gap: 8px;
 
   .upvoteIcon {
     width: 22px !important;
@@ -92,8 +92,8 @@
   }
 
   .large {
-    font-size: 15px;
-    padding: 9px 13px;
+    font-size: 12px;
+    padding: 11px 13px;
   }
 }
 
@@ -110,7 +110,7 @@
   }
 
   .large {
-    font-size: 16px;
-    padding: 10px 14px;
+    font-size: 14px;
+    padding: 12px 14px;
   }
 }

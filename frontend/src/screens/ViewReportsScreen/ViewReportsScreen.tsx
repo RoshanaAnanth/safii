@@ -31,7 +31,7 @@ export interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "in_progress" | "resolved" | "rejected";
+  status: "pending" | "resolved";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;

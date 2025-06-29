@@ -17,7 +17,6 @@ import viewReportsArt from "../../../assets/ViewReportsArt.png";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import styles from "./HomeScreen.module.scss";
@@ -207,7 +206,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
             className={styles.userAvatar}
           />
           <div className={styles.userDetails}>
-            <span>Welcome {getUserName()}!</span>
+            <span className={styles.name}>Welcome {getUserName()}!</span>
             <span className={styles.email}>{user.email}</span>
           </div>
         </MenuItem>
@@ -216,7 +215,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Sign Out</ListItemText>
+          <span className={styles.option}>Sign Out</span>
         </MenuItem>
       </Menu>
     </div>

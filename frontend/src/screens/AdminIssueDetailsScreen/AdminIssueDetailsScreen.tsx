@@ -24,7 +24,7 @@ interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "in_progress" | "resolved" | "rejected";
+  status: "pending" | "resolved";
   priority: "low" | "medium" | "high" | "critical";
   location: any;
   imageUrl?: string;
@@ -139,7 +139,10 @@ const AdminIssueDetailsScreen: React.FC = () => {
     await updateIssueStatus(selectedStatus, null);
   };
 
-  const updateIssueStatus = async (newStatus: string, resolvedImageUrl: string | null) => {
+  const updateIssueStatus = async (
+    newStatus: string,
+    resolvedImageUrl: string | null
+  ) => {
     if (!issue) return;
 
     setUpdating(true);
@@ -401,7 +404,9 @@ const AdminIssueDetailsScreen: React.FC = () => {
                 <div className={styles.imagesGrid}>
                   <div className={styles.imageContainer}>
                     <div className={styles.imageLabel}>
-                      {issue.resolvedImageUrl ? "Before (Reported)" : "Issue Image"}
+                      {issue.resolvedImageUrl
+                        ? "Before (Reported)"
+                        : "Issue Image"}
                     </div>
                     {issue.imageUrl ? (
                       <img

@@ -4,6 +4,7 @@ import styles from "./IssueDetailsModal.module.scss";
 
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import Chip from "../Chip/Chip";
 
 interface Issue {
   id: string;
@@ -17,7 +18,7 @@ interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "in_progress" | "resolved" | "rejected";
+  status: "pending" | "resolved";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl?: string;
@@ -41,36 +42,6 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   onClose,
   currentUserId,
 }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "#FFA500";
-      case "in_progress":
-        return "#2196F3";
-      case "resolved":
-        return "#4CAF50";
-      case "rejected":
-        return "#F44336";
-      default:
-        return "#666";
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "low":
-        return "#4CAF50";
-      case "medium":
-        return "#FFA500";
-      case "high":
-        return "#FF5722";
-      case "critical":
-        return "#F44336";
-      default:
-        return "#666";
-    }
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -87,16 +58,6 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
     return location;
   };
 
-  const getReporterInitials = (name?: string) => {
-    if (!name) return "?";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -109,23 +70,11 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
         <div className={styles.header}>
           <div className={styles.headerContent}>
             <h2 className={styles.title}>{issue.title}</h2>
-            <div className={styles.metaTags}>
-              <span className={styles.categoryTag}>
-                {issue.category.replace("_", " ")}
-              </span>
-              <span
-                className={styles.statusTag}
-                style={{ backgroundColor: getStatusColor(issue.status) }}
-              >
-                {issue.status.replace("_", " ")}
-              </span>
-              <span
-                className={styles.priorityTag}
-                style={{ color: getPriorityColor(issue.priority) }}
-              >
-                {issue.priority}
-              </span>
-            </div>
+            <UpvoteButton
+              issueId={issue.id}
+              userId={currentUserId}
+              size="large"
+            />
           </div>
           <IconButton onClick={onClose} className={styles.closeButton}>
             <CloseIcon className={styles.closeIcon} />
@@ -133,113 +82,73 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
         </div>
 
         <div className={styles.content}>
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Description</h3>
-            <p className={styles.description}>{issue.description}</p>
-          </div>
-
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Community Support</h3>
-            <div className={styles.upvoteSection}>
-              <UpvoteButton
-                issueId={issue.id}
-                userId={currentUserId}
-                size="large"
+          <div className={styles.detailsSection}>
+            <div className={styles.reporterDetails}>
+              <span className={styles.sectionText}>Reported by: </span>
+              <div className={styles.reportedInfo}>
+                <h4 className={styles.reporterName}>
+                  {issue.reporter_name || "Anonymous User"}
+                </h4>
+                <p className={styles.reporterEmail}>
+                  ({issue.reporter_email || "No email provided"})
+                </p>
+              </div>
+            </div>
+            <div className={styles.tagSection}>
+              <span className={styles.sectionText}>Category:</span>
+              <Chip
+                type="category"
+                label={issue.category}
+                category={issue.category.replace("_", " ")}
               />
-              <span className={styles.upvoteText}>
-                Show your support for this issue
+            </div>
+            <div className={styles.tagSection}>
+              <span className={styles.sectionText}>Status:</span>
+              <Chip
+                type="status"
+                label={issue.status}
+                status={issue.status.replace("_", " ")}
+              />
+            </div>
+            <div className={styles.tagSection}>
+              <span className={styles.sectionText}>Priority:</span>
+              <Chip
+                type="priority"
+                label={issue.priority}
+                priority={issue.priority}
+              />
+            </div>
+            <div className={styles.tagSection}>
+              <span className={styles.sectionText}>Location:</span>
+              <span className={styles.locationValue}>
+                {formatLocation(issue.location)}
               </span>
             </div>
-          </div>
-
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Details</h3>
-            <div className={styles.detailsGrid}>
-              <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>ID</span>
-                <span className={styles.detailValue}>{issue.id}</span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Category</span>
+            <div className={styles.tagSection}>
+              <span className={styles.sectionText}>Date reported:</span>
+              <span className={styles.detailValue}>
+                {formatDate(issue.created_at)}
+              </span>
+            </div>
+            {issue.resolved_at && (
+              <div className={styles.tagSection}>
+                <span className={styles.sectionText}>Date resolved:</span>
                 <span className={styles.detailValue}>
-                  {issue.category.replace("_", " ")}
+                  {formatDate(issue.resolved_at)}
                 </span>
               </div>
-              <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Status</span>
-                <span className={styles.detailValue}>
-                  {issue.status.replace("_", " ")}
-                </span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Priority</span>
-                <span className={styles.detailValue}>{issue.priority}</span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Location</span>
-                <span
-                  className={`${styles.detailValue} ${styles.locationValue}`}
-                >
-                  {formatLocation(issue.location)}
-                </span>
-              </div>
-              <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>Reported</span>
-                <span className={styles.detailValue}>
-                  {formatDate(issue.created_at)}
-                </span>
-              </div>
-              {issue.resolved_at && (
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Resolved</span>
-                  <span className={styles.detailValue}>
-                    {formatDate(issue.resolved_at)}
-                  </span>
-                </div>
-              )}
-              {issue.updated_at !== issue.created_at && (
-                <div className={styles.detailItem}>
-                  <span className={styles.detailLabel}>Last Updated</span>
-                  <span className={styles.detailValue}>
-                    {formatDate(issue.updated_at)}
-                  </span>
-                </div>
-              )}
+            )}
+            <div className={styles.tagSection}>
+              <span className={styles.sectionText}>Description:</span>
+              <span className={styles.detailValue}>{issue.description}</span>
             </div>
           </div>
 
-          {issue.admin_notes && (
-            <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Admin Notes</h3>
-              <p className={styles.description}>{issue.admin_notes}</p>
-            </div>
-          )}
-
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Reporter Information</h3>
-            <div className={styles.reporterSection}>
-              <div className={styles.reporterInfo}>
-                <div className={styles.reporterAvatar}>
-                  {getReporterInitials(issue.reporter_name)}
-                </div>
-                <div className={styles.reporterDetails}>
-                  <h4 className={styles.reporterName}>
-                    {issue.reporter_name || "Anonymous User"}
-                  </h4>
-                  <p className={styles.reporterEmail}>
-                    {issue.reporter_email || "No email provided"}
-                  </p>
-                </div>
-                <div className={styles.reportedDate}>
-                  {new Date(issue.created_at).toLocaleDateString()}
-                </div>
-              </div>
-            </div>
-          </div>
+          <hr className={styles.horizontalLine} />
 
           {issue.imageUrl && (
             <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Image</h3>
+              {/* <h3 className={styles.sectionTitle}>Image</h3> */}
               <div className={styles.imageSection}>
                 <div className={styles.imageContainer}>
                   <img
@@ -267,7 +176,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
 
           {!issue.imageUrl && (
             <div className={styles.section}>
-              <h3 className={styles.sectionTitle}>Image</h3>
+              {/* <h3 className={styles.sectionTitle}>Image</h3> */}
               <div className={styles.imageSection}>
                 <div className={styles.imageContainer}>
                   <div className={styles.noImage}>

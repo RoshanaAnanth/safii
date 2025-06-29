@@ -36,7 +36,7 @@ interface Issue {
   id: string;
   title: string;
   category: string;
-  status: "pending" | "in_progress" | "resolved" | "rejected";
+  status: "pending" | "resolved";
   location: any;
   created_at: string;
 }
@@ -210,12 +210,12 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   const formatLocation = (location: any) => {
     // Use the utility function to format location consistently
     const formattedLocation = formatLocationForDisplay(location);
-    
+
     // Truncate if too long for display
     if (formattedLocation.length > 30) {
       return `${formattedLocation.substring(0, 30)}...`;
     }
-    
+
     return formattedLocation;
   };
 
@@ -311,8 +311,8 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                 </div>
               ) : (
                 recentIssues.map((issue) => (
-                  <div 
-                    key={issue.id} 
+                  <div
+                    key={issue.id}
                     className={styles.issueItem}
                     onClick={() => handleIssueClick(issue.id)}
                     style={{ cursor: "pointer" }}

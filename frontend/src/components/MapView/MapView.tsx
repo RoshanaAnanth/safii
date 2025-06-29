@@ -3,10 +3,19 @@ import React, { useEffect } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 
+import brokenSign from "../../../assets/BrokenSign.png";
+import drainage from "../../../assets/Drainage.png";
+import garbage from "../../../assets/Garbage.png";
+import landslide from "../../../assets/Landslide.png";
+import other from "../../../assets/Other.png";
+import pothole from "../../../assets/Pothole.png";
+import streetLight from "../../../assets/Streetlight.png";
+
 import styles from "./MapView.module.scss";
 
 // Import Leaflet CSS
 import "leaflet/dist/leaflet.css";
+import Chip from "../Chip/Chip";
 
 export interface Issue {
   id: string;
@@ -20,7 +29,7 @@ export interface Issue {
     | "street_light"
     | "broken_sign"
     | "other";
-  status: "pending" | "in_progress" | "resolved" | "rejected";
+  status: "pending" | "resolved";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;
@@ -54,20 +63,20 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
 
   const createCustomIcon = (category: string) => {
     const iconMap: { [key: string]: string } = {
-      pothole: "🕳️",
-      drainage: "🌊",
-      garbage: "🗑️",
-      landslide: "⛰️",
-      street_light: "💡",
-      broken_sign: "🚧",
-      other: "❓",
+      pothole: pothole,
+      drainage: drainage,
+      garbage: garbage,
+      landslide: landslide,
+      street_light: streetLight,
+      broken_sign: brokenSign,
+      other: other,
     };
-
-    const emoji = iconMap[category] || "❓";
 
     return L.divIcon({
       html: `<div class="${styles.customMarker}">
-               <div class="${styles.markerIcon}">${emoji}</div>
+               <div class="${styles.markerIcon}">
+             <img src="${iconMap[category]}" alt="Icon" style="width: 75%; height: 75%; object-fit: scale-down;" />
+           </div>
              </div>`,
       className: "custom-div-icon",
       iconSize: [40, 40],
@@ -116,6 +125,7 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
 
   // Extract coordinates from location string
   const extractCoordinates = (location: string): [number, number] | null => {
+    console.log("Location in Map: ", location);
     // Check if location contains coordinates in parentheses (Area (lat, lng) format)
     if (location.includes("(") && location.includes(")")) {
       const coordsPart = location.split("(")[1].split(")")[0];
@@ -167,10 +177,10 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
     return (
       <div className={styles.emptyState}>
         <div className={styles.emptyIcon}>🗺️</div>
-        <h3 className={styles.emptyTitle}>No Reports to Display</h3>
+        <h3 className={styles.emptyTitle}>No Reports Found</h3>
         <p className={styles.emptyDescription}>
-          There are no reports matching your current filters to show on the map.
-          Try adjusting your filter criteria.
+          There are no reports matching your current filters. Try adjusting your
+          filter criteria.
         </p>
       </div>
     );
@@ -195,7 +205,7 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
             if (!coords) return null;
 
             const [lat, lng] = coords;
-            
+
             return (
               <Marker
                 key={issue.id}
@@ -204,27 +214,27 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
               >
                 <Popup className={styles.popup}>
                   <div className={styles.popupContent}>
-                    <h4 className={styles.popupTitle}>{issue.title}</h4>
-
-                    <div className={styles.popupMeta}>
-                      <span className={styles.popupCategory}>
-                        {issue.category.replace("_", " ")}
-                      </span>
-                      <span
-                        className={styles.popupStatus}
-                        style={{
-                          backgroundColor: getStatusColor(issue.status),
-                        }}
-                      >
-                        {issue.status.replace("_", " ")}
-                      </span>
+                    <div className={styles.headerSection}>
+                      <h4 className={styles.popupTitle}>{issue.title}</h4>
+                      <UpvoteButton
+                        issueId={issue.id}
+                        userId={currentUserId}
+                        size="normal"
+                      />
                     </div>
 
-                    <p className={styles.popupDescription}>
-                      {issue.description.length > 100
-                        ? `${issue.description.substring(0, 100)}...`
-                        : issue.description}
-                    </p>
+                    <div className={styles.popupMeta}>
+                      <Chip
+                        type="category"
+                        label={issue.category}
+                        category={issue.category.replace("_", " ")}
+                      />
+                      <Chip
+                        type="status"
+                        label={issue.status}
+                        status={issue.status.replace("_", " ")}
+                      />
+                    </div>
 
                     <div className={styles.popupDetails}>
                       <div className={styles.popupDetail}>
@@ -238,7 +248,16 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
                       </div>
 
                       <div className={styles.popupDetail}>
-                        <span className={styles.popupLabel}>Reported:</span>
+                        <span className={styles.popupLabel}>Location:</span>
+                        <span className={styles.popupAddress}>
+                          {issue.location}
+                        </span>
+                      </div>
+
+                      <div className={styles.popupDetail}>
+                        <span className={styles.popupLabel}>
+                          Date reported:
+                        </span>
                         <span className={styles.popupDate}>
                           {formatDate(issue.created_at)}
                         </span>
@@ -246,7 +265,9 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
 
                       {issue.reporter_name && (
                         <div className={styles.popupDetail}>
-                          <span className={styles.popupLabel}>By:</span>
+                          <span className={styles.popupLabel}>
+                            Reported By:
+                          </span>
                           <span className={styles.popupReporter}>
                             {issue.reporter_name}
                           </span>
@@ -254,20 +275,11 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
                       )}
                     </div>
 
-                    <div className={styles.popupUpvote}>
-                      <UpvoteButton
-                        issueId={issue.id}
-                        userId={currentUserId}
-                        size="normal"
-                      />
-                    </div>
-
-                    <div className={styles.popupLocation}>
-                      <span className={styles.popupLabel}>Location:</span>
-                      <span className={styles.popupAddress}>
-                        {issue.location}
-                      </span>
-                    </div>
+                    <p className={styles.popupDescription}>
+                      {issue.description.length > 100
+                        ? `${issue.description.substring(0, 100)}...`
+                        : issue.description}
+                    </p>
                   </div>
                 </Popup>
               </Marker>

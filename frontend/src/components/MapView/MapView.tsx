@@ -116,7 +116,7 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
 
   // Extract coordinates from location string
   const extractCoordinates = (location: string): [number, number] | null => {
-    // Check if location contains coordinates in parentheses
+    // Check if location contains coordinates in parentheses (Area (lat, lng) format)
     if (location.includes("(") && location.includes(")")) {
       const coordsPart = location.split("(")[1].split(")")[0];
       const [lat, lng] = coordsPart
@@ -138,6 +138,27 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
     }
 
     return null;
+  };
+
+  // Extract area name from location string
+  const extractAreaName = (location: string): string => {
+    // If location contains parentheses, extract the area name before the parentheses
+    if (location.includes("(") && location.includes(")")) {
+      return location.split("(")[0].trim();
+    }
+    
+    // If it's just coordinates, return the coordinates
+    if (location.includes(",")) {
+      const [lat, lng] = location
+        .split(",")
+        .map((coord) => parseFloat(coord.trim()));
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      }
+    }
+    
+    // Otherwise return the location as is
+    return location;
   };
 
   // Filter issues that have valid coordinates
@@ -195,6 +216,8 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
             if (!coords) return null;
 
             const [lat, lng] = coords;
+            const areaName = extractAreaName(issue.location);
+            
             return (
               <Marker
                 key={issue.id}
@@ -264,7 +287,7 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
                     <div className={styles.popupLocation}>
                       <span className={styles.popupLabel}>Location:</span>
                       <span className={styles.popupAddress}>
-                        {issue.location}
+                        {areaName}
                       </span>
                     </div>
                   </div>

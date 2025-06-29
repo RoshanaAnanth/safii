@@ -134,14 +134,14 @@ export function formatLocationForDisplay(location: any): string {
   }
 
   if (location && typeof location === "object") {
-    if (
-      location.address &&
-      location.address !== `${location.lat}, ${location.lng}`
-    ) {
-      // If we have a readable address, show it with coordinates
+    if (location.address && location.lat && location.lng) {
+      // If we have both address and coordinates, show "Area (lat, lng)" format
       return `${location.address} (${location.lat?.toFixed(
         4
       )}, ${location.lng?.toFixed(4)})`;
+    } else if (location.address && location.address !== `${location.lat}, ${location.lng}`) {
+      // If we have a readable address but no coordinates, just show the address
+      return location.address;
     } else if (location.lat && location.lng) {
       // Just coordinates
       return `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;

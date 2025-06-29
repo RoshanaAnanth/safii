@@ -76,6 +76,24 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
     });
   };
 
+  const formatLocationForTable = (location: string) => {
+    // If location already contains parentheses, it's likely in the correct format
+    if (location.includes("(") && location.includes(")")) {
+      return location;
+    }
+    
+    // If it's just coordinates, return as is
+    if (location.includes(",")) {
+      const parts = location.split(",");
+      if (parts.length === 2 && !isNaN(parseFloat(parts[0])) && !isNaN(parseFloat(parts[1]))) {
+        return location;
+      }
+    }
+    
+    // For other cases, return as is
+    return location;
+  };
+
   const handleRowClick = (issue: Issue, e: React.MouseEvent) => {
     // Don't open modal if clicking on upvote button
     if ((e.target as HTMLElement).closest("button")) {
@@ -113,6 +131,7 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
             <th className={styles.headerCell}>Category</th>
             <th className={styles.headerCell}>Status</th>
             <th className={styles.headerCell}>Priority</th>
+            <th className={styles.headerCell}>Location</th>
             <th className={styles.headerCell}>Date</th>
             <th className={`${styles.headerCell} ${styles.upvoteHeader}`}></th>
           </tr>
@@ -155,6 +174,11 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
                   priority={issue.priority}
                   label={issue.priority}
                 />
+              </td>
+              <td className={styles.cell}>
+                <span className={styles.location}>
+                  {formatLocationForTable(issue.location)}
+                </span>
               </td>
               <td className={styles.cell}>
                 <span className={styles.date}>

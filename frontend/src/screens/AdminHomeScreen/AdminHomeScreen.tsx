@@ -204,12 +204,20 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     }
   };
 
-  const formatLocation = (location: string) => {
+  const formatLocation = (location: string | any) => {
     if (typeof location === "string") {
+      // If location already contains parentheses, extract the area name
+      if (location.includes("(") && location.includes(")")) {
+        const areaName = location.split("(")[0].trim();
+        return areaName.length > 30 ? `${areaName.substring(0, 30)}...` : areaName;
+      }
+      
+      // If it's just coordinates
       if (location.includes(",")) {
         const [lat, lng] = location.split(",");
         return `${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}`;
       }
+      
       return location.length > 30 ? `${location.substring(0, 30)}...` : location;
     }
     

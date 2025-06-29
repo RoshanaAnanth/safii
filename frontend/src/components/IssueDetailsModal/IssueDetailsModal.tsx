@@ -83,7 +83,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   };
 
   const formatLocation = (location: string) => {
-    // The location is already formatted by formatLocationForDisplay in ViewReportsScreen
+    // The location should already be in the correct format from formatLocationForDisplay
     return location;
   };
 

@@ -42,6 +42,7 @@ interface Issue {
   priority: "low" | "medium" | "high" | "critical";
   location: any;
   imageUrl?: string;
+  resolvedImageUrl?: string;
   reporter_id: string;
   admin_notes?: string;
   resolved_at?: string;
@@ -116,6 +117,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
           priority,
           location,
           imageUrl,
+          resolvedImageUrl,
           reporter_id,
           admin_notes,
           resolved_at,
@@ -145,6 +147,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         priority: issue.priority,
         location: issue.location,
         imageUrl: issue.imageUrl,
+        resolvedImageUrl: issue.resolvedImageUrl,
         reporter_id: issue.reporter_id,
         admin_notes: issue.admin_notes,
         resolved_at: issue.resolved_at,
@@ -198,6 +201,8 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   const handleCloseModal = () => {
     setSelectedIssue(null);
     setIsModalOpen(false);
+    // Refresh dashboard data when modal closes (in case status was updated)
+    fetchDashboardData();
   };
 
   const handleViewAllIssues = () => {
@@ -435,6 +440,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
           }}
           onClose={handleCloseModal}
           currentUserId={user.id}
+          isAdmin={true}
         />
       )}
     </div>

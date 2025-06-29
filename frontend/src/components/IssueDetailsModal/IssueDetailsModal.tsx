@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { uploadImage } from "../../lib/utils";
+import supabase from "../../lib/supabase";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./IssueDetailsModal.module.scss";
 
 import CloseIcon from "@mui/icons-material/Close";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Chip from "../Chip/Chip";
 
 interface Issue {
@@ -22,6 +29,7 @@ interface Issue {
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl?: string;
+  resolvedImageUrl?: string;
   reporter_id: string;
   admin_notes?: string;
   resolved_at?: string;
@@ -35,13 +43,127 @@ interface IssueDetailsModalProps {
   issue: Issue;
   onClose: () => void;
   currentUserId: string;
+  isAdmin?: boolean;
 }
 
 const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   issue,
   onClose,
   currentUserId,
+  isAdmin = false,
 }) => {
+  const [selectedStatus, setSelectedStatus] = useState<string>(issue.status);
+  const [resolvedImageFile, setResolvedImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const imageUploadRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-scroll to image upload section when it becomes visible
+  useEffect(() => {
+    if (selectedStatus === "resolved" && isAdmin && imageUploadRef.current) {
+      setTimeout(() => {
+        imageUploadRef.current?.scrollIntoView({ 
+          behavior: "smooth", 
+          block: "end" 
+        });
+      }, 100);
+    }
+  }, [selectedStatus, isAdmin]);
+
+  const handleStatusChange = async (event: SelectChangeEvent) => {
+    const newStatus = event.target.value;
+    setSelectedStatus(newStatus);
+
+    // If changing to resolved, don't update immediately - wait for image upload
+    if (newStatus === "resolved") {
+      return;
+    }
+
+    // For other status changes, update immediately
+    await handleUpdateStatus(newStatus, null);
+  };
+
+  const handleUpdateStatus = async (newStatus: string, resolvedImageUrl: string | null) => {
+    setIsUpdatingStatus(true);
+    try {
+      const updateData: any = {
+        status: newStatus,
+        updated_at: new Date().toISOString(),
+      };
+
+      // If resolving, add resolved timestamp and image
+      if (newStatus === "resolved") {
+        updateData.resolved_at = new Date().toISOString();
+        if (resolvedImageUrl) {
+          updateData.resolvedImageUrl = resolvedImageUrl;
+        }
+      }
+
+      const { error: updateError } = await supabase
+        .from("issues")
+        .update(updateData)
+        .eq("id", issue.id);
+
+      if (updateError) {
+        console.error("Error updating issue:", updateError);
+        alert("Failed to update issue status");
+        return;
+      }
+
+      alert("Issue status updated successfully!");
+      onClose(); // Close modal and trigger refresh in parent
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      alert("An unexpected error occurred");
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
+
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setResolvedImageFile(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setResolvedImageFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleResolveIssue = async () => {
+    setIsUploading(true);
+    try {
+      let resolvedImageUrl: string | null = null;
+
+      if (resolvedImageFile) {
+        // Upload the image
+        resolvedImageUrl = await uploadImage(
+          resolvedImageFile,
+          currentUserId,
+          `resolved-${issue.id}-${Date.now()}`
+        );
+      }
+
+      await handleUpdateStatus("resolved", resolvedImageUrl);
+      
+      // Reset state
+      setResolvedImageFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Error uploading resolved image:", error);
+      alert("Failed to upload image. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "long",
@@ -54,7 +176,6 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   };
 
   const formatLocation = (location: string) => {
-    // The location should already be in the correct format from formatLocationForDisplay
     return location;
   };
 
@@ -64,17 +185,23 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
     }
   };
 
+  const handleUploadAreaClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className={styles.overlay} onClick={handleOverlayClick}>
       <div className={styles.modal}>
         <div className={styles.header}>
           <div className={styles.headerContent}>
             <h2 className={styles.title}>{issue.title}</h2>
-            <UpvoteButton
-              issueId={issue.id}
-              userId={currentUserId}
-              size="large"
-            />
+            {!isAdmin && (
+              <UpvoteButton
+                issueId={issue.id}
+                userId={currentUserId}
+                size="large"
+              />
+            )}
           </div>
           <IconButton onClick={onClose} className={styles.closeButton}>
             <CloseIcon className={styles.closeIcon} />
@@ -104,11 +231,29 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
             </div>
             <div className={styles.tagSection}>
               <span className={styles.sectionText}>Status:</span>
-              <Chip
-                type="status"
-                label={issue.status}
-                status={issue.status.replace("_", " ")}
-              />
+              {isAdmin ? (
+                <FormControl size="small" className={styles.statusSelect}>
+                  <Select
+                    value={selectedStatus}
+                    onChange={handleStatusChange}
+                    disabled={isUpdatingStatus}
+                    className={styles.statusDropdown}
+                  >
+                    <MenuItem value="pending">
+                      <Chip type="status" label="Pending" status="pending" />
+                    </MenuItem>
+                    <MenuItem value="resolved">
+                      <Chip type="status" label="Resolved" status="resolved" />
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              ) : (
+                <Chip
+                  type="status"
+                  label={issue.status}
+                  status={issue.status.replace("_", " ")}
+                />
+              )}
             </div>
             <div className={styles.tagSection}>
               <span className={styles.sectionText}>Priority:</span>
@@ -146,9 +291,9 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
 
           <hr className={styles.horizontalLine} />
 
+          {/* Original Issue Image */}
           {issue.imageUrl && (
             <div className={styles.section}>
-              {/* <h3 className={styles.sectionTitle}>Image</h3> */}
               <div className={styles.imageSection}>
                 <div className={styles.imageContainer}>
                   <img
@@ -176,13 +321,106 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
 
           {!issue.imageUrl && (
             <div className={styles.section}>
-              {/* <h3 className={styles.sectionTitle}>Image</h3> */}
               <div className={styles.imageSection}>
                 <div className={styles.imageContainer}>
                   <div className={styles.noImage}>
                     <span className={styles.noImageIcon}>📷</span>
                     <span>No image provided</span>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Resolved Image Upload Section - Only visible for admins when status is "resolved" */}
+          {isAdmin && selectedStatus === "resolved" && (
+            <div className={styles.section} ref={imageUploadRef}>
+              <hr className={styles.horizontalLine} />
+              <h3 className={styles.sectionTitle}>Upload Resolved Image</h3>
+              <div className={styles.uploadSection}>
+                <div
+                  className={`${styles.uploadArea} ${
+                    resolvedImageFile ? styles.hasImage : ""
+                  }`}
+                  onClick={!resolvedImageFile ? handleUploadAreaClick : undefined}
+                >
+                  {resolvedImageFile ? (
+                    <>
+                      <img
+                        src={URL.createObjectURL(resolvedImageFile)}
+                        alt="Resolved issue proof"
+                        className={styles.imagePreview}
+                      />
+                      <Button
+                        onClick={handleRemoveImage}
+                        className={styles.removeImageButton}
+                      >
+                        Remove Image
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <CloudUploadIcon className={styles.uploadIcon} />
+                      <p className={styles.uploadText}>Upload Proof of Resolution</p>
+                      <p className={styles.uploadSubtext}>
+                        Click to upload an image showing the resolved issue
+                      </p>
+                    </>
+                  )}
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleImageSelect}
+                  accept="image/*"
+                  className={styles.fileInput}
+                />
+              </div>
+
+              <div className={styles.resolveActions}>
+                <Button
+                  onClick={() => setSelectedStatus(issue.status)}
+                  className={styles.cancelButton}
+                  disabled={isUpdatingStatus || isUploading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleResolveIssue}
+                  disabled={isUpdatingStatus || isUploading}
+                  className={styles.resolveButton}
+                >
+                  {isUpdatingStatus || isUploading ? "Resolving..." : "Resolve Issue"}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Show resolved image if it exists */}
+          {issue.resolvedImageUrl && (
+            <div className={styles.section}>
+              <hr className={styles.horizontalLine} />
+              <h3 className={styles.sectionTitle}>Resolved Image</h3>
+              <div className={styles.imageSection}>
+                <div className={styles.imageContainer}>
+                  <img
+                    src={issue.resolvedImageUrl}
+                    alt="Resolved Issue"
+                    className={styles.issueImage}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                      const container = target.parentElement;
+                      if (container) {
+                        container.innerHTML = `
+                          <div class="${styles.noImage}">
+                            <span class="${styles.noImageIcon}">🖼️</span>
+                            <span>Resolved image could not be loaded</span>
+                          </div>
+                        `;
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>

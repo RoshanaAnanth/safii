@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(false);
 
   // Initial user fetch on app load
   useEffect(() => {
@@ -28,11 +29,13 @@ const App: React.FC = () => {
       if (data?.user) {
         setUser(data.user);
         console.log("Initial user loaded:", data.user);
+        // Don't set loading to false here - wait for profile to load
       } else {
         setUser(null);
+        setUserProfile(null);
         console.log("No user found on initial load");
+        setLoading(false); // Only set loading to false if no user
       }
-      setLoading(false);
     };
 
     fetchUser();
@@ -45,10 +48,12 @@ const App: React.FC = () => {
       
       if (event === "SIGNED_IN" && session?.user) {
         setUser(session.user);
+        setLoading(true); // Set loading back to true when user signs in
         console.log("User signed in:", session.user);
       } else if (event === "SIGNED_OUT") {
         setUser(null);
         setUserProfile(null);
+        setLoading(false); // Set loading to false when user signs out
         console.log("User signed out");
       }
     });
@@ -61,9 +66,12 @@ const App: React.FC = () => {
     const fetchUserProfile = async () => {
       if (!user) {
         setUserProfile(null);
+        setProfileLoading(false);
         return;
       }
 
+      setProfileLoading(true);
+      
       try {
         console.log("Fetching user profile for:", user.email);
         
@@ -81,6 +89,8 @@ const App: React.FC = () => {
 
           if (fetchError) {
             console.error("Error fetching Google user:", fetchError);
+            setLoading(false);
+            setProfileLoading(false);
             return;
           }
 
@@ -99,6 +109,8 @@ const App: React.FC = () => {
             
             if (insertError) {
               console.error("Error inserting Google user:", insertError);
+              setLoading(false);
+              setProfileLoading(false);
               return;
             }
             
@@ -111,6 +123,8 @@ const App: React.FC = () => {
               
             if (newUserError) {
               console.error("Error fetching newly inserted user:", newUserError);
+              setLoading(false);
+              setProfileLoading(false);
               return;
             }
             
@@ -129,6 +143,8 @@ const App: React.FC = () => {
               
           if (adminProfileError) {
             console.error("Error fetching admin profile:", adminProfileError);
+            setLoading(false);
+            setProfileLoading(false);
             return;
           }
           
@@ -139,13 +155,18 @@ const App: React.FC = () => {
         console.log("User profile set:", profile);
       } catch (error) {
         console.error("Error in fetchUserProfile:", error);
+      } finally {
+        // Always set loading to false after profile fetch completes
+        setLoading(false);
+        setProfileLoading(false);
       }
     };
 
     fetchUserProfile();
   }, [user]); // This effect runs whenever the user state changes
 
-  if (loading) {
+  // Show loading screen while either initial loading or profile loading
+  if (loading || profileLoading) {
     return (
       <div
         style={{

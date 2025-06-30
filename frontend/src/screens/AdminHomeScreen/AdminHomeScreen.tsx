@@ -86,7 +86,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setMinLoadTimeReached(true);
-    }, 1500);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -321,7 +321,11 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
 
   // Show loading screen while either data loading or minimum time not reached
   if (loading || !minLoadTimeReached) {
-    return <LoadingOverlay message="Loading dashboard..." size="large" />;
+    return (
+      <div className={styles.loadingContainer}>
+        <LoadingOverlay message="Loading dashboard..." size="large" />
+      </div>
+    );
   }
 
   return (

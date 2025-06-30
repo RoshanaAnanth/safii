@@ -1,4 +1,13 @@
 // Mobile-first responsive styles for Admin Home Screen
+.loadingContainer {
+  background-color: #f1f8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+}
+
 .container {
   min-height: 100vh;
   height: 100vh;

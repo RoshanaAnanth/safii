@@ -27,7 +27,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setMinLoadTimeReached(true);
-    }, 3000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -187,6 +187,7 @@ const App: React.FC = () => {
           alignItems: "center",
           height: "100vh",
           fontFamily: "Poppins, sans-serif",
+          backgroundColor: "#f1f8e8",
         }}
       >
         <DotLottieReact

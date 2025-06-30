@@ -1,28 +1,26 @@
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import React from 'react';
-import styles from './LoadingOverlay.module.scss';
+import React from "react";
+import styles from "./LoadingOverlay.module.scss";
 
 interface LoadingOverlayProps {
   message?: string;
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
 }
 
-const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ 
-  message = "Loading...", 
-  size = 'medium' 
+const LoadingOverlay: React.FC<LoadingOverlayProps> = ({
+  message = "Loading...",
+  size = "medium",
 }) => {
   return (
     <div className={styles.overlay}>
       <div className={`${styles.content} ${styles[size]}`}>
         <DotLottieReact
-          src="https://lottie.host/53d9f123-78b9-47cf-8a65-0ed27fadb9a5/NhPcrLwE7g.lottie"
+          src="https://lottie.host/a42f521b-b09e-4a67-8d40-4d3693993388/ezE4R362dO.lottie"
           loop
           autoplay
           className={styles.lottie}
         />
-        {message && (
-          <p className={styles.message}>{message}</p>
-        )}
+        {message && <p className={styles.message}>{message}</p>}
       </div>
     </div>
   );

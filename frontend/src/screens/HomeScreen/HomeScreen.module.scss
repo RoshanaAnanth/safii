@@ -161,7 +161,7 @@
 .carouselTrack {
   display: flex;
   width: calc(8 * 60vw); // 2x images (8 images if 4 originals)
-  height: 90%;
+  height: 100%;
   animation: marquee 16s linear infinite;
 }
 

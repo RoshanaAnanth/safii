@@ -248,7 +248,7 @@ const App: React.FC = () => {
             path="/view-reports"
             element={
               user ? (
-                <ViewReportsScreen user={user} />
+                <ViewReportsScreen user={user} userProfile={userProfile} />
               ) : (
                 <Navigate to="/login" replace />
               )

@@ -17,6 +17,7 @@ import { formatLocationForDisplay } from "../../lib/utils";
 
 interface ViewReportsScreenProps {
   user: User;
+  userProfile: any;
 }
 
 export interface Issue {
@@ -35,6 +36,7 @@ export interface Issue {
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;
+  resolvedImageUrl?: string;
   reporter_id: string;
   admin_notes?: string;
   resolved_at?: string;
@@ -44,7 +46,7 @@ export interface Issue {
   reporter_email?: string;
 }
 
-const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
+const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile }) => {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<"list" | "map">("list");
   const [issues, setIssues] = useState<Issue[]>([]);
@@ -76,6 +78,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
           priority,
           location,
           imageUrl,
+          resolvedImageUrl,
           reporter_id,
           admin_notes,
           resolved_at,
@@ -105,6 +108,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
         priority: issue.priority,
         location: formatLocationForDisplay(issue.location),
         imageUrl: issue.imageUrl || "",
+        resolvedImageUrl: issue.resolvedImageUrl || "",
         reporter_id: issue.reporter_id,
         admin_notes: issue.admin_notes,
         resolved_at: issue.resolved_at,
@@ -144,10 +148,12 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
     setFilters(newFilters);
   };
 
+  const isAdmin = userProfile?.is_admin === true;
+
   return (
     <div className={styles.container}>
       <IconButton
-        onClick={() => navigate("/home")}
+        onClick={() => navigate(isAdmin ? "/admin" : "/home")}
         className={styles.backButton}
       >
         <ArrowBackIosRoundedIcon className={styles.backIcon} />
@@ -190,7 +196,12 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user }) => {
         {loading ? (
           <div className={styles.loading}>Loading reports...</div>
         ) : currentView === "list" ? (
-          <ListView issues={filteredIssues} currentUserId={user.id} />
+          <ListView 
+            issues={filteredIssues} 
+            currentUserId={user.id} 
+            isAdmin={isAdmin}
+            onIssueUpdate={fetchIssues}
+          />
         ) : (
           <MapView issues={filteredIssues} currentUserId={user.id} />
         )}

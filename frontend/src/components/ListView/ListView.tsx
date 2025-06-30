@@ -22,6 +22,7 @@ interface Issue {
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   imageUrl: string;
+  resolvedImageUrl?: string;
   reporter_id: string;
   admin_notes?: string;
   resolved_at?: string;
@@ -34,9 +35,16 @@ interface Issue {
 interface ListViewProps {
   issues: Issue[];
   currentUserId: string;
+  isAdmin?: boolean;
+  onIssueUpdate?: () => void;
 }
 
-const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
+const ListView: React.FC<ListViewProps> = ({ 
+  issues, 
+  currentUserId, 
+  isAdmin = false,
+  onIssueUpdate 
+}) => {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -113,6 +121,10 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
   const handleCloseModal = () => {
     setSelectedIssue(null);
     setIsModalOpen(false);
+    // Refresh issues if there was an update and callback is provided
+    if (onIssueUpdate) {
+      onIssueUpdate();
+    }
   };
 
   if (issues.length === 0) {
@@ -213,6 +225,7 @@ const ListView: React.FC<ListViewProps> = ({ issues, currentUserId }) => {
           issue={selectedIssue}
           onClose={handleCloseModal}
           currentUserId={currentUserId}
+          isAdmin={isAdmin}
         />
       )}
     </div>

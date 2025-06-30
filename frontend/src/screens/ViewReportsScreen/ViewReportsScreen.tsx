@@ -52,11 +52,21 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile
   const [currentView, setCurrentView] = useState<"list" | "map">("list");
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
+  const [minLoadTimeReached, setMinLoadTimeReached] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     status: [],
     category: [],
     priority: [],
   });
+
+  // Ensure minimum loading time of 1.5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinLoadTimeReached(true);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     fetchIssues();
@@ -151,6 +161,11 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile
 
   const isAdmin = userProfile?.is_admin === true;
 
+  // Show loading screen while either data loading or minimum time not reached
+  if (loading || !minLoadTimeReached) {
+    return <LoadingOverlay message="Loading reports..." size="large" />;
+  }
+
   return (
     <div className={styles.container}>
       <IconButton
@@ -194,9 +209,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile
           />
         </div>
 
-        {loading ? (
-          <LoadingOverlay message="Loading reports..." size="large" />
-        ) : currentView === "list" ? (
+        {currentView === "list" ? (
           <ListView 
             issues={filteredIssues} 
             currentUserId={user.id} 

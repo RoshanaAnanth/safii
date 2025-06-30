@@ -3,6 +3,7 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 import supabase from "../../lib/supabase";
 
+import boltBadge from "../../../assets/BoltBadge.png";
 import loginScreenBackground from "../../../assets/LoginScreenBackground.mp4";
 
 import styles from "./LoginScreen.module.scss";
@@ -13,6 +14,13 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const characters =
+    "✦  B U I L T  W  I T H  B O L T  ✦  B U I L T  W  I T H  B O L T ".split(
+      ""
+    );
+  const radius = 58;
+  const inner_angle = 360 / characters.length;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,6 +80,33 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
         <source src={loginScreenBackground} type="video/mp4" />
       </video>
       <div className={styles.card}>
+        <div className={styles.badgeContainer}>
+          <img src={boltBadge} alt="Badge" className={styles.boltBadge} />
+          <span className={styles.textRing}>
+            {characters.map((char, i) => {
+              const angle = i * inner_angle;
+              return (
+                <span
+                  key={i}
+                  style={{
+                    position: "absolute",
+                    transform: `
+                      rotate(${angle}deg)
+                      translate(${radius}px)
+                      rotate(${90}deg)
+                    `,
+                    transformOrigin: "0 0",
+                    display: "inline-block",
+                    marginRight: "1.5px",
+                  }}
+                  className={styles.orbitCharacter}
+                >
+                  {char}
+                </span>
+              );
+            })}
+          </span>
+        </div>
         <div className={styles.cardContent}>
           <div className={styles.contentWrapper}>
             <h1 className={styles.title}>Safii</h1>

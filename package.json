@@ -22,5 +22,8 @@
     "responsive"
   ],
   "author": "Your Name",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "vite": "^7.0.0"
+  }
 }

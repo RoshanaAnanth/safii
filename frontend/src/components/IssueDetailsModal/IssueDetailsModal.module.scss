@@ -97,22 +97,23 @@
 
 .statusSelect {
   min-width: 120px !important;
+  width: fit-content !important;
 }
 
 .statusDropdown {
-  background: #ffffff !important;
+  background: transparent !important;
   border-radius: 8px !important;
   font-family: "Poppins", sans-serif !important;
   font-size: 14px !important;
-  
+
   .MuiOutlinedInput-notchedOutline {
     border-color: #55ad9b !important;
   }
-  
+
   &:hover .MuiOutlinedInput-notchedOutline {
     border-color: #4e8d9b !important;
   }
-  
+
   &.Mui-focused .MuiOutlinedInput-notchedOutline {
     border-color: #55ad9b !important;
   }

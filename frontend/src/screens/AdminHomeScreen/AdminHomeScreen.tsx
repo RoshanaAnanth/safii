@@ -6,7 +6,6 @@ import supabase from "../../lib/supabase";
 import { formatLocationForDisplay } from "../../lib/utils";
 import styles from "./AdminHomeScreen.module.scss";
 
-import AssignmentIcon from "@mui/icons-material/Assignment";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 
@@ -21,10 +20,20 @@ import adminIllustration from "../../../assets/AdminIllustration.png";
 import authority from "../../../assets/Authority.svg";
 import background from "../../../assets/HomeScreenBackground.png";
 import pendingIssuesIcon from "../../../assets/PendingIssuesIcon.png";
+import recentIssuesIcon from "../../../assets/RecentIssuesIcon.png";
 import recentIssuesIllustration from "../../../assets/RecentIssuesIllustration.png";
 import resolvedIssuesIcon from "../../../assets/ResolvedIssuesIcon.png";
 import todayIssuesIcon from "../../../assets/TodayIssuesIcon.png";
 import totalIssuesIcon from "../../../assets/TotalIssuesIcon.png";
+
+import brokenSign from "../../../assets/BrokenSign.png";
+import drainage from "../../../assets/Drainage.png";
+import garbage from "../../../assets/Garbage.png";
+import landslide from "../../../assets/Landslide.png";
+import other from "../../../assets/Other.png";
+import pothole from "../../../assets/Pothole.png";
+import streetLight from "../../../assets/Streetlight.png";
+import Chip from "../../components/Chip/Chip";
 
 interface AdminHomeScreenProps {
   user: User;
@@ -240,15 +249,15 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
 
   const getCategoryIcon = (category: string) => {
     const iconMap: { [key: string]: string } = {
-      pothole: "🕳️",
-      drainage: "🌊",
-      garbage: "🗑️",
-      landslide: "⛰️",
-      street_light: "💡",
-      broken_sign: "🚧",
-      other: "❓",
+      pothole: pothole,
+      drainage: drainage,
+      garbage: garbage,
+      landslide: landslide,
+      street_light: streetLight,
+      broken_sign: brokenSign,
+      other: other,
     };
-    return iconMap[category] || "❓";
+    return iconMap[category];
   };
 
   const getStatusClass = (status: string) => {
@@ -312,125 +321,149 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         </div>
       </div>
 
-      <div className={styles.welcomeSection}>
-        <h2 className={styles.welcomeText}>Welcome back!</h2>
-        <img
-          src={adminIllustration}
-          alt="Illustration"
-          className={styles.welcomeIllustration}
-        />
-      </div>
-
-      <div className={styles.dashboardGrid}>
-        <div className={styles.statsCard}>
-          <div className={styles.cardHeader}>
-            <h3 className={styles.cardTitle}>Total Issues</h3>
-            <img src={totalIssuesIcon} alt="Icon" className={styles.cardIcon} />
-          </div>
-          <p className={styles.statNumber}>{stats.totalIssues}</p>
-          <p className={styles.statLabel}>All time</p>
+      <div className={styles.content}>
+        <div className={styles.welcomeSection}>
+          <h2 className={styles.welcomeText}>Welcome back!</h2>
+          <img
+            src={adminIllustration}
+            alt="Illustration"
+            className={styles.welcomeIllustration}
+          />
         </div>
 
-        <div className={styles.statsCard}>
-          <div className={styles.cardHeader}>
-            <h3 className={styles.cardTitle}>Pending</h3>
-            <img
-              src={pendingIssuesIcon}
-              alt="Icon"
-              className={styles.cardIcon}
-            />
+        <div className={styles.dashboardGrid}>
+          <div className={styles.statsCard}>
+            <div className={styles.cardHeader}>
+              <h3 className={styles.cardTitle}>Total Issues</h3>
+              <img
+                src={totalIssuesIcon}
+                alt="Icon"
+                className={styles.cardIcon}
+              />
+            </div>
+            <p className={styles.statNumber}>{stats.totalIssues}</p>
+            <p className={styles.statLabel}>All time</p>
           </div>
-          <p className={styles.statNumber}>{stats.pendingIssues}</p>
-          <p className={styles.statLabel}>Awaiting action</p>
+
+          <div className={styles.statsCard}>
+            <div className={styles.cardHeader}>
+              <h3 className={styles.cardTitle}>Pending</h3>
+              <img
+                src={pendingIssuesIcon}
+                alt="Icon"
+                className={styles.cardIcon}
+              />
+            </div>
+            <p className={styles.statNumber}>{stats.pendingIssues}</p>
+            <p className={styles.statLabel}>Awaiting action</p>
+          </div>
+
+          <div className={styles.statsCard}>
+            <div className={styles.cardHeader}>
+              <h3 className={styles.cardTitle}>Resolved</h3>
+              <img
+                src={resolvedIssuesIcon}
+                alt="Icon"
+                className={styles.cardIcon}
+              />
+            </div>
+            <p className={styles.statNumber}>{stats.resolvedIssues}</p>
+            <p className={styles.statLabel}>Completed</p>
+          </div>
+
+          <div className={styles.statsCard}>
+            <div className={styles.cardHeader}>
+              <h3 className={styles.cardTitle}>Today</h3>
+              <img
+                src={todayIssuesIcon}
+                alt="Icon"
+                className={styles.cardIcon}
+              />
+            </div>
+            <p className={styles.statNumber}>{stats.todayIssues}</p>
+            <p className={styles.statLabel}>New reports</p>
+          </div>
         </div>
 
-        <div className={styles.statsCard}>
-          <div className={styles.cardHeader}>
-            <h3 className={styles.cardTitle}>Resolved</h3>
-            <img
-              src={resolvedIssuesIcon}
-              alt="Icon"
-              className={styles.cardIcon}
-            />
-          </div>
-          <p className={styles.statNumber}>{stats.resolvedIssues}</p>
-          <p className={styles.statLabel}>Completed</p>
-        </div>
+        <div className={styles.contentGrid}>
+          <img
+            src={recentIssuesIllustration}
+            alt="Illustration"
+            className={styles.recentIssuesIllustration}
+          />
+          <div className={styles.recentIssuesSection}>
+            <div className={styles.recentIssuesHeader}>
+              <h2 className={styles.sectionTitle}>
+                <img
+                  src={recentIssuesIcon}
+                  alt="Icon"
+                  className={styles.sectionIcon}
+                />
+                Recent Issues
+              </h2>
+              <Button
+                className={styles.viewAllIssuesButton}
+                onClick={handleViewAllIssues}
+              >
+                View All Issues
+              </Button>
+            </div>
 
-        <div className={styles.statsCard}>
-          <div className={styles.cardHeader}>
-            <h3 className={styles.cardTitle}>Today</h3>
-            <img src={todayIssuesIcon} alt="Icon" className={styles.cardIcon} />
-          </div>
-          <p className={styles.statNumber}>{stats.todayIssues}</p>
-          <p className={styles.statLabel}>New reports</p>
-        </div>
-      </div>
-
-      <div className={styles.contentGrid}>
-        <img
-          src={recentIssuesIllustration}
-          alt="Illustration"
-          className={styles.recentIssuesIllustration}
-        />
-        <div className={styles.recentIssuesSection}>
-          <div className={styles.recentIssuesHeader}>
-            <h2 className={styles.sectionTitle}>
-              <AssignmentIcon className={styles.sectionIcon} />
-              Recent Issues
-            </h2>
-            <Button
-              className={styles.viewAllIssuesButton}
-              onClick={handleViewAllIssues}
-            >
-              View All Issues
-            </Button>
-          </div>
-
-          <div className={styles.recentIssuesContent}>
-            {loading ? (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyTitle}>Loading...</div>
-              </div>
-            ) : recentIssues.length === 0 ? (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyIcon}>📋</div>
-                <h3 className={styles.emptyTitle}>No Recent Issues</h3>
-                <p className={styles.emptyDescription}>
-                  No issues have been reported recently.
-                </p>
-              </div>
-            ) : (
-              <div className={styles.issuesList}>
-                {recentIssues.map((issue) => (
-                  <div
-                    key={issue.id}
-                    className={styles.issueItem}
-                    onClick={() => handleIssueClick(issue)}
-                  >
-                    <div className={styles.issueIcon}>
-                      {getCategoryIcon(issue.category)}
-                    </div>
-                    <div className={styles.issueDetails}>
-                      <h4 className={styles.issueTitle}>{issue.title}</h4>
-                      <p className={styles.issueLocation}>
-                        {formatLocation(issue.location)}
-                      </p>
-                      <p className={styles.issueDate}>
-                        {formatDate(issue.created_at)}
-                      </p>
-                    </div>
-                    <span
-                      className={`${styles.issueStatus} ${getStatusClass(
-                        issue.status
-                      )}`}
+            <div className={styles.recentIssuesContent}>
+              {loading ? (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyTitle}>Loading...</div>
+                </div>
+              ) : recentIssues.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <div className={styles.emptyIcon}>📋</div>
+                  <h3 className={styles.emptyTitle}>No Recent Issues</h3>
+                  <p className={styles.emptyDescription}>
+                    No issues have been reported recently.
+                  </p>
+                </div>
+              ) : (
+                <div className={styles.issuesList}>
+                  {recentIssues.map((issue) => (
+                    <div
+                      key={issue.id}
+                      className={styles.issueItem}
+                      onClick={() => handleIssueClick(issue)}
                     >
-                      {issue.status.replace("_", " ")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
+                      <img
+                        src={getCategoryIcon(issue.category)}
+                        alt="Icon"
+                        className={styles.issueIcon}
+                      />
+                      {/* <div className={styles.issueIcon}>
+                        {getCategoryIcon(issue.category)}
+                      </div> */}
+                      <div className={styles.issueDetails}>
+                        <h4 className={styles.issueTitle}>{issue.title}</h4>
+                        <p className={styles.issueLocation}>
+                          {formatLocation(issue.location)}
+                        </p>
+                        <p className={styles.issueDate}>
+                          {formatDate(issue.created_at)}
+                        </p>
+                      </div>
+                      <Chip
+                        type="status"
+                        label={issue.status.replace("_", " ")}
+                        status={issue.status}
+                      />
+                      {/* <span
+                        className={`${styles.issueStatus} ${getStatusClass(
+                          issue.status
+                        )}`}
+                      >
+                        {issue.status.replace("_", " ")}
+                      </span> */}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

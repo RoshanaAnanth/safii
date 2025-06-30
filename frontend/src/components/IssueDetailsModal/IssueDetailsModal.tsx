@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { uploadImage } from "../../lib/utils";
 import supabase from "../../lib/supabase";
+import { uploadImage } from "../../lib/utils";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./IssueDetailsModal.module.scss";
 
@@ -63,9 +63,9 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   useEffect(() => {
     if (selectedStatus === "resolved" && isAdmin && imageUploadRef.current) {
       setTimeout(() => {
-        imageUploadRef.current?.scrollIntoView({ 
-          behavior: "smooth", 
-          block: "end" 
+        imageUploadRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "end",
         });
       }, 100);
     }
@@ -84,7 +84,10 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
     await handleUpdateStatus(newStatus, null);
   };
 
-  const handleUpdateStatus = async (newStatus: string, resolvedImageUrl: string | null) => {
+  const handleUpdateStatus = async (
+    newStatus: string,
+    resolvedImageUrl: string | null
+  ) => {
     setIsUpdatingStatus(true);
     try {
       const updateData: any = {
@@ -150,7 +153,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
       }
 
       await handleUpdateStatus("resolved", resolvedImageUrl);
-      
+
       // Reset state
       setResolvedImageFile(null);
       if (fileInputRef.current) {
@@ -353,6 +356,11 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                     onChange={handleStatusChange}
                     disabled={isUpdatingStatus}
                     className={styles.statusDropdown}
+                    sx={{
+                      "& .MuiSelect-select": {
+                        paddingLeft: 0,
+                      },
+                    }}
                   >
                     <MenuItem value="pending">
                       <Chip type="status" label="Pending" status="pending" />
@@ -410,68 +418,76 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           {renderImageSection()}
 
           {/* Resolved Image Upload Section - Only visible for admins when changing to "resolved" and issue is not already resolved */}
-          {isAdmin && selectedStatus === "resolved" && issue.status !== "resolved" && (
-            <div className={styles.section} ref={imageUploadRef}>
-              <hr className={styles.horizontalLine} />
-              <h3 className={styles.sectionTitle}>Upload Resolved Image</h3>
-              <div className={styles.uploadSection}>
-                <div
-                  className={`${styles.uploadArea} ${
-                    resolvedImageFile ? styles.hasImage : ""
-                  }`}
-                  onClick={!resolvedImageFile ? handleUploadAreaClick : undefined}
-                >
-                  {resolvedImageFile ? (
-                    <>
-                      <img
-                        src={URL.createObjectURL(resolvedImageFile)}
-                        alt="Resolved issue proof"
-                        className={styles.imagePreview}
-                      />
-                      <Button
-                        onClick={handleRemoveImage}
-                        className={styles.removeImageButton}
-                      >
-                        Remove Image
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <CloudUploadIcon className={styles.uploadIcon} />
-                      <p className={styles.uploadText}>Upload Proof of Resolution</p>
-                      <p className={styles.uploadSubtext}>
-                        Click to upload an image showing the resolved issue
-                      </p>
-                    </>
-                  )}
+          {isAdmin &&
+            selectedStatus === "resolved" &&
+            issue.status !== "resolved" && (
+              <div className={styles.section} ref={imageUploadRef}>
+                <hr className={styles.horizontalLine} />
+                <h3 className={styles.sectionTitle}>Upload Resolved Image</h3>
+                <div className={styles.uploadSection}>
+                  <div
+                    className={`${styles.uploadArea} ${
+                      resolvedImageFile ? styles.hasImage : ""
+                    }`}
+                    onClick={
+                      !resolvedImageFile ? handleUploadAreaClick : undefined
+                    }
+                  >
+                    {resolvedImageFile ? (
+                      <>
+                        <img
+                          src={URL.createObjectURL(resolvedImageFile)}
+                          alt="Resolved issue proof"
+                          className={styles.imagePreview}
+                        />
+                        <Button
+                          onClick={handleRemoveImage}
+                          className={styles.removeImageButton}
+                        >
+                          Remove Image
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <CloudUploadIcon className={styles.uploadIcon} />
+                        <p className={styles.uploadText}>
+                          Upload Proof of Resolution
+                        </p>
+                        <p className={styles.uploadSubtext}>
+                          Click to upload an image showing the resolved issue
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageSelect}
+                    accept="image/*"
+                    className={styles.fileInput}
+                  />
                 </div>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageSelect}
-                  accept="image/*"
-                  className={styles.fileInput}
-                />
-              </div>
 
-              <div className={styles.resolveActions}>
-                <Button
-                  onClick={() => setSelectedStatus(issue.status)}
-                  className={styles.cancelButton}
-                  disabled={isUpdatingStatus || isUploading}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleResolveIssue}
-                  disabled={isUpdatingStatus || isUploading}
-                  className={styles.resolveButton}
-                >
-                  {isUpdatingStatus || isUploading ? "Resolving..." : "Resolve Issue"}
-                </Button>
+                <div className={styles.resolveActions}>
+                  <Button
+                    onClick={() => setSelectedStatus(issue.status)}
+                    className={styles.cancelButton}
+                    disabled={isUpdatingStatus || isUploading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleResolveIssue}
+                    disabled={isUpdatingStatus || isUploading}
+                    className={styles.resolveButton}
+                  >
+                    {isUpdatingStatus || isUploading
+                      ? "Resolving..."
+                      : "Resolve Issue"}
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       </div>
     </div>

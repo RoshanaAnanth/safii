@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import SuccessModal from "../SuccessModal/SuccessModal";
 import supabase from "../../lib/supabase";
-import { uploadImage } from "../../lib/utils";
+import { formatLocationForDisplay, uploadImage } from "../../lib/utils";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./IssueDetailsModal.module.scss";
 
@@ -53,13 +54,21 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   currentUserId,
   isAdmin = false,
 }) => {
+  const [currentIssueData, setCurrentIssueData] = useState<Issue>(issue);
   const [selectedStatus, setSelectedStatus] = useState<string>(issue.status);
   const [resolvedImageFile, setResolvedImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [imageLoading, setImageLoading] = useState<{[key: string]: boolean}>({});
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const imageUploadRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update internal state when issue prop changes
+  useEffect(() => {
+    setCurrentIssueData(issue);
+    setSelectedStatus(issue.status);
+  }, [issue]);
 
   // Auto-scroll to image upload section when it becomes visible
   useEffect(() => {
@@ -108,7 +117,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
       const { error: updateError } = await supabase
         .from("issues")
         .update(updateData)
-        .eq("id", issue.id);
+        .eq("id", currentIssueData.id);
 
       if (updateError) {
         console.error("Error updating issue:", updateError);
@@ -116,8 +125,67 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
         return;
       }
 
-      alert("Issue status updated successfully!");
-      onClose(); // Close modal and trigger refresh in parent
+      // Fetch the updated issue data
+      const { data: updatedIssue, error: fetchError } = await supabase
+        .from("issues")
+        .select(
+          `
+          id,
+          title,
+          description,
+          category,
+          status,
+          priority,
+          location,
+          imageUrl,
+          resolvedImageUrl,
+          reporter_id,
+          admin_notes,
+          resolved_at,
+          created_at,
+          updated_at,
+          users!reporter_id (
+            name,
+            email
+          )
+        `
+        )
+        .eq("id", currentIssueData.id)
+        .single();
+
+      if (fetchError) {
+        console.error("Error fetching updated issue:", fetchError);
+        return;
+      }
+
+      // Format the updated issue data
+      const formattedIssue: Issue = {
+        id: updatedIssue.id,
+        title: updatedIssue.title,
+        description: updatedIssue.description,
+        category: updatedIssue.category,
+        status: updatedIssue.status,
+        priority: updatedIssue.priority,
+        location: formatLocationForDisplay(updatedIssue.location),
+        imageUrl: updatedIssue.imageUrl,
+        resolvedImageUrl: updatedIssue.resolvedImageUrl,
+        reporter_id: updatedIssue.reporter_id,
+        admin_notes: updatedIssue.admin_notes,
+        resolved_at: updatedIssue.resolved_at,
+        created_at: updatedIssue.created_at,
+        updated_at: updatedIssue.updated_at,
+        reporter_name: updatedIssue.users?.name || "Anonymous User",
+        reporter_email: updatedIssue.users?.email || "unknown@example.com",
+      };
+
+      // Update internal state
+      setCurrentIssueData(formattedIssue);
+      setSelectedStatus(formattedIssue.status);
+
+      // Show success modal for resolved issues
+      if (newStatus === "resolved") {
+        setShowSuccessModal(true);
+      }
     } catch (error) {
       console.error("Error updating issue:", error);
       alert("An unexpected error occurred");
@@ -150,7 +218,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
         resolvedImageUrl = await uploadImage(
           resolvedImageFile,
           currentUserId,
-          `resolved-${issue.id}-${Date.now()}`
+          `resolved-${currentIssueData.id}-${Date.now()}`
         );
       }
 
@@ -220,9 +288,9 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   };
 
   const renderImageSection = () => {
-    const isResolved = issue.status === "resolved";
-    const hasOriginalImage = issue.imageUrl;
-    const hasResolvedImage = issue.resolvedImageUrl;
+    const isResolved = currentIssueData.status === "resolved";
+    const hasOriginalImage = currentIssueData.imageUrl;
+    const hasResolvedImage = currentIssueData.resolvedImageUrl;
 
     if (isResolved && hasOriginalImage && hasResolvedImage) {
       // Show before & after images side by side
@@ -239,7 +307,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   </div>
                 )}
                 <img
-                  src={issue.imageUrl}
+                  src={currentIssueData.imageUrl}
                   alt="Original Issue"
                   className={styles.issueImage}
                   data-image-key="original"
@@ -259,7 +327,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   </div>
                 )}
                 <img
-                  src={issue.resolvedImageUrl}
+                  src={currentIssueData.resolvedImageUrl}
                   alt="Resolved Issue"
                   className={styles.issueImage}
                   data-image-key="resolved"
@@ -287,7 +355,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   </div>
                 )}
                 <img
-                  src={issue.resolvedImageUrl}
+                  src={currentIssueData.resolvedImageUrl}
                   alt="Resolved Issue"
                   className={styles.issueImage}
                   data-image-key="resolved-only"
@@ -315,7 +383,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   </div>
                 )}
                 <img
-                  src={issue.imageUrl}
+                  src={currentIssueData.imageUrl}
                   alt="Issue"
                   className={styles.issueImage}
                   data-image-key="original-only"
@@ -343,7 +411,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   </div>
                 )}
                 <img
-                  src={issue.imageUrl}
+                  src={currentIssueData.imageUrl}
                   alt="Issue"
                   className={styles.issueImage}
                   data-image-key="issue"
@@ -376,200 +444,211 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   };
 
   return (
-    <div className={styles.overlay} onClick={handleOverlayClick}>
-      <div className={styles.modal}>
-        <div className={styles.header}>
-          <div className={styles.headerContent}>
-            <h2 className={styles.title}>{issue.title}</h2>
-            {!isAdmin && (
-              <UpvoteButton
-                issueId={issue.id}
-                userId={currentUserId}
-                size="large"
-              />
-            )}
-          </div>
-          <IconButton onClick={onClose} className={styles.closeButton}>
-            <CloseIcon className={styles.closeIcon} />
-          </IconButton>
-        </div>
-
-        <div className={styles.content}>
-          <div className={styles.detailsSection}>
-            <div className={styles.reporterDetails}>
-              <span className={styles.sectionText}>Reported by: </span>
-              <div className={styles.reportedInfo}>
-                <h4 className={styles.reporterName}>
-                  {issue.reporter_name || "Anonymous User"}
-                </h4>
-                <p className={styles.reporterEmail}>
-                  ({issue.reporter_email || "No email provided"})
-                </p>
-              </div>
-            </div>
-            <div className={styles.tagSection}>
-              <span className={styles.sectionText}>Category:</span>
-              <Chip
-                type="category"
-                label={issue.category}
-                category={issue.category.replace("_", " ")}
-              />
-            </div>
-            <div className={styles.tagSection}>
-              <span className={styles.sectionText}>Status:</span>
-              {isAdmin && issue.status !== "resolved" ? (
-                <FormControl size="small" className={styles.statusSelect}>
-                  <Select
-                    value={selectedStatus}
-                    onChange={handleStatusChange}
-                    disabled={isUpdatingStatus}
-                    className={styles.statusDropdown}
-                    sx={{
-                      "& .MuiSelect-select": {
-                        paddingLeft: 0,
-                      },
-                    }}
-                  >
-                    <MenuItem value="pending">
-                      <Chip type="status" label="Pending" status="pending" />
-                    </MenuItem>
-                    <MenuItem value="resolved">
-                      <Chip type="status" label="Resolved" status="resolved" />
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              ) : (
-                <Chip
-                  type="status"
-                  label={issue.status}
-                  status={issue.status.replace("_", " ")}
+    <>
+      <div className={styles.overlay} onClick={handleOverlayClick}>
+        <div className={styles.modal}>
+          <div className={styles.header}>
+            <div className={styles.headerContent}>
+              <h2 className={styles.title}>{currentIssueData.title}</h2>
+              {!isAdmin && (
+                <UpvoteButton
+                  issueId={currentIssueData.id}
+                  userId={currentUserId}
+                  size="large"
                 />
               )}
             </div>
-            <div className={styles.tagSection}>
-              <span className={styles.sectionText}>Priority:</span>
-              <Chip
-                type="priority"
-                label={issue.priority}
-                priority={issue.priority}
-              />
-            </div>
-            <div className={styles.tagSection}>
-              <span className={styles.sectionText}>Location:</span>
-              <span className={styles.locationValue}>
-                {formatLocation(issue.location)}
-              </span>
-            </div>
-            <div className={styles.tagSection}>
-              <span className={styles.sectionText}>Date reported:</span>
-              <span className={styles.detailValue}>
-                {formatDate(issue.created_at)}
-              </span>
-            </div>
-            {issue.resolved_at && (
-              <div className={styles.tagSection}>
-                <span className={styles.sectionText}>Date resolved:</span>
-                <span className={styles.detailValue}>
-                  {formatDate(issue.resolved_at)}
-                </span>
-              </div>
-            )}
-            <div className={styles.tagSection}>
-              <span className={styles.sectionText}>Description:</span>
-              <span className={styles.detailValue}>{issue.description}</span>
-            </div>
+            <IconButton onClick={onClose} className={styles.closeButton}>
+              <CloseIcon className={styles.closeIcon} />
+            </IconButton>
           </div>
 
-          <hr className={styles.horizontalLine} />
-
-          {/* Render images based on issue status */}
-          {renderImageSection()}
-
-          {/* Resolved Image Upload Section - Only visible for admins when changing to "resolved" and issue is not already resolved */}
-          {isAdmin &&
-            selectedStatus === "resolved" &&
-            issue.status !== "resolved" && (
-              <div className={styles.section} ref={imageUploadRef}>
-                <hr className={styles.horizontalLine} />
-                <h3 className={styles.sectionTitle}>Upload Resolved Image</h3>
-                <div className={styles.uploadSection}>
-                  <div
-                    className={`${styles.uploadArea} ${
-                      resolvedImageFile ? styles.hasImage : ""
-                    }`}
-                    onClick={
-                      !resolvedImageFile ? handleUploadAreaClick : undefined
-                    }
-                  >
-                    {isUploading ? (
-                      <div className={styles.uploadingContainer}>
-                        <LoadingSpinner size="large" />
-                        <p className={styles.uploadText}>Uploading image...</p>
-                      </div>
-                    ) : resolvedImageFile ? (
-                      <div className={styles.resolvedImagePreviewContainer}>
-                        <img
-                          src={URL.createObjectURL(resolvedImageFile)}
-                          alt="Resolved issue proof"
-                          className={styles.imagePreview}
-                        />
-                        <IconButton
-                          onClick={handleRemoveImage}
-                          className={styles.removeResolvedImageIcon}
-                          aria-label="Remove image"
-                        >
-                          <CloseIcon />
-                        </IconButton>
-                      </div>
-                    ) : (
-                      <>
-                        <CloudUploadIcon className={styles.uploadIcon} />
-                        <p className={styles.uploadText}>
-                          Upload Proof of Resolution
-                        </p>
-                        <p className={styles.uploadSubtext}>
-                          Click to upload an image showing the resolved issue
-                        </p>
-                      </>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageSelect}
-                    accept="image/*"
-                    className={styles.fileInput}
-                  />
-                </div>
-
-                <div className={styles.resolveActions}>
-                  <Button
-                    onClick={() => setSelectedStatus(issue.status)}
-                    className={styles.cancelButton}
-                    disabled={isUpdatingStatus || isUploading}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleResolveIssue}
-                    disabled={isUpdatingStatus || isUploading}
-                    className={styles.resolveButton}
-                  >
-                    {isUpdatingStatus || isUploading ? (
-                      <div className={styles.buttonContent}>
-                        <LoadingSpinner size="small" color="white" />
-                        <span>Resolving...</span>
-                      </div>
-                    ) : (
-                      "Resolve Issue"
-                    )}
-                  </Button>
+          <div className={styles.content}>
+            <div className={styles.detailsSection}>
+              <div className={styles.reporterDetails}>
+                <span className={styles.sectionText}>Reported by: </span>
+                <div className={styles.reportedInfo}>
+                  <h4 className={styles.reporterName}>
+                    {currentIssueData.reporter_name || "Anonymous User"}
+                  </h4>
+                  <p className={styles.reporterEmail}>
+                    ({currentIssueData.reporter_email || "No email provided"})
+                  </p>
                 </div>
               </div>
-            )}
+              <div className={styles.tagSection}>
+                <span className={styles.sectionText}>Category:</span>
+                <Chip
+                  type="category"
+                  label={currentIssueData.category}
+                  category={currentIssueData.category.replace("_", " ")}
+                />
+              </div>
+              <div className={styles.tagSection}>
+                <span className={styles.sectionText}>Status:</span>
+                {isAdmin && currentIssueData.status !== "resolved" ? (
+                  <FormControl size="small" className={styles.statusSelect}>
+                    <Select
+                      value={selectedStatus}
+                      onChange={handleStatusChange}
+                      disabled={isUpdatingStatus}
+                      className={styles.statusDropdown}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          paddingLeft: 0,
+                        },
+                      }}
+                    >
+                      <MenuItem value="pending">
+                        <Chip type="status" label="Pending" status="pending" />
+                      </MenuItem>
+                      <MenuItem value="resolved">
+                        <Chip type="status" label="Resolved" status="resolved" />
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <Chip
+                    type="status"
+                    label={currentIssueData.status}
+                    status={currentIssueData.status.replace("_", " ")}
+                  />
+                )}
+              </div>
+              <div className={styles.tagSection}>
+                <span className={styles.sectionText}>Priority:</span>
+                <Chip
+                  type="priority"
+                  label={currentIssueData.priority}
+                  priority={currentIssueData.priority}
+                />
+              </div>
+              <div className={styles.tagSection}>
+                <span className={styles.sectionText}>Location:</span>
+                <span className={styles.locationValue}>
+                  {formatLocation(currentIssueData.location)}
+                </span>
+              </div>
+              <div className={styles.tagSection}>
+                <span className={styles.sectionText}>Date reported:</span>
+                <span className={styles.detailValue}>
+                  {formatDate(currentIssueData.created_at)}
+                </span>
+              </div>
+              {currentIssueData.resolved_at && (
+                <div className={styles.tagSection}>
+                  <span className={styles.sectionText}>Date resolved:</span>
+                  <span className={styles.detailValue}>
+                    {formatDate(currentIssueData.resolved_at)}
+                  </span>
+                </div>
+              )}
+              <div className={styles.tagSection}>
+                <span className={styles.sectionText}>Description:</span>
+                <span className={styles.detailValue}>{currentIssueData.description}</span>
+              </div>
+            </div>
+
+            <hr className={styles.horizontalLine} />
+
+            {/* Render images based on issue status */}
+            {renderImageSection()}
+
+            {/* Resolved Image Upload Section - Only visible for admins when changing to "resolved" and issue is not already resolved */}
+            {isAdmin &&
+              selectedStatus === "resolved" &&
+              currentIssueData.status !== "resolved" && (
+                <div className={styles.section} ref={imageUploadRef}>
+                  <hr className={styles.horizontalLine} />
+                  <h3 className={styles.sectionTitle}>Upload Resolved Image</h3>
+                  <div className={styles.uploadSection}>
+                    <div
+                      className={`${styles.uploadArea} ${
+                        resolvedImageFile ? styles.hasImage : ""
+                      }`}
+                      onClick={
+                        !resolvedImageFile ? handleUploadAreaClick : undefined
+                      }
+                    >
+                      {isUploading ? (
+                        <div className={styles.uploadingContainer}>
+                          <LoadingSpinner size="large" />
+                          <p className={styles.uploadText}>Uploading image...</p>
+                        </div>
+                      ) : resolvedImageFile ? (
+                        <div className={styles.resolvedImagePreviewContainer}>
+                          <img
+                            src={URL.createObjectURL(resolvedImageFile)}
+                            alt="Resolved issue proof"
+                            className={styles.imagePreview}
+                          />
+                          <IconButton
+                            onClick={handleRemoveImage}
+                            className={styles.removeResolvedImageIcon}
+                            aria-label="Remove image"
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </div>
+                      ) : (
+                        <>
+                          <CloudUploadIcon className={styles.uploadIcon} />
+                          <p className={styles.uploadText}>
+                            Upload Proof of Resolution
+                          </p>
+                          <p className={styles.uploadSubtext}>
+                            Click to upload an image showing the resolved issue
+                          </p>
+                        </>
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleImageSelect}
+                      accept="image/*"
+                      className={styles.fileInput}
+                    />
+                  </div>
+
+                  <div className={styles.resolveActions}>
+                    <Button
+                      onClick={() => setSelectedStatus(currentIssueData.status)}
+                      className={styles.cancelButton}
+                      disabled={isUpdatingStatus || isUploading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleResolveIssue}
+                      disabled={isUpdatingStatus || isUploading}
+                      className={styles.resolveButton}
+                    >
+                      {isUpdatingStatus || isUploading ? (
+                        <div className={styles.buttonContent}>
+                          <LoadingSpinner size="small" color="white" />
+                          <span>Resolving...</span>
+                        </div>
+                      ) : (
+                        "Resolve Issue"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+        title="Success!"
+        message="Issue resolved successfully."
+        autoCloseDelay={3000}
+      />
+    </>
   );
 };
 

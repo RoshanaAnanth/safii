@@ -128,6 +128,9 @@
   cursor: pointer;
   text-transform: uppercase;
   transition: background-color 0.2s ease, transform 0.1s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: #55817a;
@@ -137,6 +140,12 @@
   // &:active {
   //   transform: translateY(0);
   // }
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .divider {

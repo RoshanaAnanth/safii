@@ -146,6 +146,7 @@ const ListView: React.FC<ListViewProps> = ({
         src={listViewIllustration}
         alt="Illustration"
         className={styles.illustration}
+        loading="lazy"
       />
       <table className={styles.table}>
         <thead className={styles.tableHeader}>

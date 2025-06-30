@@ -75,7 +75,7 @@ const MapView: React.FC<MapViewProps> = ({ issues, currentUserId }) => {
     return L.divIcon({
       html: `<div class="${styles.customMarker}">
                <div class="${styles.markerIcon}">
-             <img src="${iconMap[category]}" alt="Icon" style="width: 75%; height: 75%; object-fit: scale-down;" />
+             <img src="${iconMap[category]}" alt="Icon" style="width: 75%; height: 75%; object-fit: scale-down;" loading="lazy" />
            </div>
              </div>`,
       className: "custom-div-icon",

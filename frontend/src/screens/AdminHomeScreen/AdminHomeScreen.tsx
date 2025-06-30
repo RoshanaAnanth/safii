@@ -2,6 +2,7 @@ import { User } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import IssueDetailsModal from "../../components/IssueDetailsModal/IssueDetailsModal";
+import LoadingOverlay from "../../components/LoadingOverlay/LoadingOverlay";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay } from "../../lib/utils";
 import styles from "./AdminHomeScreen.module.scss";
@@ -328,6 +329,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
             src={adminIllustration}
             alt="Illustration"
             className={styles.welcomeIllustration}
+            loading="lazy"
           />
         </div>
 
@@ -339,6 +341,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                 src={totalIssuesIcon}
                 alt="Icon"
                 className={styles.cardIcon}
+                loading="lazy"
               />
             </div>
             <p className={styles.statNumber}>{stats.totalIssues}</p>
@@ -352,6 +355,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                 src={pendingIssuesIcon}
                 alt="Icon"
                 className={styles.cardIcon}
+                loading="lazy"
               />
             </div>
             <p className={styles.statNumber}>{stats.pendingIssues}</p>
@@ -365,6 +369,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                 src={resolvedIssuesIcon}
                 alt="Icon"
                 className={styles.cardIcon}
+                loading="lazy"
               />
             </div>
             <p className={styles.statNumber}>{stats.resolvedIssues}</p>
@@ -378,6 +383,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                 src={todayIssuesIcon}
                 alt="Icon"
                 className={styles.cardIcon}
+                loading="lazy"
               />
             </div>
             <p className={styles.statNumber}>{stats.todayIssues}</p>
@@ -390,6 +396,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
             src={recentIssuesIllustration}
             alt="Illustration"
             className={styles.recentIssuesIllustration}
+            loading="lazy"
           />
           <div className={styles.recentIssuesSection}>
             <div className={styles.recentIssuesHeader}>
@@ -398,6 +405,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                   src={recentIssuesIcon}
                   alt="Icon"
                   className={styles.sectionIcon}
+                  loading="lazy"
                 />
                 Recent Issues
               </h2>
@@ -411,9 +419,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
 
             <div className={styles.recentIssuesContent}>
               {loading ? (
-                <div className={styles.emptyState}>
-                  <div className={styles.emptyTitle}>Loading...</div>
-                </div>
+                <LoadingOverlay message="Loading dashboard..." size="medium" />
               ) : recentIssues.length === 0 ? (
                 <div className={styles.emptyState}>
                   <div className={styles.emptyIcon}>📋</div>
@@ -434,10 +440,8 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                         src={getCategoryIcon(issue.category)}
                         alt="Icon"
                         className={styles.issueIcon}
+                        loading="lazy"
                       />
-                      {/* <div className={styles.issueIcon}>
-                        {getCategoryIcon(issue.category)}
-                      </div> */}
                       <div className={styles.issueDetails}>
                         <h4 className={styles.issueTitle}>{issue.title}</h4>
                         <p className={styles.issueLocation}>
@@ -452,13 +456,6 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                         label={issue.status.replace("_", " ")}
                         status={issue.status}
                       />
-                      {/* <span
-                        className={`${styles.issueStatus} ${getStatusClass(
-                          issue.status
-                        )}`}
-                      >
-                        {issue.status.replace("_", " ")}
-                      </span> */}
                     </div>
                   ))}
                 </div>
@@ -484,6 +481,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
             src={getUserAvatar()}
             alt="Avatar"
             className={styles.userAvatar}
+            loading="lazy"
           />
           <div className={styles.userDetails}>
             <span className={styles.name}>Welcome {getUserName()}!</span>

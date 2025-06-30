@@ -1,0 +1,132 @@
+// Mobile-first responsive styles for Loading Overlay
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.lottie {
+  flex-shrink: 0;
+}
+
+.message {
+  font-family: "Poppins", sans-serif;
+  color: #666;
+  margin: 0;
+  font-weight: 500;
+}
+
+// Size variants
+.small {
+  .lottie {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .message {
+    font-size: 12px;
+  }
+}
+
+.medium {
+  .lottie {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .message {
+    font-size: 14px;
+  }
+}
+
+.large {
+  .lottie {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .message {
+    font-size: 16px;
+  }
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .small {
+    .lottie {
+      width: 70px;
+      height: 70px;
+    }
+    
+    .message {
+      font-size: 13px;
+    }
+  }
+
+  .medium {
+    .lottie {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .message {
+      font-size: 15px;
+    }
+  }
+
+  .large {
+    .lottie {
+      width: 140px;
+      height: 140px;
+    }
+    
+    .message {
+      font-size: 17px;
+    }
+  }
+}
+
+// Desktop styles
+@media (min-width: 1024px) {
+  .small {
+    .lottie {
+      width: 80px;
+      height: 80px;
+    }
+    
+    .message {
+      font-size: 14px;
+    }
+  }
+
+  .medium {
+    .lottie {
+      width: 120px;
+      height: 120px;
+    }
+    
+    .message {
+      font-size: 16px;
+    }
+  }
+
+  .large {
+    .lottie {
+      width: 160px;
+      height: 160px;
+    }
+    
+    .message {
+      font-size: 18px;
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 import supabase from "../../lib/supabase";
 
@@ -101,7 +102,6 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
                 <input
                   id="password"
                   type="password"
-                  // placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={styles.input}
@@ -116,7 +116,14 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
                   className={styles.loginButton}
                   disabled={isLoading}
                 >
-                  {isLoading ? "Logging in..." : "Login"}
+                  {isLoading ? (
+                    <div className={styles.buttonContent}>
+                      <LoadingSpinner size="small" color="white" />
+                      <span>Logging in...</span>
+                    </div>
+                  ) : (
+                    "Login"
+                  )}
                 </button>
               </div>
             </form>

@@ -240,6 +240,21 @@
   justify-content: center;
 }
 
+.uploadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.uploadingText {
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #55ad9b;
+  margin: 0;
+}
+
 .imagePreviewContainer {
   position: relative;
   height: inherit;
@@ -308,6 +323,9 @@
   text-align: center;
   align-self: center;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover:not(:disabled) {
     background: #489586;
@@ -324,6 +342,12 @@
     transform: none;
     box-shadow: none;
   }
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 // Tablet styles

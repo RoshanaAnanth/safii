@@ -21,6 +21,16 @@ const App: React.FC = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(false);
+  const [minLoadTimeReached, setMinLoadTimeReached] = useState(false);
+
+  // Ensure minimum loading time of 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinLoadTimeReached(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Initial user fetch on app load
   useEffect(() => {
@@ -167,8 +177,8 @@ const App: React.FC = () => {
     fetchUserProfile();
   }, [user]); // This effect runs whenever the user state changes
 
-  // Show loading screen while either initial loading or profile loading
-  if (loading || profileLoading) {
+  // Show loading screen while either initial loading, profile loading, or minimum time not reached
+  if (loading || profileLoading || !minLoadTimeReached) {
     return (
       <div
         style={{

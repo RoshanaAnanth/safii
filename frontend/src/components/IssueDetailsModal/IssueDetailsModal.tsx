@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import supabase from "../../lib/supabase";
 import { uploadImage } from "../../lib/utils";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./IssueDetailsModal.module.scss";
 
 import CloseIcon from "@mui/icons-material/Close";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
@@ -55,6 +57,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   const [resolvedImageFile, setResolvedImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [imageLoading, setImageLoading] = useState<{[key: string]: boolean}>({});
   const imageUploadRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -191,8 +194,19 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
     fileInputRef.current?.click();
   };
 
+  const handleImageLoad = (imageKey: string) => {
+    setImageLoading(prev => ({ ...prev, [imageKey]: false }));
+  };
+
+  const handleImageLoadStart = (imageKey: string) => {
+    setImageLoading(prev => ({ ...prev, [imageKey]: true }));
+  };
+
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
+    const imageKey = target.getAttribute('data-image-key') || 'unknown';
+    setImageLoading(prev => ({ ...prev, [imageKey]: false }));
+    
     target.style.display = "none";
     const container = target.parentElement;
     if (container) {
@@ -218,21 +232,43 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <div className={styles.imageComparisonGrid}>
             <div className={styles.imageContainer}>
               <div className={styles.imageLabel}>Before (Reported)</div>
-              <img
-                src={issue.imageUrl}
-                alt="Original Issue"
-                className={styles.issueImage}
-                onError={handleImageError}
-              />
+              <div className={styles.imageWrapper}>
+                {imageLoading['original'] && (
+                  <div className={styles.imageLoadingOverlay}>
+                    <LoadingSpinner size="medium" />
+                  </div>
+                )}
+                <img
+                  src={issue.imageUrl}
+                  alt="Original Issue"
+                  className={styles.issueImage}
+                  data-image-key="original"
+                  onLoadStart={() => handleImageLoadStart('original')}
+                  onLoad={() => handleImageLoad('original')}
+                  onError={handleImageError}
+                  loading="lazy"
+                />
+              </div>
             </div>
             <div className={styles.imageContainer}>
               <div className={styles.imageLabel}>After (Resolved)</div>
-              <img
-                src={issue.resolvedImageUrl}
-                alt="Resolved Issue"
-                className={styles.issueImage}
-                onError={handleImageError}
-              />
+              <div className={styles.imageWrapper}>
+                {imageLoading['resolved'] && (
+                  <div className={styles.imageLoadingOverlay}>
+                    <LoadingSpinner size="medium" />
+                  </div>
+                )}
+                <img
+                  src={issue.resolvedImageUrl}
+                  alt="Resolved Issue"
+                  className={styles.issueImage}
+                  data-image-key="resolved"
+                  onLoadStart={() => handleImageLoadStart('resolved')}
+                  onLoad={() => handleImageLoad('resolved')}
+                  onError={handleImageError}
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -244,12 +280,23 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <h3 className={styles.sectionTitle}>Resolved Image</h3>
           <div className={styles.imageSection}>
             <div className={styles.imageContainer}>
-              <img
-                src={issue.resolvedImageUrl}
-                alt="Resolved Issue"
-                className={styles.issueImage}
-                onError={handleImageError}
-              />
+              <div className={styles.imageWrapper}>
+                {imageLoading['resolved-only'] && (
+                  <div className={styles.imageLoadingOverlay}>
+                    <LoadingSpinner size="medium" />
+                  </div>
+                )}
+                <img
+                  src={issue.resolvedImageUrl}
+                  alt="Resolved Issue"
+                  className={styles.issueImage}
+                  data-image-key="resolved-only"
+                  onLoadStart={() => handleImageLoadStart('resolved-only')}
+                  onLoad={() => handleImageLoad('resolved-only')}
+                  onError={handleImageError}
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -261,12 +308,23 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <h3 className={styles.sectionTitle}>Issue Image</h3>
           <div className={styles.imageSection}>
             <div className={styles.imageContainer}>
-              <img
-                src={issue.imageUrl}
-                alt="Issue"
-                className={styles.issueImage}
-                onError={handleImageError}
-              />
+              <div className={styles.imageWrapper}>
+                {imageLoading['original-only'] && (
+                  <div className={styles.imageLoadingOverlay}>
+                    <LoadingSpinner size="medium" />
+                  </div>
+                )}
+                <img
+                  src={issue.imageUrl}
+                  alt="Issue"
+                  className={styles.issueImage}
+                  data-image-key="original-only"
+                  onLoadStart={() => handleImageLoadStart('original-only')}
+                  onLoad={() => handleImageLoad('original-only')}
+                  onError={handleImageError}
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -278,12 +336,23 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <h3 className={styles.sectionTitle}>Issue Image</h3>
           <div className={styles.imageSection}>
             <div className={styles.imageContainer}>
-              <img
-                src={issue.imageUrl}
-                alt="Issue"
-                className={styles.issueImage}
-                onError={handleImageError}
-              />
+              <div className={styles.imageWrapper}>
+                {imageLoading['issue'] && (
+                  <div className={styles.imageLoadingOverlay}>
+                    <LoadingSpinner size="medium" />
+                  </div>
+                )}
+                <img
+                  src={issue.imageUrl}
+                  alt="Issue"
+                  className={styles.issueImage}
+                  data-image-key="issue"
+                  onLoadStart={() => handleImageLoadStart('issue')}
+                  onLoad={() => handleImageLoad('issue')}
+                  onError={handleImageError}
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -432,7 +501,12 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                       !resolvedImageFile ? handleUploadAreaClick : undefined
                     }
                   >
-                    {resolvedImageFile ? (
+                    {isUploading ? (
+                      <div className={styles.uploadingContainer}>
+                        <LoadingSpinner size="large" />
+                        <p className={styles.uploadText}>Uploading image...</p>
+                      </div>
+                    ) : resolvedImageFile ? (
                       <div className={styles.resolvedImagePreviewContainer}>
                         <img
                           src={URL.createObjectURL(resolvedImageFile)}
@@ -449,7 +523,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                       </div>
                     ) : (
                       <>
-                        {/* <CloudUploadIcon className={styles.uploadIcon} /> */}
+                        <CloudUploadIcon className={styles.uploadIcon} />
                         <p className={styles.uploadText}>
                           Upload Proof of Resolution
                         </p>
@@ -481,9 +555,14 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                     disabled={isUpdatingStatus || isUploading}
                     className={styles.resolveButton}
                   >
-                    {isUpdatingStatus || isUploading
-                      ? "Resolving..."
-                      : "Resolve Issue"}
+                    {isUpdatingStatus || isUploading ? (
+                      <div className={styles.buttonContent}>
+                        <LoadingSpinner size="small" color="white" />
+                        <span>Resolving...</span>
+                      </div>
+                    ) : (
+                      "Resolve Issue"
+                    )}
                   </Button>
                 </div>
               </div>

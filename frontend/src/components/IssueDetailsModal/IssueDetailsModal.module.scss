@@ -193,6 +193,29 @@
   border: 1px solid rgba(0, 0, 0, 0.05);
   overflow: hidden;
   margin-top: 8px;
+  position: relative;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imageLoadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
 }
 
 .issueImage {
@@ -267,6 +290,13 @@
     padding: 16px;
     min-height: auto;
   }
+}
+
+.uploadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
 .uploadIcon {
@@ -379,6 +409,9 @@
   font-size: 14px !important;
   font-weight: 600 !important;
   text-transform: none !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
 
   &:hover:not(:disabled) {
     background: #4e8d9b !important;
@@ -388,6 +421,12 @@
     background: #ccc !important;
     cursor: not-allowed !important;
   }
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 // Animations

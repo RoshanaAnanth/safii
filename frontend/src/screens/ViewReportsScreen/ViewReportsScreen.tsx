@@ -11,6 +11,7 @@ import FilterControls, {
   FilterState,
 } from "../../components/FilterControls/FilterControls";
 import ListView from "../../components/ListView/ListView";
+import LoadingOverlay from "../../components/LoadingOverlay/LoadingOverlay";
 import MapView from "../../components/MapView/MapView";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay } from "../../lib/utils";
@@ -194,7 +195,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile
         </div>
 
         {loading ? (
-          <div className={styles.loading}>Loading reports...</div>
+          <LoadingOverlay message="Loading reports..." size="large" />
         ) : currentView === "list" ? (
           <ListView 
             issues={filteredIssues} 

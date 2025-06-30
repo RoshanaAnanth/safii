@@ -4,6 +4,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { User } from "@supabase/supabase-js";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import supabase from "../../lib/supabase";
 import { reverseGeocode, uploadImage } from "../../lib/utils";
 import styles from "./SubmitReportScreen.module.scss";
@@ -45,6 +46,7 @@ interface FormData {
 const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [isImageUploading, setIsImageUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<File>();
@@ -147,6 +149,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
   };
 
   const handleImageUpload = async (uploadedImage: File) => {
+    setIsImageUploading(true);
     try {
       const imageUrl = await uploadImage(
         uploadedImage,
@@ -163,6 +166,8 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
     } catch (error) {
       console.error("Error uploading image:", error);
       alert("Failed to upload image. Please try again.");
+    } finally {
+      setIsImageUploading(false);
     }
   };
 
@@ -306,6 +311,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
             className={`${styles.illustration} ${
               activeIndex >= 0 ? styles.visible : styles.hidden
             }`}
+            loading="lazy"
           />
           <div />
           <div />
@@ -315,6 +321,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
             className={`${styles.illustration} ${
               activeIndex >= 1 ? styles.visible : styles.hidden
             }`}
+            loading="lazy"
           />
           <img
             src={submitReportIllustration3}
@@ -322,6 +329,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
             className={`${styles.illustration} ${
               activeIndex >= 2 ? styles.visible : styles.hidden
             }`}
+            loading="lazy"
           />
           <div />
           <div />
@@ -331,6 +339,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
             className={`${styles.illustration} ${
               activeIndex >= 3 ? styles.visible : styles.hidden
             }`}
+            loading="lazy"
           />
         </div>
       </div>
@@ -341,6 +350,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
             src={submitReportIllustration5}
             alt="Illustration 5"
             className={styles.formIllustration}
+            loading="lazy"
           />
           <h3 className={styles.formTitle}>REPORT AN ISSUE</h3>
           <div className={styles.formGroup}>
@@ -488,7 +498,11 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                     className={styles.locationButton}
                     disabled={locationLoading}
                   >
-                    <LocationPinIcon className={styles.locationIcon} />
+                    {locationLoading ? (
+                      <LoadingSpinner size="small" />
+                    ) : (
+                      <LocationPinIcon className={styles.locationIcon} />
+                    )}
                   </IconButton>
                 </InputAdornment>
               }
@@ -513,7 +527,12 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           </div>
 
           <div className={styles.imageSection}>
-            {uploadedImage ? (
+            {isImageUploading ? (
+              <div className={styles.uploadingContainer}>
+                <LoadingSpinner size="large" />
+                <p className={styles.uploadingText}>Uploading image...</p>
+              </div>
+            ) : uploadedImage ? (
               <div className={styles.imagePreviewContainer}>
                 <img
                   src={URL.createObjectURL(uploadedImage)}
@@ -534,6 +553,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                   type="button"
                   className={styles.uploadButton}
                   onClick={() => inputRef.current?.click()}
+                  disabled={isImageUploading}
                 >
                   UPLOAD AN IMAGE
                 </button>
@@ -543,8 +563,12 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
                   ref={inputRef}
                   className={styles.fileInput}
                   onChange={(event) => {
-                    handleImageUpload(event.target.files[0]);
+                    const file = event.target.files?.[0];
+                    if (file) {
+                      handleImageUpload(file);
+                    }
                   }}
+                  accept="image/*"
                 />
               </>
             )}
@@ -552,11 +576,18 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
           <button
             type="submit"
-            disabled={loading || locationLoading}
+            disabled={loading || locationLoading || isImageUploading}
             className={styles.submitButton}
             onClick={handleSubmit}
           >
-            {loading ? "Submitting..." : "Submit"}
+            {loading ? (
+              <div className={styles.buttonContent}>
+                <LoadingSpinner size="small" color="white" />
+                <span>Submitting...</span>
+              </div>
+            ) : (
+              "Submit"
+            )}
           </button>
         </form>
       </div>

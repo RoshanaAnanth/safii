@@ -8,7 +8,7 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import SuccessModal from "../../components/SuccessModal/SuccessModal";
 import supabase from "../../lib/supabase";
 import { reverseGeocode, uploadImage } from "../../lib/utils";
-import { useToast } from "../../hooks/useToast";
+import { useToast } from "../../context/ToastContext";
 import styles from "./SubmitReportScreen.module.scss";
 
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";

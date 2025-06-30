@@ -2,7 +2,7 @@ import { User } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../../lib/supabase";
-import { useToast } from "../../hooks/useToast";
+import { useToast } from "../../context/ToastContext";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay, uploadImage } from "../../lib/utils";
-import { useToast } from "../../hooks/useToast";
+import { useToast } from "../../context/ToastContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import SuccessModal from "../SuccessModal/SuccessModal";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";

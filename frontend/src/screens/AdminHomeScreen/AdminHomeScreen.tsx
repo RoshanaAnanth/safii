@@ -5,7 +5,7 @@ import IssueDetailsModal from "../../components/IssueDetailsModal/IssueDetailsMo
 import LoadingOverlay from "../../components/LoadingOverlay/LoadingOverlay";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay } from "../../lib/utils";
-import { useToast } from "../../hooks/useToast";
+import { useToast } from "../../context/ToastContext";
 import styles from "./AdminHomeScreen.module.scss";
 
 import LogoutIcon from "@mui/icons-material/Logout";

@@ -15,10 +15,10 @@ import SubmitReportScreen from "./screens/SubmitReportScreen/SubmitReportScreen"
 import ViewReportsScreen from "./screens/ViewReportsScreen/ViewReportsScreen";
 
 import supabase from "./lib/supabase";
-import { useToast } from "./hooks/useToast";
+import { ToastProvider, useToast } from "./context/ToastContext";
 import ToastContainer from "./components/ToastContainer/ToastContainer";
 
-const App: React.FC = () => {
+const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -207,99 +207,107 @@ const App: React.FC = () => {
   const isAdmin = userProfile?.is_admin === true;
 
   return (
+    <div className="app">
+      <Routes>
+        {/* Public routes */}
+        <Route
+          path="/login"
+          element={
+            user ? (
+              <Navigate to={isAdmin ? "/admin" : "/home"} replace />
+            ) : (
+              <LoginScreen />
+            )
+          }
+        />
+
+        {/* Protected routes */}
+        <Route
+          path="/home"
+          element={
+            user ? (
+              !isAdmin ? (
+                <HomeScreen user={user} />
+              ) : (
+                <Navigate to="/admin" replace />
+              )
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            user ? (
+              isAdmin ? (
+                <AdminHomeScreen user={user} />
+              ) : (
+                <Navigate to="/home" replace />
+              )
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        <Route
+          path="/submit-report"
+          element={
+            user ? (
+              <SubmitReportScreen user={user} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/view-reports"
+          element={
+            user ? (
+              <ViewReportsScreen user={user} userProfile={userProfile} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Default redirect */}
+        <Route
+          path="/"
+          element={
+            <Navigate
+              to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
+              replace
+            />
+          }
+        />
+
+        {/* Catch all route */}
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
+              replace
+            />
+          }
+        />
+      </Routes>
+
+      {/* Toast Container */}
+      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
+    </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
     <Router>
-      <div className="app">
-        <Routes>
-          {/* Public routes */}
-          <Route
-            path="/login"
-            element={
-              user ? (
-                <Navigate to={isAdmin ? "/admin" : "/home"} replace />
-              ) : (
-                <LoginScreen />
-              )
-            }
-          />
-
-          {/* Protected routes */}
-          <Route
-            path="/home"
-            element={
-              user ? (
-                !isAdmin ? (
-                  <HomeScreen user={user} />
-                ) : (
-                  <Navigate to="/admin" replace />
-                )
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-
-          <Route
-            path="/admin"
-            element={
-              user ? (
-                isAdmin ? (
-                  <AdminHomeScreen user={user} />
-                ) : (
-                  <Navigate to="/home" replace />
-                )
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-
-          <Route
-            path="/submit-report"
-            element={
-              user ? (
-                <SubmitReportScreen user={user} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/view-reports"
-            element={
-              user ? (
-                <ViewReportsScreen user={user} userProfile={userProfile} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-
-          {/* Default redirect */}
-          <Route
-            path="/"
-            element={
-              <Navigate
-                to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
-                replace
-              />
-            }
-          />
-
-          {/* Catch all route */}
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
-                replace
-              />
-            }
-          />
-        </Routes>
-
-        {/* Toast Container */}
-        <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
-      </div>
+      <ToastProvider>
+        <AppContent />
+      </ToastProvider>
     </Router>
   );
 };

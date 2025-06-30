@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
-import { useToast } from "../../hooks/useToast";
+import { useToast } from "../../context/ToastContext";
 
 import supabase from "../../lib/supabase";
 

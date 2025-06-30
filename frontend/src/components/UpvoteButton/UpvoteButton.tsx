@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getUpvoteStatus, toggleUpvote } from "../../lib/utils";
-import { useToast } from "../../hooks/useToast";
+import { useToast } from "../../context/ToastContext";
 import styles from "./UpvoteButton.module.scss";
 
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";

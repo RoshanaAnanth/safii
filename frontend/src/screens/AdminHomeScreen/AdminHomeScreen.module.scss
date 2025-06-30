@@ -149,6 +149,9 @@
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(168, 213, 186, 0.3);
+  height: 500px; // Fixed height to enable scrolling
+  display: flex;
+  flex-direction: column;
 }
 
 .recentIssuesHeader {
@@ -156,6 +159,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-shrink: 0; // Prevent header from shrinking
 }
 
 .sectionTitle {
@@ -197,100 +201,149 @@
 }
 
 .recentIssuesContent {
+  flex: 1;
+  overflow: hidden;
   display: flex;
-  gap: 20px;
+  flex-direction: column;
 }
 
 .issuesList {
   flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-right: 8px; // Space for scrollbar
+}
+
+// Custom scrollbar styling
+.issuesList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.issuesList::-webkit-scrollbar-track {
+  background: rgba(168, 213, 186, 0.1);
+  border-radius: 3px;
+}
+
+.issuesList::-webkit-scrollbar-thumb {
+  background: rgba(168, 213, 186, 0.5);
+  border-radius: 3px;
+  
+  &:hover {
+    background: rgba(168, 213, 186, 0.7);
+  }
 }
 
 .issueItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: rgba(168, 213, 186, 0.1);
-  border-radius: 12px;
-  border: 1px solid rgba(168, 213, 186, 0.3);
+  gap: 16px;
+  padding: 20px;
+  background: rgba(168, 213, 186, 0.08);
+  border-radius: 16px;
+  border: 1px solid rgba(168, 213, 186, 0.2);
   transition: all 0.2s ease;
+  cursor: pointer;
+  min-height: 80px;
+  flex-shrink: 0; // Prevent items from shrinking
 
   &:hover {
-    background: rgba(168, 213, 186, 0.2);
+    background: rgba(168, 213, 186, 0.15);
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(168, 213, 186, 0.2);
   }
 }
 
 .issueIcon {
-  width: 24px;
-  height: 24px;
-  background: #4a7c59;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4a7c59 0%, #6b8e6b 100%);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 18px;
   flex-shrink: 0;
   color: #ffffff;
+  box-shadow: 0 2px 8px rgba(74, 124, 89, 0.3);
 }
 
 .issueDetails {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .issueTitle {
   font-family: "Geist", sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #2d5a3d;
-  margin: 0 0 4px 0;
-  white-space: nowrap;
+  margin: 0;
+  line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .issueLocation {
   font-family: "Geist", sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   color: #6b8e6b;
   margin: 0;
-  white-space: nowrap;
+  line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.issueDate {
+  font-family: "Geist", sans-serif;
+  font-size: 11px;
+  color: #999;
+  margin: 0;
+  line-height: 1.2;
 }
 
 .issueStatus {
-  padding: 4px 8px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 12px;
   font-family: "Geist", sans-serif;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: capitalize;
   white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .statusPending {
-  background: #fef3c7;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
   color: #92400e;
+  border: 1px solid #f59e0b;
 }
 
 .statusInProgress {
-  background: #dbeafe;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   color: #1e40af;
+  border: 1px solid #3b82f6;
 }
 
 .statusResolved {
-  background: #d1fae5;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
   color: #065f46;
+  border: 1px solid #10b981;
 }
 
 .statusRejected {
-  background: #fee2e2;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
   color: #991b1b;
+  border: 1px solid #ef4444;
 }
 
 .recentIssuesIllustrationPlaceholder {
@@ -364,11 +417,13 @@
   justify-content: center;
   padding: 40px 20px;
   text-align: center;
+  flex: 1;
 }
 
 .emptyIcon {
   font-size: 48px;
   margin-bottom: 16px;
+  color: rgba(168, 213, 186, 0.5);
 }
 
 .emptyTitle {
@@ -410,6 +465,10 @@
     height: 100px;
   }
 
+  .recentIssuesSection {
+    height: 600px; // Larger height on tablet
+  }
+
   .recentIssuesContent {
     gap: 24px;
   }
@@ -420,15 +479,32 @@
   }
 
   .issueItem {
-    padding: 20px;
+    padding: 24px;
+    gap: 20px;
+  }
+
+  .issueIcon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
   }
 
   .issueTitle {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .issueLocation {
-    font-size: 13px;
+    font-size: 14px;
+  }
+
+  .issueDate {
+    font-size: 12px;
+  }
+
+  .issueStatus {
+    padding: 8px 14px;
+    font-size: 12px;
+    min-width: 80px;
   }
 }
 
@@ -456,9 +532,35 @@
     height: 120px;
   }
 
+  .recentIssuesSection {
+    height: 650px; // Even larger on desktop
+  }
+
   .recentIssuesIllustrationPlaceholder {
     width: 160px;
     height: 160px;
+  }
+
+  .issueItem {
+    padding: 28px;
+  }
+
+  .issueIcon {
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+
+  .issueTitle {
+    font-size: 17px;
+  }
+
+  .issueLocation {
+    font-size: 15px;
+  }
+
+  .issueDate {
+    font-size: 13px;
   }
 }
 
@@ -466,5 +568,9 @@
 @media (min-width: 1440px) {
   .container {
     padding: 48px;
+  }
+
+  .recentIssuesSection {
+    height: 700px; // Maximum height on large screens
   }
 }

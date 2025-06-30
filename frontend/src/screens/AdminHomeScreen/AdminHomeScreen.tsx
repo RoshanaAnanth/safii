@@ -130,7 +130,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         `
         )
         .order("created_at", { ascending: false })
-        .limit(5);
+        .limit(10); // Increased limit to show more items in scrollable list
 
       if (recentError) {
         console.error("Error fetching recent issues:", recentError);
@@ -272,6 +272,25 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     return formattedLocation;
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) {
+      return "Just now";
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`;
+    } else if (diffInHours < 48) {
+      return "Yesterday";
+    } else {
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -349,26 +368,25 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
           </div>
 
           <div className={styles.recentIssuesContent}>
-            <div className={styles.issuesList}>
-              {loading ? (
-                <div className={styles.emptyState}>
-                  <div className={styles.emptyTitle}>Loading...</div>
-                </div>
-              ) : recentIssues.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <div className={styles.emptyIcon}>📋</div>
-                  <h3 className={styles.emptyTitle}>No Recent Issues</h3>
-                  <p className={styles.emptyDescription}>
-                    No issues have been reported recently.
-                  </p>
-                </div>
-              ) : (
-                recentIssues.map((issue) => (
+            {loading ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyTitle}>Loading...</div>
+              </div>
+            ) : recentIssues.length === 0 ? (
+              <div className={styles.emptyState}>
+                <div className={styles.emptyIcon}>📋</div>
+                <h3 className={styles.emptyTitle}>No Recent Issues</h3>
+                <p className={styles.emptyDescription}>
+                  No issues have been reported recently.
+                </p>
+              </div>
+            ) : (
+              <div className={styles.issuesList}>
+                {recentIssues.map((issue) => (
                   <div
                     key={issue.id}
                     className={styles.issueItem}
                     onClick={() => handleIssueClick(issue)}
-                    style={{ cursor: "pointer" }}
                   >
                     <div className={styles.issueIcon}>
                       {getCategoryIcon(issue.category)}
@@ -377,6 +395,9 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                       <h4 className={styles.issueTitle}>{issue.title}</h4>
                       <p className={styles.issueLocation}>
                         {formatLocation(issue.location)}
+                      </p>
+                      <p className={styles.issueDate}>
+                        {formatDate(issue.created_at)}
                       </p>
                     </div>
                     <span
@@ -387,12 +408,9 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
                       {issue.status.replace("_", " ")}
                     </span>
                   </div>
-                ))
-              )}
-            </div>
-            <div className={styles.recentIssuesIllustrationPlaceholder}>
-              Illustration
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

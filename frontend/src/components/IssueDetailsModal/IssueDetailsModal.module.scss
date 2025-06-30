@@ -119,6 +119,31 @@
   }
 }
 
+.dropdownMenu {
+  margin-top: 10px !important;
+}
+
+.menuPaper {
+  background-color: #f1f8e8 !important;
+  border-radius: 16px !important;
+  border: 1px solid #55ad9b !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.menuItem {
+  margin: 2px 8px !important;
+  border-radius: 8px !important;
+  font-family: "Poppins", sans-serif !important;
+
+  &:hover {
+    background-color: #e1e6da !important;
+  }
+
+  &.Mui-selected {
+    background-color: #55ad9b4e !important;
+  }
+}
+
 .closeButton {
   padding: 8px !important;
   color: #666 !important;

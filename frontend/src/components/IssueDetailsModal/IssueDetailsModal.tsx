@@ -497,16 +497,24 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                       onChange={handleStatusChange}
                       disabled={isUpdatingStatus}
                       className={styles.statusDropdown}
+                      MenuProps={{
+                        className: styles.dropdownMenu,
+                        slotProps: {
+                          paper: {
+                            className: styles.menuPaper,
+                          },
+                        },
+                      }}
                       sx={{
                         "& .MuiSelect-select": {
                           paddingLeft: 0,
                         },
                       }}
                     >
-                      <MenuItem value="pending">
+                      <MenuItem value="pending" className={styles.menuItem}>
                         <Chip type="status" label="Pending" status="pending" />
                       </MenuItem>
-                      <MenuItem value="resolved">
+                      <MenuItem value="resolved" className={styles.menuItem}>
                         <Chip
                           type="status"
                           label="Resolved"

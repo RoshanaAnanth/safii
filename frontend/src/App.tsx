@@ -1,3 +1,4 @@
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { User } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
 import {
@@ -178,7 +179,11 @@ const App: React.FC = () => {
           fontFamily: "Poppins, sans-serif",
         }}
       >
-        Loading...
+        <DotLottieReact
+          src="https://lottie.host/53d9f123-78b9-47cf-8a65-0ed27fadb9a5/NhPcrLwE7g.lottie"
+          loop
+          autoplay
+        />
       </div>
     );
   }

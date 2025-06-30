@@ -5,7 +5,6 @@ import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./IssueDetailsModal.module.scss";
 
 import CloseIcon from "@mui/icons-material/Close";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
@@ -450,7 +449,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                       </div>
                     ) : (
                       <>
-                        <CloudUploadIcon className={styles.uploadIcon} />
+                        {/* <CloudUploadIcon className={styles.uploadIcon} /> */}
                         <p className={styles.uploadText}>
                           Upload Proof of Resolution
                         </p>

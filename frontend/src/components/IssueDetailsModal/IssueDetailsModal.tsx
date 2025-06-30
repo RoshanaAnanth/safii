@@ -434,19 +434,20 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                     }
                   >
                     {resolvedImageFile ? (
-                      <>
+                      <div className={styles.resolvedImagePreviewContainer}>
                         <img
                           src={URL.createObjectURL(resolvedImageFile)}
                           alt="Resolved issue proof"
                           className={styles.imagePreview}
                         />
-                        <Button
+                        <IconButton
                           onClick={handleRemoveImage}
-                          className={styles.removeImageButton}
+                          className={styles.removeResolvedImageIcon}
+                          aria-label="Remove image"
                         >
-                          Remove Image
-                        </Button>
-                      </>
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
                     ) : (
                       <>
                         <CloudUploadIcon className={styles.uploadIcon} />

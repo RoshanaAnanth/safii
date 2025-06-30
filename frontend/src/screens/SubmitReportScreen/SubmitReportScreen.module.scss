@@ -240,9 +240,43 @@
   justify-content: center;
 }
 
+.imagePreviewContainer {
+  position: relative;
+  height: inherit;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .imagePreview {
   height: inherit;
   padding: 10px 0;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.removeImageIcon {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #f44336 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1) !important;
+    transform: scale(1.1) !important;
+  }
+
+  .MuiSvgIcon-root {
+    width: 20px !important;
+    height: 20px !important;
+  }
 }
 
 .uploadButton {

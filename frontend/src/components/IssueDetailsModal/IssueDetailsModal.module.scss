@@ -301,6 +301,37 @@
   border-radius: 8px;
 }
 
+.resolvedImagePreviewContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeResolvedImageIcon {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #f44336 !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1) !important;
+    transform: scale(1.1) !important;
+  }
+
+  .MuiSvgIcon-root {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
 .removeImageButton {
   margin-top: 12px;
   padding: 8px 16px !important;

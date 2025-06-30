@@ -9,6 +9,7 @@ import { reverseGeocode, uploadImage } from "../../lib/utils";
 import styles from "./SubmitReportScreen.module.scss";
 
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
+import CloseIcon from "@mui/icons-material/Close";
 import LocationPinIcon from "@mui/icons-material/LocationPin";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -162,6 +163,17 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
     } catch (error) {
       console.error("Error uploading image:", error);
       alert("Failed to upload image. Please try again.");
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setUploadedImage(undefined);
+    setFormData((prev) => ({
+      ...prev,
+      imageUrl: "",
+    }));
+    if (inputRef.current) {
+      inputRef.current.value = "";
     }
   };
 
@@ -502,11 +514,20 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
           <div className={styles.imageSection}>
             {uploadedImage ? (
-              <img
-                src={URL.createObjectURL(uploadedImage)}
-                alt="Preview"
-                className={styles.imagePreview}
-              />
+              <div className={styles.imagePreviewContainer}>
+                <img
+                  src={URL.createObjectURL(uploadedImage)}
+                  alt="Preview"
+                  className={styles.imagePreview}
+                />
+                <IconButton
+                  onClick={handleRemoveImage}
+                  className={styles.removeImageIcon}
+                  aria-label="Remove image"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
             ) : (
               <>
                 <button

@@ -39,24 +39,28 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
         return;
       }
 
-      if (data.user) {
-        // Check if user exists in users table, if not create them
-        const { data: adminUser, error: fetchError } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", data.user.email)
-          .eq("is_admin", true)
-          .single();
-
-        if (fetchError || !adminUser) {
-          showError("You are not authorized to login as admin.", "Access Denied");
-          await supabase.auth.signOut();
-          return;
-        }
-
-        setEmail("");
-        setPassword("");
+      // Check if login was successful but no user data returned
+      if (!data.user) {
+        showError("Invalid email or password", "Login Failed");
+        return;
       }
+
+      // Check if user exists in users table and is admin
+      const { data: adminUser, error: fetchError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", data.user.email)
+        .eq("is_admin", true)
+        .single();
+
+      if (fetchError || !adminUser) {
+        showError("You are not authorized to login as admin.", "Access Denied");
+        await supabase.auth.signOut();
+        return;
+      }
+
+      setEmail("");
+      setPassword("");
     } catch (error) {
       console.error("Login error:", error);
       showError("An unexpected error occurred during login", "Login Error");

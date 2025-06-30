@@ -177,8 +177,8 @@ const App: React.FC = () => {
     fetchUserProfile();
   }, [user]); // This effect runs whenever the user state changes
 
-  // Show loading screen while either initial loading, profile loading, or minimum time not reached
-  if (loading || profileLoading || !minLoadTimeReached) {
+  // Show loading screen while either initial loading, profile loading, or minimum time not reached (but skip minimum time for admins)
+  if (loading || profileLoading || (!minLoadTimeReached && !userProfile?.is_admin)) {
     return (
       <div
         style={{

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay, uploadImage } from "../../lib/utils";
+import { useToast } from "../../hooks/useToast";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import SuccessModal from "../SuccessModal/SuccessModal";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
@@ -54,6 +55,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   currentUserId,
   isAdmin = false,
 }) => {
+  const { showError } = useToast();
   const [currentIssueData, setCurrentIssueData] = useState<Issue>(issue);
   const [selectedStatus, setSelectedStatus] = useState<string>(issue.status);
   const [resolvedImageFile, setResolvedImageFile] = useState<File | null>(null);
@@ -123,7 +125,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
 
       if (updateError) {
         console.error("Error updating issue:", updateError);
-        alert("Failed to update issue status");
+        showError("Failed to update issue status", "Update Failed");
         return;
       }
 
@@ -190,7 +192,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
       }
     } catch (error) {
       console.error("Error updating issue:", error);
-      alert("An unexpected error occurred");
+      showError("An unexpected error occurred", "Update Error");
     } finally {
       setIsUpdatingStatus(false);
     }
@@ -233,7 +235,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
       }
     } catch (error) {
       console.error("Error uploading resolved image:", error);
-      alert("Failed to upload image. Please try again.");
+      showError("Failed to upload image. Please try again.", "Upload Failed");
     } finally {
       setIsUploading(false);
     }

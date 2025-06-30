@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import { useToast } from "../../hooks/useToast";
 
 import supabase from "../../lib/supabase";
 
@@ -14,6 +15,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { showError } = useToast();
 
   const characters =
     "✦  B U I L T  W  I T H  B O L T  ✦  B U I L T  W  I T H  B O L T ".split(
@@ -33,7 +35,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       });
 
       if (error) {
-        alert("Login failed: " + error.message);
+        showError(error.message, "Login Failed");
         return;
       }
 
@@ -47,7 +49,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
           .single();
 
         if (fetchError || !adminUser) {
-          alert("You are not authorized to login as admin.");
+          showError("You are not authorized to login as admin.", "Access Denied");
           await supabase.auth.signOut();
           return;
         }
@@ -57,7 +59,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("An unexpected error occurred during login");
+      showError("An unexpected error occurred during login", "Login Error");
     } finally {
       setIsLoading(false);
     }
@@ -68,9 +70,13 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
       });
+
+      if (error) {
+        showError(error.message, "Google Login Failed");
+      }
     } catch (error) {
       console.error("Google login error:", error);
-      alert("An unexpected error occurred during Google login");
+      showError("An unexpected error occurred during Google login", "Login Error");
     }
   };
 

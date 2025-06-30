@@ -5,6 +5,7 @@ import IssueDetailsModal from "../../components/IssueDetailsModal/IssueDetailsMo
 import LoadingOverlay from "../../components/LoadingOverlay/LoadingOverlay";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay } from "../../lib/utils";
+import { useToast } from "../../hooks/useToast";
 import styles from "./AdminHomeScreen.module.scss";
 
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -68,6 +69,7 @@ interface Issue {
 
 const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   const navigate = useNavigate();
+  const { showError } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [stats, setStats] = useState<DashboardStats>({
@@ -196,7 +198,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Error signing out:", error);
-        alert("Error signing out. Please try again.");
+        showError("Error signing out. Please try again.", "Sign Out Failed");
       } else {
         // Close menu first
         handleMenuClose();
@@ -205,7 +207,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
       }
     } catch (error) {
       console.error("Unexpected error during sign out:", error);
-      alert("An unexpected error occurred. Please try again.");
+      showError("An unexpected error occurred. Please try again.", "Sign Out Error");
     }
   };
 

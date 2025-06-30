@@ -8,6 +8,7 @@ import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import SuccessModal from "../../components/SuccessModal/SuccessModal";
 import supabase from "../../lib/supabase";
 import { reverseGeocode, uploadImage } from "../../lib/utils";
+import { useToast } from "../../hooks/useToast";
 import styles from "./SubmitReportScreen.module.scss";
 
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
@@ -46,6 +47,7 @@ interface FormData {
 
 const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
   const navigate = useNavigate();
+  const { showError } = useToast();
   const [loading, setLoading] = useState(false);
   const [isImageUploading, setIsImageUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -167,7 +169,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
       }));
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Failed to upload image. Please try again.");
+      showError("Failed to upload image. Please try again.", "Upload Failed");
     } finally {
       setIsImageUploading(false);
     }
@@ -189,12 +191,12 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
     // Basic validation
     if (!formData.title.trim() || !formData.description.trim()) {
-      alert("Please fill in all required fields");
+      showError("Please fill in all required fields", "Validation Error");
       return;
     }
 
     if (!formData.location) {
-      alert("Please allow location access or enter an address manually");
+      showError("Please allow location access or enter an address manually", "Location Required");
       return;
     }
 
@@ -258,7 +260,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
       if (error) {
         console.error("Error submitting issue:", error);
-        alert("Failed to submit report. Please try again.");
+        showError("Failed to submit report. Please try again.", "Submission Failed");
         return;
       }
 
@@ -268,7 +270,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
       setShowSuccessModal(true);
     } catch (error) {
       console.error("Error submitting report:", error);
-      alert("Failed to submit report. Please try again.");
+      showError("Failed to submit report. Please try again.", "Submission Error");
     } finally {
       setLoading(false);
     }

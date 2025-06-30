@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getUpvoteStatus, toggleUpvote } from "../../lib/utils";
+import { useToast } from "../../hooks/useToast";
 import styles from "./UpvoteButton.module.scss";
 
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
@@ -18,6 +19,7 @@ const UpvoteButton: React.FC<UpvoteButtonProps> = ({
   size = "normal",
   onUpvoteChange,
 }) => {
+  const { showError } = useToast();
   const [isUpvoted, setIsUpvoted] = useState(false);
   const [upvoteCount, setUpvoteCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,7 @@ const UpvoteButton: React.FC<UpvoteButtonProps> = ({
       }
     } catch (error) {
       console.error("Error toggling upvote:", error);
-      // You might want to show a toast notification here
+      showError("Failed to update upvote. Please try again.", "Upvote Error");
     } finally {
       setLoading(false);
     }

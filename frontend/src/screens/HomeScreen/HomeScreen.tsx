@@ -2,6 +2,7 @@ import { User } from "@supabase/supabase-js";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../../lib/supabase";
+import { useToast } from "../../hooks/useToast";
 
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -27,6 +28,7 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
   const navigate = useNavigate();
+  const { showError } = useToast();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -72,7 +74,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
       console.log("Sign out response:", error);
       if (error) {
         console.error("Error signing out:", error);
-        alert("Error signing out. Please try again.");
+        showError("Error signing out. Please try again.", "Sign Out Failed");
       } else {
         // Close menu first
         handleMenuClose();
@@ -81,7 +83,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ user }) => {
       }
     } catch (error) {
       console.error("Unexpected error during sign out:", error);
-      alert("An unexpected error occurred. Please try again.");
+      showError("An unexpected error occurred. Please try again.", "Sign Out Error");
     }
   };
 

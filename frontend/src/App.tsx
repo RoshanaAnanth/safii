@@ -15,6 +15,8 @@ import SubmitReportScreen from "./screens/SubmitReportScreen/SubmitReportScreen"
 import ViewReportsScreen from "./screens/ViewReportsScreen/ViewReportsScreen";
 
 import supabase from "./lib/supabase";
+import { useToast } from "./hooks/useToast";
+import ToastContainer from "./components/ToastContainer/ToastContainer";
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -22,6 +24,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [profileLoading, setProfileLoading] = useState(false);
   const [minLoadTimeReached, setMinLoadTimeReached] = useState(false);
+  const { toasts, removeToast } = useToast();
 
   // Ensure minimum loading time of 3 seconds
   useEffect(() => {
@@ -293,6 +296,9 @@ const App: React.FC = () => {
             }
           />
         </Routes>
+
+        {/* Toast Container */}
+        <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
       </div>
     </Router>
   );

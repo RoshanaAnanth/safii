@@ -6,7 +6,9 @@ import {
   Route,
   BrowserRouter as Router,
   Routes,
+  useLocation,
 } from "react-router-dom";
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import AdminHomeScreen from "./screens/AdminHomeScreen/AdminHomeScreen";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
@@ -18,6 +20,8 @@ import supabase from "./lib/supabase";
 import { ToastProvider, useToast } from "./context/ToastContext";
 import ToastContainer from "./components/ToastContainer/ToastContainer";
 
+import "./App.scss";
+
 const AppContent: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -25,6 +29,7 @@ const AppContent: React.FC = () => {
   const [profileLoading, setProfileLoading] = useState(false);
   const [minLoadTimeReached, setMinLoadTimeReached] = useState(false);
   const { toasts, removeToast } = useToast();
+  const location = useLocation();
 
   // Ensure minimum loading time of 3 seconds
   useEffect(() => {
@@ -208,93 +213,104 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="app">
-      <Routes>
-        {/* Public routes */}
-        <Route
-          path="/login"
-          element={
-            user ? (
-              <Navigate to={isAdmin ? "/admin" : "/home"} replace />
-            ) : (
-              <LoginScreen />
-            )
-          }
-        />
+      <div className="app-transition-container">
+        <TransitionGroup>
+          <CSSTransition
+            key={location.key}
+            classNames="fade"
+            timeout={300}
+            location={location}
+          >
+            <Routes location={location}>
+              {/* Public routes */}
+              <Route
+                path="/login"
+                element={
+                  user ? (
+                    <Navigate to={isAdmin ? "/admin" : "/home"} replace />
+                  ) : (
+                    <LoginScreen />
+                  )
+                }
+              />
 
-        {/* Protected routes */}
-        <Route
-          path="/home"
-          element={
-            user ? (
-              !isAdmin ? (
-                <HomeScreen user={user} />
-              ) : (
-                <Navigate to="/admin" replace />
-              )
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+              {/* Protected routes */}
+              <Route
+                path="/home"
+                element={
+                  user ? (
+                    !isAdmin ? (
+                      <HomeScreen user={user} />
+                    ) : (
+                      <Navigate to="/admin" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
 
-        <Route
-          path="/admin"
-          element={
-            user ? (
-              isAdmin ? (
-                <AdminHomeScreen user={user} />
-              ) : (
-                <Navigate to="/home" replace />
-              )
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+              <Route
+                path="/admin"
+                element={
+                  user ? (
+                    isAdmin ? (
+                      <AdminHomeScreen user={user} />
+                    ) : (
+                      <Navigate to="/home" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
 
-        <Route
-          path="/submit-report"
-          element={
-            user ? (
-              <SubmitReportScreen user={user} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-        <Route
-          path="/view-reports"
-          element={
-            user ? (
-              <ViewReportsScreen user={user} userProfile={userProfile} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+              <Route
+                path="/submit-report"
+                element={
+                  user ? (
+                    <SubmitReportScreen user={user} />
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
+              <Route
+                path="/view-reports"
+                element={
+                  user ? (
+                    <ViewReportsScreen user={user} userProfile={userProfile} />
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
 
-        {/* Default redirect */}
-        <Route
-          path="/"
-          element={
-            <Navigate
-              to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
-              replace
-            />
-          }
-        />
+              {/* Default redirect */}
+              <Route
+                path="/"
+                element={
+                  <Navigate
+                    to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
+                    replace
+                  />
+                }
+              />
 
-        {/* Catch all route */}
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
-              replace
-            />
-          }
-        />
-      </Routes>
+              {/* Catch all route */}
+              <Route
+                path="*"
+                element={
+                  <Navigate
+                    to={user ? (isAdmin ? "/admin" : "/home") : "/login"}
+                    replace
+                  />
+                }
+              />
+            </Routes>
+          </CSSTransition>
+        </TransitionGroup>
+      </div>
 
       {/* Toast Container */}
       <ToastContainer toasts={toasts} onRemoveToast={removeToast} />

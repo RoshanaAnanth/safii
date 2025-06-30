@@ -4,57 +4,54 @@
   overflow: hidden;
 }
 
-.app-container {
+.app-transition-container {
   height: 100vh;
   width: 100vw;
   position: relative;
   overflow: hidden;
 }
 
-// Page transition animations
-.app-container.fadeOut {
-  animation: slideUp 0.3s ease-in-out forwards;
+// Page transition animations using react-transition-group
+.fade-enter {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-.app-container.fadeIn {
-  animation: slideDown 0.3s ease-in-out forwards;
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateY(-100vh);
-    opacity: 0;
-  }
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@keyframes slideDown {
-  from {
-    transform: translateY(100vh);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
 }
 
 // Ensure smooth transitions between screens
-.app-container > * {
+.fade-enter-active,
+.fade-exit-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.fade-enter-active {
+  z-index: 2; // Entering page should be on top
+}
+
+// Ensure the container maintains proper dimensions
+.app-transition-container > div {
   height: 100vh;
   width: 100vw;
   position: relative;
-}
-
-// Override any conflicting styles from other components during transitions
-.app-container.fadeOut *,
-.app-container.fadeIn * {
-  pointer-events: none;
-}
-
-.app-container.fadeIn * {
-  pointer-events: auto;
 }

@@ -78,18 +78,8 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   });
   const [recentIssues, setRecentIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
-  const [minLoadTimeReached, setMinLoadTimeReached] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Ensure minimum loading time of 1.5 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setMinLoadTimeReached(true);
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     fetchDashboardData();
@@ -319,8 +309,8 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     }
   };
 
-  // Show loading screen while either data loading or minimum time not reached
-  if (loading || !minLoadTimeReached) {
+  // Show loading screen only while data is being fetched
+  if (loading) {
     return (
       <div className={styles.loadingContainer}>
         <LoadingOverlay message="Loading dashboard..." size="large" />

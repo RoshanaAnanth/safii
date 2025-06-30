@@ -4,17 +4,17 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  // overflow: auto;
+  overflow-y: auto;
   padding: 0 45px 45px;
   position: relative;
 }
 
-.illustration {
-  width: 100px;
-  position: absolute;
-  bottom: 0;
-  left: 0px;
-}
+// .illustration {
+//   width: 100px;
+//   position: absolute;
+//   bottom: 0;
+//   left: 0px;
+// }
 
 .table {
   width: 100%;

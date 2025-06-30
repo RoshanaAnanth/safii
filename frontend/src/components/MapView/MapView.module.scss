@@ -146,7 +146,7 @@
 .popupDetail {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
 }
 
 .popupLabel {
@@ -187,6 +187,7 @@
   line-height: 1.3;
   display: block;
   margin-top: 2px;
+  text-align: end;
 }
 
 .emptyState {

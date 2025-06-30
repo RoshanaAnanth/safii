@@ -601,7 +601,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
         onClose={handleSuccessModalClose}
         title="Success!"
         message="Your report has been submitted."
-        autoCloseDelay={3000}
+        // autoCloseDelay={3000}
       />
     </div>
   );

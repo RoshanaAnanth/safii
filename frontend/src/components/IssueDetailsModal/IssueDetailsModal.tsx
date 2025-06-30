@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import SuccessModal from "../SuccessModal/SuccessModal";
 import supabase from "../../lib/supabase";
 import { formatLocationForDisplay, uploadImage } from "../../lib/utils";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import SuccessModal from "../SuccessModal/SuccessModal";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./IssueDetailsModal.module.scss";
 
@@ -59,7 +59,9 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   const [resolvedImageFile, setResolvedImageFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
-  const [imageLoading, setImageLoading] = useState<{[key: string]: boolean}>({});
+  const [imageLoading, setImageLoading] = useState<{ [key: string]: boolean }>(
+    {}
+  );
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const imageUploadRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -263,18 +265,18 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
   };
 
   const handleImageLoad = (imageKey: string) => {
-    setImageLoading(prev => ({ ...prev, [imageKey]: false }));
+    setImageLoading((prev) => ({ ...prev, [imageKey]: false }));
   };
 
   const handleImageLoadStart = (imageKey: string) => {
-    setImageLoading(prev => ({ ...prev, [imageKey]: true }));
+    setImageLoading((prev) => ({ ...prev, [imageKey]: true }));
   };
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
-    const imageKey = target.getAttribute('data-image-key') || 'unknown';
-    setImageLoading(prev => ({ ...prev, [imageKey]: false }));
-    
+    const imageKey = target.getAttribute("data-image-key") || "unknown";
+    setImageLoading((prev) => ({ ...prev, [imageKey]: false }));
+
     target.style.display = "none";
     const container = target.parentElement;
     if (container) {
@@ -301,7 +303,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
             <div className={styles.imageContainer}>
               <div className={styles.imageLabel}>Before (Reported)</div>
               <div className={styles.imageWrapper}>
-                {imageLoading['original'] && (
+                {imageLoading["original"] && (
                   <div className={styles.imageLoadingOverlay}>
                     <LoadingSpinner size="medium" />
                   </div>
@@ -311,8 +313,8 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   alt="Original Issue"
                   className={styles.issueImage}
                   data-image-key="original"
-                  onLoadStart={() => handleImageLoadStart('original')}
-                  onLoad={() => handleImageLoad('original')}
+                  onLoadStart={() => handleImageLoadStart("original")}
+                  onLoad={() => handleImageLoad("original")}
                   onError={handleImageError}
                   loading="lazy"
                 />
@@ -321,7 +323,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
             <div className={styles.imageContainer}>
               <div className={styles.imageLabel}>After (Resolved)</div>
               <div className={styles.imageWrapper}>
-                {imageLoading['resolved'] && (
+                {imageLoading["resolved"] && (
                   <div className={styles.imageLoadingOverlay}>
                     <LoadingSpinner size="medium" />
                   </div>
@@ -331,8 +333,8 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   alt="Resolved Issue"
                   className={styles.issueImage}
                   data-image-key="resolved"
-                  onLoadStart={() => handleImageLoadStart('resolved')}
-                  onLoad={() => handleImageLoad('resolved')}
+                  onLoadStart={() => handleImageLoadStart("resolved")}
+                  onLoad={() => handleImageLoad("resolved")}
                   onError={handleImageError}
                   loading="lazy"
                 />
@@ -349,7 +351,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <div className={styles.imageSection}>
             <div className={styles.imageContainer}>
               <div className={styles.imageWrapper}>
-                {imageLoading['resolved-only'] && (
+                {imageLoading["resolved-only"] && (
                   <div className={styles.imageLoadingOverlay}>
                     <LoadingSpinner size="medium" />
                   </div>
@@ -359,8 +361,8 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   alt="Resolved Issue"
                   className={styles.issueImage}
                   data-image-key="resolved-only"
-                  onLoadStart={() => handleImageLoadStart('resolved-only')}
-                  onLoad={() => handleImageLoad('resolved-only')}
+                  onLoadStart={() => handleImageLoadStart("resolved-only")}
+                  onLoad={() => handleImageLoad("resolved-only")}
                   onError={handleImageError}
                   loading="lazy"
                 />
@@ -377,7 +379,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <div className={styles.imageSection}>
             <div className={styles.imageContainer}>
               <div className={styles.imageWrapper}>
-                {imageLoading['original-only'] && (
+                {imageLoading["original-only"] && (
                   <div className={styles.imageLoadingOverlay}>
                     <LoadingSpinner size="medium" />
                   </div>
@@ -387,8 +389,8 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   alt="Issue"
                   className={styles.issueImage}
                   data-image-key="original-only"
-                  onLoadStart={() => handleImageLoadStart('original-only')}
-                  onLoad={() => handleImageLoad('original-only')}
+                  onLoadStart={() => handleImageLoadStart("original-only")}
+                  onLoad={() => handleImageLoad("original-only")}
                   onError={handleImageError}
                   loading="lazy"
                 />
@@ -405,7 +407,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
           <div className={styles.imageSection}>
             <div className={styles.imageContainer}>
               <div className={styles.imageWrapper}>
-                {imageLoading['issue'] && (
+                {imageLoading["issue"] && (
                   <div className={styles.imageLoadingOverlay}>
                     <LoadingSpinner size="medium" />
                   </div>
@@ -415,8 +417,8 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                   alt="Issue"
                   className={styles.issueImage}
                   data-image-key="issue"
-                  onLoadStart={() => handleImageLoadStart('issue')}
-                  onLoad={() => handleImageLoad('issue')}
+                  onLoadStart={() => handleImageLoadStart("issue")}
+                  onLoad={() => handleImageLoad("issue")}
                   onError={handleImageError}
                   loading="lazy"
                 />
@@ -480,8 +482,8 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                 <span className={styles.sectionText}>Category:</span>
                 <Chip
                   type="category"
-                  label={currentIssueData.category}
-                  category={currentIssueData.category.replace("_", " ")}
+                  label={currentIssueData.category.replace("_", " ")}
+                  category={currentIssueData.category}
                 />
               </div>
               <div className={styles.tagSection}>
@@ -503,7 +505,11 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                         <Chip type="status" label="Pending" status="pending" />
                       </MenuItem>
                       <MenuItem value="resolved">
-                        <Chip type="status" label="Resolved" status="resolved" />
+                        <Chip
+                          type="status"
+                          label="Resolved"
+                          status="resolved"
+                        />
                       </MenuItem>
                     </Select>
                   </FormControl>
@@ -545,7 +551,9 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
               )}
               <div className={styles.tagSection}>
                 <span className={styles.sectionText}>Description:</span>
-                <span className={styles.detailValue}>{currentIssueData.description}</span>
+                <span className={styles.detailValue}>
+                  {currentIssueData.description}
+                </span>
               </div>
             </div>
 
@@ -573,7 +581,9 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
                       {isUploading ? (
                         <div className={styles.uploadingContainer}>
                           <LoadingSpinner size="large" />
-                          <p className={styles.uploadText}>Uploading image...</p>
+                          <p className={styles.uploadText}>
+                            Uploading image...
+                          </p>
                         </div>
                       ) : resolvedImageFile ? (
                         <div className={styles.resolvedImagePreviewContainer}>
@@ -646,7 +656,7 @@ const IssueDetailsModal: React.FC<IssueDetailsModalProps> = ({
         onClose={() => setShowSuccessModal(false)}
         title="Success!"
         message="Issue resolved successfully."
-        autoCloseDelay={3000}
+        // autoCloseDelay={3000}
       />
     </>
   );

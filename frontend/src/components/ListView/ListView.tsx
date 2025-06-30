@@ -4,8 +4,6 @@ import IssueDetailsModal from "../IssueDetailsModal/IssueDetailsModal";
 import UpvoteButton from "../UpvoteButton/UpvoteButton";
 import styles from "./ListView.module.scss";
 
-import listViewIllustration from "../../../assets/ListViewIllustration.png";
-
 interface Issue {
   id: string;
   title: string;
@@ -39,11 +37,11 @@ interface ListViewProps {
   onIssueUpdate?: () => void;
 }
 
-const ListView: React.FC<ListViewProps> = ({ 
-  issues, 
-  currentUserId, 
+const ListView: React.FC<ListViewProps> = ({
+  issues,
+  currentUserId,
   isAdmin = false,
-  onIssueUpdate 
+  onIssueUpdate,
 }) => {
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -142,12 +140,12 @@ const ListView: React.FC<ListViewProps> = ({
 
   return (
     <div className={styles.container}>
-      <img
+      {/* <img
         src={listViewIllustration}
         alt="Illustration"
         className={styles.illustration}
         loading="lazy"
-      />
+      /> */}
       <table className={styles.table}>
         <thead className={styles.tableHeader}>
           <tr>

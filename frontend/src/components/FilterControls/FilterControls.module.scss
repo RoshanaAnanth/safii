@@ -1,7 +1,7 @@
 // Mobile-first responsive styles for Compact Filter Controls
 .filterButton {
   position: absolute !important;
-  right: 60px !important;
+  right: 10px !important;
   background: #f1f8e8 !important;
   //   backdrop-filter: blur(10px) !important;
   border: 2px solid #f1f8e8 !important;
@@ -215,6 +215,7 @@
     width: 40px !important;
     height: 40px !important;
     min-width: 40px !important;
+    right: 60px !important;
   }
 
   .filterIcon {

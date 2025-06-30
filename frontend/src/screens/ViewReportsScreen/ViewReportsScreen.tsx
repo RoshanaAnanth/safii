@@ -47,7 +47,10 @@ export interface Issue {
   reporter_email?: string;
 }
 
-const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile }) => {
+const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({
+  user,
+  userProfile,
+}) => {
   const navigate = useNavigate();
   const [currentView, setCurrentView] = useState<"list" | "map">("list");
   const [issues, setIssues] = useState<Issue[]>([]);
@@ -63,7 +66,7 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile
   useEffect(() => {
     const timer = setTimeout(() => {
       setMinLoadTimeReached(true);
-    }, 1500);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -163,7 +166,11 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile
 
   // Show loading screen while either data loading or minimum time not reached
   if (loading || !minLoadTimeReached) {
-    return <LoadingOverlay message="Loading reports..." size="large" />;
+    return (
+      <div className={styles.loadingContainer}>
+        <LoadingOverlay message="Loading reports..." size="large" />
+      </div>
+    );
   }
 
   return (
@@ -210,9 +217,9 @@ const ViewReportsScreen: React.FC<ViewReportsScreenProps> = ({ user, userProfile
         </div>
 
         {currentView === "list" ? (
-          <ListView 
-            issues={filteredIssues} 
-            currentUserId={user.id} 
+          <ListView
+            issues={filteredIssues}
+            currentUserId={user.id}
             isAdmin={isAdmin}
             onIssueUpdate={fetchIssues}
           />

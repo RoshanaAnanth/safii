@@ -6,21 +6,25 @@ import supabase from "../../lib/supabase";
 import { formatLocationForDisplay } from "../../lib/utils";
 import styles from "./AdminHomeScreen.module.scss";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import LogoutIcon from "@mui/icons-material/Logout";
-import SearchIcon from "@mui/icons-material/Search";
-import SettingsIcon from "@mui/icons-material/Settings";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+
+import adminIllustration from "../../../assets/AdminIllustration.png";
+import authority from "../../../assets/Authority.svg";
+import background from "../../../assets/HomeScreenBackground.png";
+import pendingIssuesIcon from "../../../assets/PendingIssuesIcon.png";
+import recentIssuesIllustration from "../../../assets/RecentIssuesIllustration.png";
+import resolvedIssuesIcon from "../../../assets/ResolvedIssuesIcon.png";
+import todayIssuesIcon from "../../../assets/TodayIssuesIcon.png";
+import totalIssuesIcon from "../../../assets/TotalIssuesIcon.png";
 
 interface AdminHomeScreenProps {
   user: User;
@@ -138,24 +142,26 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
       }
 
       // Format issues for display
-      const formattedIssues: Issue[] = (recentIssuesData || []).map((issue: any) => ({
-        id: issue.id,
-        title: issue.title,
-        description: issue.description,
-        category: issue.category,
-        status: issue.status,
-        priority: issue.priority,
-        location: issue.location,
-        imageUrl: issue.imageUrl,
-        resolvedImageUrl: issue.resolvedImageUrl,
-        reporter_id: issue.reporter_id,
-        admin_notes: issue.admin_notes,
-        resolved_at: issue.resolved_at,
-        created_at: issue.created_at,
-        updated_at: issue.updated_at,
-        reporter_name: issue.users?.name || "Anonymous User",
-        reporter_email: issue.users?.email || "unknown@example.com",
-      }));
+      const formattedIssues: Issue[] = (recentIssuesData || []).map(
+        (issue: any) => ({
+          id: issue.id,
+          title: issue.title,
+          description: issue.description,
+          category: issue.category,
+          status: issue.status,
+          priority: issue.priority,
+          location: issue.location,
+          imageUrl: issue.imageUrl,
+          resolvedImageUrl: issue.resolvedImageUrl,
+          reporter_id: issue.reporter_id,
+          admin_notes: issue.admin_notes,
+          resolved_at: issue.resolved_at,
+          created_at: issue.created_at,
+          updated_at: issue.updated_at,
+          reporter_name: issue.users?.name || "Anonymous User",
+          reporter_email: issue.users?.email || "unknown@example.com",
+        })
+      );
 
       setRecentIssues(formattedIssues);
     } catch (error) {
@@ -229,7 +235,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
     if (user.user_metadata?.picture) {
       return user.user_metadata.picture;
     }
-    return null;
+    return authority;
   };
 
   const getCategoryIcon = (category: string) => {
@@ -275,8 +281,10 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+    );
+
     if (diffInHours < 1) {
       return "Just now";
     } else if (diffInHours < 24) {
@@ -293,32 +301,31 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div>
+      <img src={background} alt="Background" className={styles.background} />
+      <div className={styles.headerSection}>
+        <IconButton className={styles.menuIconButton} onClick={handleMenuOpen}>
+          <MenuIcon className={styles.menuIcon} />
+        </IconButton>
+        <div className={styles.header}>
           <h1 className={styles.logo}>Safii</h1>
-          <p className={styles.adminSubtitle}>— ADMIN —</p>
-        </div>
-        <div className={styles.profileSection}>
-          <IconButton className={styles.profileButton} onClick={handleMenuOpen}>
-            <AccountCircleIcon className={styles.profileIcon} />
-          </IconButton>
+          <p className={styles.adminSubtitle}>✦ ADMIN ✦</p>
         </div>
       </div>
 
       <div className={styles.welcomeSection}>
-        <div className={styles.welcomeContent}>
-          <h2 className={styles.welcomeText}>Welcome back!</h2>
-        </div>
-        <div className={styles.welcomeIllustrationPlaceholder}>
-          Illustration
-        </div>
+        <h2 className={styles.welcomeText}>Welcome back!</h2>
+        <img
+          src={adminIllustration}
+          alt="Illustration"
+          className={styles.welcomeIllustration}
+        />
       </div>
 
       <div className={styles.dashboardGrid}>
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Total Issues</h3>
-            <SearchIcon className={styles.cardIcon} />
+            <img src={totalIssuesIcon} alt="Icon" className={styles.cardIcon} />
           </div>
           <p className={styles.statNumber}>{stats.totalIssues}</p>
           <p className={styles.statLabel}>All time</p>
@@ -327,7 +334,11 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Pending</h3>
-            <HourglassEmptyIcon className={styles.cardIcon} />
+            <img
+              src={pendingIssuesIcon}
+              alt="Icon"
+              className={styles.cardIcon}
+            />
           </div>
           <p className={styles.statNumber}>{stats.pendingIssues}</p>
           <p className={styles.statLabel}>Awaiting action</p>
@@ -336,7 +347,11 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Resolved</h3>
-            <SettingsIcon className={styles.cardIcon} />
+            <img
+              src={resolvedIssuesIcon}
+              alt="Icon"
+              className={styles.cardIcon}
+            />
           </div>
           <p className={styles.statNumber}>{stats.resolvedIssues}</p>
           <p className={styles.statLabel}>Completed</p>
@@ -345,7 +360,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         <div className={styles.statsCard}>
           <div className={styles.cardHeader}>
             <h3 className={styles.cardTitle}>Today</h3>
-            <CalendarTodayIcon className={styles.cardIcon} />
+            <img src={todayIssuesIcon} alt="Icon" className={styles.cardIcon} />
           </div>
           <p className={styles.statNumber}>{stats.todayIssues}</p>
           <p className={styles.statLabel}>New reports</p>
@@ -353,6 +368,11 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
       </div>
 
       <div className={styles.contentGrid}>
+        <img
+          src={recentIssuesIllustration}
+          alt="Illustration"
+          className={styles.recentIssuesIllustration}
+        />
         <div className={styles.recentIssuesSection}>
           <div className={styles.recentIssuesHeader}>
             <h2 className={styles.sectionTitle}>
@@ -427,17 +447,13 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
         }}
       >
         <MenuItem className={styles.userProfile}>
-          {getUserAvatar() ? (
-            <img
-              src={getUserAvatar()}
-              alt="Avatar"
-              className={styles.userAvatar}
-            />
-          ) : (
-            <AccountCircleIcon className={styles.userAvatar} />
-          )}
+          <img
+            src={getUserAvatar()}
+            alt="Avatar"
+            className={styles.userAvatar}
+          />
           <div className={styles.userDetails}>
-            <span>Admin: {getUserName()}</span>
+            <span className={styles.name}>Welcome {getUserName()}!</span>
             <span className={styles.email}>{user.email}</span>
           </div>
         </MenuItem>
@@ -446,7 +462,7 @@ const AdminHomeScreen: React.FC<AdminHomeScreenProps> = ({ user }) => {
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>Sign Out</ListItemText>
+          <span className={styles.option}>Sign Out</span>
         </MenuItem>
       </Menu>
 

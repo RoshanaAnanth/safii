@@ -2,101 +2,139 @@
 .container {
   min-height: 100vh;
   background: #f0f8f0;
-  padding: 20px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menuIconButton {
+  position: relative !important;
+  z-index: 3 !important;
+  height: fit-content !important;
+}
+
+.menuIcon {
+  width: 32px !important;
+  height: 32px !important;
+  color: #65968e;
+}
+
+.background {
+  position: absolute;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+  z-index: 1;
+}
+
+.headerSection {
+  display: flex;
+  margin: 20px;
+  margin-bottom: 0;
+  gap: 30px;
+  align-items: baseline;
 }
 
 .header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  padding: 0 4px;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 3;
 }
 
 .logo {
   font-family: "Cormorant Upright", serif;
   font-weight: 600;
-  font-size: clamp(28px, 5vw, 36px);
-  color: #4a7c59;
-  margin: 0;
+  font-size: clamp(30px, 10vw, 60px);
+  letter-spacing: 0;
+  line-height: 1.2;
+  color: #65968e;
+  -webkit-text-stroke: 2px #65968e;
 }
 
 .adminSubtitle {
-  font-family: "Geist", sans-serif;
-  font-size: 12px;
-  color: #6b8e6b;
-  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: #81b3aa;
+  font-weight: 550;
   margin-top: -4px;
-  letter-spacing: 1px;
-}
-
-.profileSection {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.profileButton {
-  padding: 0 !important;
-  color: #4a7c59 !important;
-}
-
-.profileIcon {
-  width: 32px !important;
-  height: 32px !important;
-  color: #4a7c59;
+  letter-spacing: 2px;
 }
 
 .welcomeSection {
-  background: linear-gradient(135deg, #a8d5ba 0%, #7fb069 100%);
+  background-color: #95d2b49d;
   border-radius: 16px;
   padding: 24px;
-  margin-bottom: 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.welcomeContent {
-  flex: 1;
+  z-index: 2;
+  margin: 0 30px;
+  position: relative;
+  height: 130px;
 }
 
 .welcomeText {
-  font-family: "Geist", sans-serif;
-  font-size: clamp(24px, 5vw, 32px);
-  font-weight: 600;
-  color: #2d5a3d;
+  font-family: "Poppins", sans-serif;
+  font-size: clamp(28px, 6vw, 70px);
+  font-weight: 700;
+  color: #4e8d9b;
   margin: 0;
 }
 
-.welcomeIllustrationPlaceholder {
-  width: 120px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #2d5a3d;
-  font-size: 14px;
-  font-weight: 500;
+.welcomeIllustration {
+  position: absolute;
+  bottom: 0px;
+  right: -15px;
+  height: 200px;
+  width: 280px;
 }
 
 .dashboardGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  margin-bottom: 24px;
+  margin: 0 30px;
+  z-index: 2;
 }
 
 .statsCard {
-  background: rgba(168, 213, 186, 0.4);
+  background: radial-gradient(
+      circle at 30% 30%,
+      rgb(147, 212, 192),
+      transparent 100%
+    ),
+    radial-gradient(circle at 70% 70%, rgb(233, 245, 229), transparent 100%),
+    radial-gradient(circle at 50% 50%, rgb(93, 182, 154), transparent 100%);
+  background-size: 200% 200%;
+  animation: swirlMotion 5s ease-in-out infinite alternate;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 8px 8px #95d2b480;
   border: 1px solid rgba(168, 213, 186, 0.6);
+}
+
+@keyframes swirlMotion {
+  0% {
+    background-position: 0% 0%, 100% 100%, 50% 50%;
+  }
+  50% {
+    background-position: 50% 50%, 50% 50%, 60% 40%;
+  }
+  100% {
+    background-position: 100% 100%, 0% 0%, 50% 60%;
+  }
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 .cardHeader {
@@ -107,43 +145,53 @@
 }
 
 .cardTitle {
-  font-family: "Geist", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  color: #4a7c59;
+  font-family: "Poppins", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #4e8d9b;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .cardIcon {
-  width: 24px !important;
-  height: 24px !important;
-  color: #4a7c59;
+  width: 40px !important;
+  height: 40px !important;
 }
 
 .statNumber {
-  font-family: "Geist", sans-serif;
-  font-size: 32px;
+  font-family: "Poppins", sans-serif;
+  font-size: 24px;
   font-weight: 700;
-  color: #2d5a3d;
-  margin: 0 0 4px 0;
+  color: #4e8d9b;
+  margin: 0 0 4px 4px;
 }
 
 .statLabel {
   font-family: "Geist", sans-serif;
   font-size: 12px;
-  color: #6b8e6b;
-  margin: 0;
+  color: #999999;
+  margin: 0 0 0 2px;
 }
 
 .contentGrid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+  display: flex;
+  gap: 30px;
+  z-index: 2;
+  margin: 0 30px;
+  margin-bottom: 20px;
+  height: 50vh;
+}
+
+.recentIssuesIllustration {
+  flex: 20%;
+  height: 330px;
+  background-color: transparent;
+  border-radius: 40px;
 }
 
 .recentIssuesSection {
+  flex: 80%;
   background: #ffffff;
   border-radius: 16px;
   padding: 24px;
@@ -229,7 +277,7 @@
 .issuesList::-webkit-scrollbar-thumb {
   background: rgba(168, 213, 186, 0.5);
   border-radius: 3px;
-  
+
   &:hover {
     background: rgba(168, 213, 186, 0.7);
   }
@@ -346,20 +394,6 @@
   border: 1px solid #ef4444;
 }
 
-.recentIssuesIllustrationPlaceholder {
-  width: 120px;
-  height: 120px;
-  background: rgba(168, 213, 186, 0.3);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #4a7c59;
-  font-size: 14px;
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
 .profileMenu {
   top: 10px !important;
 }
@@ -387,7 +421,7 @@
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid #414141;
+  border: 1px solid #acacac;
 }
 
 .userDetails {
@@ -395,8 +429,13 @@
   flex-direction: column;
 }
 
+.name {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px !important;
+}
+
 .email {
-  font-family: "Geist", Helvetica, sans-serif;
+  font-family: "Poppins", sans-serif;
   font-size: 14px !important;
   color: #909090 !important;
 }
@@ -406,8 +445,13 @@
   margin: 0 10px !important;
 
   &:hover {
-    background-color: rgba(74, 124, 89, 0.1) !important;
+    background-color: #f1f8e8 !important;
   }
+}
+
+.option {
+  font-family: "Poppins", sans-serif !important;
+  font-size: 14px;
 }
 
 .emptyState {
@@ -444,7 +488,10 @@
 // Tablet styles
 @media (min-width: 768px) {
   .container {
-    padding: 32px;
+    // padding: 32px;
+    height: 100vh;
+    width: 100vw;
+    overflow-y: hidden;
   }
 
   .dashboardGrid {
@@ -511,12 +558,14 @@
 // Desktop styles
 @media (min-width: 1024px) {
   .container {
-    padding: 40px;
+    // padding: 40px;
+    height: 100vh;
+    width: 100vw;
   }
 
-  .logo {
-    font-size: 36px;
-  }
+  // .logo {
+  //   font-size: 36px;
+  // }
 
   .profileIcon {
     width: 36px !important;
@@ -567,7 +616,9 @@
 // Large desktop styles
 @media (min-width: 1440px) {
   .container {
-    padding: 48px;
+    // padding: 48px;
+    height: 100vh;
+    width: 100vw;
   }
 
   .recentIssuesSection {

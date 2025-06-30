@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import SuccessModal from "../../components/SuccessModal/SuccessModal";
 import supabase from "../../lib/supabase";
 import { reverseGeocode, uploadImage } from "../../lib/utils";
 import styles from "./SubmitReportScreen.module.scss";
@@ -51,6 +52,7 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
   const [locationLoading, setLocationLoading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<File>();
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     title: "",
     description: "",
@@ -262,19 +264,20 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
 
       console.log("Issue submitted successfully:", newIssue);
 
-      // Show success message
-      alert(
-        "Issue submitted successfully! Thank you for helping make your community better."
-      );
-
-      // Navigate back to home
-      navigate("/home");
+      // Show success modal instead of alert
+      setShowSuccessModal(true);
     } catch (error) {
       console.error("Error submitting report:", error);
       alert("Failed to submit report. Please try again.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    // Navigate back to home after modal closes
+    navigate("/home");
   };
 
   const handleInputChange = (
@@ -591,6 +594,15 @@ const SubmitReportScreen: React.FC<SubmitReportScreenProps> = ({ user }) => {
           </button>
         </form>
       </div>
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        title="Success!"
+        message="Your report has been submitted."
+        autoCloseDelay={3000}
+      />
     </div>
   );
 };

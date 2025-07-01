@@ -80,13 +80,23 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       }
     } catch (error) {
       console.error("Google login error:", error);
-      showError("An unexpected error occurred during Google login", "Login Error");
+      showError(
+        "An unexpected error occurred during Google login",
+        "Login Error"
+      );
     }
   };
 
   return (
     <div className={styles.container}>
-      <video autoPlay muted loop playsInline className={styles.video}>
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className={styles.video}
+      >
         <source src={loginScreenBackground} type="video/mp4" />
       </video>
       <div className={styles.card}>

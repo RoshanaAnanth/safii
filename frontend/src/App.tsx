@@ -8,7 +8,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 import AdminHomeScreen from "./screens/AdminHomeScreen/AdminHomeScreen";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
@@ -16,9 +16,9 @@ import LoginScreen from "./screens/LoginScreen/LoginScreen";
 import SubmitReportScreen from "./screens/SubmitReportScreen/SubmitReportScreen";
 import ViewReportsScreen from "./screens/ViewReportsScreen/ViewReportsScreen";
 
-import supabase from "./lib/supabase";
-import { ToastProvider, useToast } from "./context/ToastContext";
 import ToastContainer from "./components/ToastContainer/ToastContainer";
+import { ToastProvider, useToast } from "./context/ToastContext";
+import supabase from "./lib/supabase";
 
 import "./App.scss";
 
@@ -186,24 +186,38 @@ const AppContent: React.FC = () => {
   }, [user]); // This effect runs whenever the user state changes
 
   // Show loading screen while either initial loading, profile loading, or minimum time not reached (but skip minimum time for admins)
-  if (loading || profileLoading || (!minLoadTimeReached && !userProfile?.is_admin)) {
+  if (
+    loading ||
+    profileLoading ||
+    (!minLoadTimeReached && !userProfile?.is_admin)
+  ) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          fontFamily: "Poppins, sans-serif",
-          backgroundColor: "#f1f8e8",
-        }}
-      >
-        <DotLottieReact
-          src="https://lottie.host/53d9f123-78b9-47cf-8a65-0ed27fadb9a5/NhPcrLwE7g.lottie"
+      <>
+        <video
+          autoPlay
+          muted
           loop
-          autoplay
-        />
-      </div>
+          playsInline
+          preload="auto"
+          className="video"
+        ></video>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            fontFamily: "Poppins, sans-serif",
+            backgroundColor: "#f1f8e8",
+          }}
+        >
+          <DotLottieReact
+            src="https://lottie.host/53d9f123-78b9-47cf-8a65-0ed27fadb9a5/NhPcrLwE7g.lottie"
+            loop
+            autoplay
+          />
+        </div>
+      </>
     );
   }
 

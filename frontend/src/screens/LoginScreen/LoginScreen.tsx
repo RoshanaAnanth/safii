@@ -100,7 +100,10 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
         <source src={loginScreenBackground} type="video/mp4" />
       </video>
       <div className={styles.card}>
-        <div className={styles.badgeContainer}>
+        <div
+          className={styles.badgeContainer}
+          onClick={() => window.open("https://bolt.new/", "_blank")}
+        >
           <img src={boltBadge} alt="Badge" className={styles.boltBadge} />
           <span className={styles.textRing}>
             {characters.map((char, i) => {
